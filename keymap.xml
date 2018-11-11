@@ -1,0 +1,35 @@
+<keymap>
+	<map context="FHEM_Actions">
+		<key id="KEY_1" mapto="key_1" flags="m" />
+		<key id="KEY_2" mapto="key_2" flags="m" />
+		<key id="KEY_3" mapto="key_3" flags="m" />
+		<key id="KEY_4" mapto="key_4" flags="m" />
+		<key id="KEY_5" mapto="key_5" flags="m" />
+		<key id="KEY_6" mapto="key_6" flags="m" />
+		<key id="KEY_7" mapto="key_7" flags="m" />
+		<key id="KEY_8" mapto="key_8" flags="m" />
+		<key id="KEY_9" mapto="key_9" flags="m" />
+		<key id="KEY_0" mapto="key_0" flags="m" />
+		<key id="KEY_RED" mapto="key_red" flags="m" />
+		<key id="KEY_GREEN" mapto="key_green" flags="m" />
+		<key id="KEY_YELLOW" mapto="key_yellow" flags="m" />
+		<key id="KEY_BLUE" mapto="key_blue" flags="m" />
+		<key id="KEY_INFO" mapto="key_info" flags="m" />
+		<key id="KEY_MENU" mapto="key_menu" flags="m" />
+		<key id="KEY_HELP" mapto="key_helpelp" flags="m" />
+		<key id="KEY_EXIT" mapto="key_cancel" flags="m" />
+		<key id="KEY_HOME" mapto="key_cancel" flags="m" />
+		<key id="KEY_OK" mapto="key_ok" flags="m" />
+		<key id="KEY_UP" mapto="key_up" flags="m" />
+		<key id="KEY_DOWN" mapto="key_down" flags="m" />
+		<key id="KEY_LEFT" mapto="key_left" flags="m" />
+		<key id="KEY_RIGHT" mapto="key_right" flags="m" />
+		<key id="KEY_CHANNELUP" mapto="key_channel_up" flags="m" />
+		<key id="KEY_CHANNELDOWN" mapto="key_channel_down" flags="m" />
+		<key id="KEY_PAGEUP" mapto="key_page_up" flags="m" />
+		<key id="KEY_PAGEDOWN" mapto="key_page_down" flags="m" />
+		<key id="KEY_PREVIOUS" mapto="key_num_left" flags="mr" />
+		<key id="KEY_NEXT" mapto="key_num_right" flags="mr" />
+		<key id="KEY_TEXT" mapto="key_text" flags="m" />
+	</map>
+</keymap>
