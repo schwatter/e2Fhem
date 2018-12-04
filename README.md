@@ -18,7 +18,7 @@ Thx Waldmensch for initial setup
 
 > conn = httpslib.HTTPConnection(self.Address)
   
-- sometimes at the first setup, there are problems with the login details
+- sometimes at the first setup, there are problems with login details
 
 > Telnet Vu+
 
@@ -34,7 +34,7 @@ Thx Waldmensch for initial setup
 
 # TODO
 
-- autoswitch- or manualswitch for htpp/https
+- autoswitch- or manualswitch for http/https
 - add csrfToken
 - full switch to jsonlist2+
 - add more devices
