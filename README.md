@@ -30,7 +30,7 @@ Thx Waldmensch for initial setup
 
 > config.fhem.password=yourPassword
 
-> init 3`
+> init 3
 
 # TODO
 
