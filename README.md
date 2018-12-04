@@ -11,20 +11,18 @@ Thx Waldmensch for initial setup
 - disable csrfToken
 - don't use unusual stateformat's
 - for https change
-  > conn = httplib.HTTPConnection(self.Address)
-  to
-  > conn = httpslib.HTTPConnection(self.Address)
+> conn = httplib.HTTPConnection(self.Address)
+to
+> conn = httpslib.HTTPConnection(self.Address)
   
 - sometimes at the first setup, there are problems with the login details
 
-   > Telnet Vu+
-   > init 4
-   > edit /etc/enigma2/settings and add
-   
-   > config.fhem.username=yourUsername
-   > config.fhem.password=yourPassword
-   
-   > init 3`
+ > Telnet Vu+
+ > init 4
+ > edit /etc/enigma2/settings and add 
+ > config.fhem.username=yourUsername
+ > config.fhem.password=yourPassword
+ > init 3`
 
 # TODO
 
