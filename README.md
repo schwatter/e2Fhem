@@ -13,6 +13,7 @@ Thx Waldmensch for initial setup
 - for https change
 
 > conn = httplib.HTTPConnection(self.Address)
+
 to
 
 > conn = httpslib.HTTPConnection(self.Address)
