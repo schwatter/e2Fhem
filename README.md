@@ -27,3 +27,11 @@ Thx Waldmensch for initial setup
  > config.fhem.password=yourPassword
  
  > init 3
+
+# TODO
+
+- autoswitch- or manualswitch for htpp/https
+- add csrfToken
+- full switch to jsonlist2+
+- add more devices
+- ...
