@@ -14,12 +14,11 @@ Thx Waldmensch for initial setup
 
 > conn = httplib.HTTPConnection(self.Address)
 
-to
+  to
 
 > conn = httpslib.HTTPConnection(self.Address)
   
 - sometimes at the first setup, there are problems with the login details
-
 
 > Telnet Vu+
 
