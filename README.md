@@ -1,5 +1,5 @@
 # fhemfrontend-enigma2
-# Thx Waldmensch for initial setup
+Thx Waldmensch for initial setup
 
 Supportet devices:
 
