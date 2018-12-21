@@ -932,7 +932,9 @@ class FHEMElement(object):
 		type = self.getType()
 		try:
 			if type == "MQTT2_DEVICE":
-				return str(self.Data["Readings"]["ENERGY_Current"]["Value"])	
+				return str(self.Data["Readings"]["ENERGY_Current"]["Value"])
+			elif type == "MQTT_DEVICE":
+				return str(self.Data["Readings"]["ENERGY_Current"]["Value"])
 			else: 
 				return ""
 		except:
@@ -942,7 +944,9 @@ class FHEMElement(object):
 		type = self.getType()
 		try:
 			if type == "MQTT2_DEVICE":
-				return str(self.Data["Readings"]["ENERGY_Power"]["Value"])	
+				return str(self.Data["Readings"]["ENERGY_Power"]["Value"])
+			elif type == "MQTT_DEVICE":
+				return str(self.Data["Readings"]["ENERGY_Power"]["Value"])
 			else: 
 				return ""
 		except:
@@ -952,7 +956,9 @@ class FHEMElement(object):
 		type = self.getType()
 		try:
 			if type == "MQTT2_DEVICE":
-				return str(self.Data["Readings"]["ENERGY_Today"]["Value"])	
+				return str(self.Data["Readings"]["ENERGY_Today"]["Value"])
+			elif type == "MQTT_DEVICE":
+				return str(self.Data["Readings"]["ENERGY_Today"]["Value"])
 			else: 
 				return ""
 		except:
@@ -962,6 +968,8 @@ class FHEMElement(object):
 		type = self.getType()
 		try:
 			if type == "MQTT2_DEVICE":
+				return str(self.Data["Readings"]["ENERGY_Total"]["Value"])
+			elif type == "MQTT_DEVICE":
 				return str(self.Data["Readings"]["ENERGY_Total"]["Value"])	
 			else: 
 				return ""
