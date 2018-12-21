@@ -8,9 +8,9 @@ Thx Waldmensch for initial setup
 
 # Setup
 
-- disable csrfToken
-- don't use unusual stateformat's
-- for https change
+- Disable csrfToken.
+- Don't use unusual stateFormat's.
+- For https change:
 
 > conn = httplib.HTTPConnection(self.Address)
 
@@ -31,6 +31,9 @@ Thx Waldmensch for initial setup
 > config.fhem.password=yourPassword
 
 > init 3
+
+- It is essential to have both, 98_JsonList.pm and 98_JsonList2.pm at Server
+  in/opt/fhem/FHEM. Rights set to 0666.
 
 # TODO
 
