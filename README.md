@@ -18,7 +18,7 @@ Thx Waldmensch for initial setup
 
 > conn = httpslib.HTTPConnection(self.Address)
   
-- sometimes at the first setup, there are problems with login details
+- sometimes at the first setup, there are problems with login details, so:
 
 > Telnet Vu+
 
