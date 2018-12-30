@@ -38,7 +38,7 @@ Thx Waldmensch for initial setup
 
 # TODO
 
-- autoswitch- or manualswitch for http/https
+- <del>autoswitch- or manualswitch for http/https</del>
 - add csrfToken
 - full switch to jsonlist2+
 - add more devices
