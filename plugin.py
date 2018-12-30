@@ -55,6 +55,7 @@ AptToDate_SPECIALS = ["repoSync"]
 
 
 config.fhem = ConfigSubsection()
+config.fhem.httpresponse = ConfigSelection(default="Http", choices = [("Http", _("Http")), ("Https", _("Https"))])
 config.fhem.serverip = ConfigIP(default = [0,0,0,0])
 config.fhem.port = ConfigInteger(default=8083, limits=(8000, 9000))
 config.fhem.username = ConfigText(default="yourName")
@@ -1242,6 +1243,7 @@ class WebWorker(object):
 	
 		self.hasError = False
 	
+		self.httpres = str(config.fhem.httpresponse.value)
 		self.server = "%d.%d.%d.%d" % tuple(config.fhem.serverip.value)
 		self.port = int(config.fhem.port.value)
 		self.username = str(config.fhem.username.value)
@@ -1258,24 +1260,45 @@ class WebWorker(object):
 			self.headers = { 'Authorization' : 'Basic %s' %  self.credentials64 }
 		
 	def getHtml(self, elements, listtype):
-		conn = httplib.HTTPConnection(self.Address) #if response != 400 else httplib.HTTPSConnection(self.Address)
-		try:
-			if self.isAuth != 0:
-				conn.request("GET", self.Prefix[listtype] + elements, headers = self.headers)
-			else:
-				conn.request("GET", self.Prefix[listtype] + elements)
+		if self.httpres == "Http":
+			try:
+				conn = httplib.HTTPConnection(self.Address, timeout=10)
+				if self.isAuth != 0:
+					conn.request("GET", self.Prefix[listtype] + elements, headers = self.headers)
+				else:
+					conn.request("GET", self.Prefix[listtype] + elements)
 			
-			response = conn.getresponse()
-			if response.status != 200:
-				print "FHEM-debug: %s -- %s" % ("response", str(response.status) + " --- reason: " + response.reason)
+				response = conn.getresponse()
+				if response.status != 200:
+					print "FHEM-debug: %s -- %s" % ("response", str(response.status) + " --- reason: " + response.reason)
+					self.hasError = True
+					return None
+				
+				self.hasError = False
+				return response
+			except:
 				self.hasError = True
 				return None
 				
-			self.hasError = False
-			return response
-		except:
-			self.hasError = True
-			return None
+		else:
+			try:
+				conn = httplib.HTTPSConnection(self.Address, timeout=10)
+				if self.isAuth != 0:
+					conn.request("GET", self.Prefix[listtype] + elements, headers = self.headers)
+				else:
+					conn.request("GET", self.Prefix[listtype] + elements)
+			
+				response = conn.getresponse()
+				if response.status != 200:
+					print "FHEM-debug: %s -- %s" % ("response", str(response.status) + " --- reason: " + response.reason)
+					self.hasError = True
+					return None
+				
+				self.hasError = False
+				return response
+			except:
+				self.hasError = True
+				return None
 		
 	def getJson(self, elements, listtype):
 		try:
@@ -1285,25 +1308,47 @@ class WebWorker(object):
 			return None
 		
 	def setPropertyValue(self, command, value):
-		conn = httplib.HTTPConnection(self.Address)
-		message = command + value
-		print "FHEM-debug: %s -- %s" % ("Message to send:", message)
-		message = message.replace(" ","%20")
+		if self.httpres == "Http":
+			conn = httplib.HTTPConnection(self.Address)
+			message = command + value
+			print "FHEM-debug: %s -- %s" % ("Message to send:", message)
+			message = message.replace(" ","%20")
 
 		
 
-		if self.isAuth != 0:
-			conn.request("GET", message, headers = self.headers)
+			if self.isAuth != 0:
+				conn.request("GET", message, headers = self.headers)
+			else:
+				conn.request("GET", message)
+
+			response = conn.getresponse()
+			if response.status != 200:
+				print "FHEM-debug: %s -- %s" % ("response", str(response.status) + " --- reason: " + response.reason)
+				self.hasError = True
+		
+			print "FHEM-debug: %s -- %s" % ("Message sent", "Result: " + str(response.status) + " Reason: " + response.reason)		
+			self.hasError = False
+		
 		else:
-			conn.request("GET", message)
+			conn = httplib.HTTPSConnection(self.Address)
+			message = command + value
+			print "FHEM-debug: %s -- %s" % ("Message to send:", message)
+			message = message.replace(" ","%20")
 
-		response = conn.getresponse()
-		if response.status != 200:
-			print "FHEM-debug: %s -- %s" % ("response", str(response.status) + " --- reason: " + response.reason)
-			self.hasError = True
 		
-		print "FHEM-debug: %s -- %s" % ("Message sent", "Result: " + str(response.status) + " Reason: " + response.reason)		
-		self.hasError = False
+
+			if self.isAuth != 0:
+				conn.request("GET", message, headers = self.headers)
+			else:
+				conn.request("GET", message)
+
+			response = conn.getresponse()
+			if response.status != 200:
+				print "FHEM-debug: %s -- %s" % ("response", str(response.status) + " --- reason: " + response.reason)
+				self.hasError = True
+		
+			print "FHEM-debug: %s -- %s" % ("Message sent", "Result: " + str(response.status) + " Reason: " + response.reason)		
+			self.hasError = False
 
 ############################################     Config    #################################
 
@@ -1311,13 +1356,13 @@ class FHEM_Setup(Screen, ConfigListScreen):
 	desktopSize = getDesktop(0).size()
 	if desktopSize.width() >= 1920:
 		skin = """
-		<screen name="picshow" position="300,665" size="660,320" title="FHEM Settings" >
-			<ePixmap pixmap="skin_default/buttons/red.png" position="0,270" size="140,40" alphatest="on" />
-			<ePixmap pixmap="skin_default/buttons/green.png" position="140,270" size="140,40" alphatest="on" />
-			<widget source="key_red" render="Label" position="0,270" zPosition="1" size="140,40" font="Regular;21" halign="center" valign="center" backgroundColor="#9f1313" transparent="1" />
-			<widget source="key_green" render="Label" position="140,270" zPosition="1" size="140,40" font="Regular;21" halign="center" valign="center" backgroundColor="#1f771f" transparent="1" />
+		<screen name="picshow" position="300,645" size="660,350" title="FHEM Settings" >
+			<ePixmap pixmap="skin_default/buttons/red.png" position="0,300" size="140,40" alphatest="on" />
+			<ePixmap pixmap="skin_default/buttons/green.png" position="140,300" size="140,40" alphatest="on" />
+			<widget source="key_red" render="Label" position="0,300" zPosition="1" size="140,40" font="Regular;21" halign="center" valign="center" backgroundColor="#9f1313" transparent="1" />
+			<widget source="key_green" render="Label" position="140,300" zPosition="1" size="140,40" font="Regular;21" halign="center" valign="center" backgroundColor="#1f771f" transparent="1" />
 			<widget source="label" render="Label" position="10,10" size="640,40" font="Regular;24" backgroundColor="#25062748" transparent="1"  />
-			<widget name="config" position="10,50" zPosition="2" size="640,200" itemHeight="38" font="Regular;24" scrollbarMode="showOnDemand" />
+			<widget name="config" position="10,50" zPosition="2" size="640,255" itemHeight="38" font="Regular;24" scrollbarMode="showOnDemand" />
 		</screen>"""
 	else:
 		skin = """
@@ -1360,6 +1405,7 @@ class FHEM_Setup(Screen, ConfigListScreen):
 
 	def createSetup(self):
 		self.list = []
+		self.list.append(getConfigListEntry(_("Http/Https"), config.fhem.httpresponse))
 		self.list.append(getConfigListEntry(_("Server IP"), config.fhem.serverip))
 		self.list.append(getConfigListEntry(_("Port"), config.fhem.port))
 		self.list.append(getConfigListEntry(_("Username"), config.fhem.username))
