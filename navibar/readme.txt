@@ -1,0 +1,1 @@
+choice one and rename to FHEM_Haussteuerung.png
