@@ -30,7 +30,7 @@ from Components.config import getConfigListEntry, ConfigEnableDisable, \
 from enigma import getDesktop, eTimer, eListbox, eLabel, eListboxPythonMultiContent, gFont, eRect, eSize, RT_HALIGN_LEFT, RT_HALIGN_RIGHT, RT_HALIGN_CENTER, RT_VALIGN_CENTER, RT_VALIGN_TOP, RT_WRAP, BT_SCALE
 from Components.GUIComponent import GUIComponent
 
-ELEMENTS = ["MAX","FHT","FS20","CUL_HM","IT","CUL_TX","CUL_WS","FBDECT","Weather","MQTT_DEVICE","MQTT2_DEVICE","DOIF","FRITZBOX","CUL","notify","AptToDate","GHoma","Hyperion"] #actual supported types - leave as it is
+ELEMENTS = ["MAX","FHT","FS20","CUL_HM","IT","CUL_TX","CUL_WS","FBDECT","Weather","MQTT_DEVICE","MQTT2_DEVICE","DOIF","FRITZBOX","CUL","notify","AptToDate","GHoma","Hyperion","HUEDevice"] #actual supported types - leave as it is
 
 MAX_LIMITS = [5.0, 30.0]
 MAX_SPECIALS = ["eco","comfort","boost","auto","off","on"]
@@ -50,6 +50,7 @@ MQTT_SPECIALS = ["off","on"]
 MQTT2_SPECIALS = ["off","on"]
 GHoma_SPECIALS = ["off","on"]
 Hyperion_SPECIALS = ["off","on","dim06%","dim25%","dim50%","dim75%","dim100%"]
+HUEDevice_SPECIALS = ["off","on","dim06%","dim25%","dim50%","dim75%","dim100%","rgb ff0000","rgb DEFF26","rgb 0000ff","ct 490","ct 380","ct 270","ct 160"]
 DOIF_SPECIALS = ["cmd_2","cmd_1","cmd_3","cmd_4","cmd_5","cmd_6","cmd_7","cmd_8","disable","enable","initialize"]
 AptToDate_SPECIALS = ["repoSync"]
 
@@ -365,7 +366,7 @@ class MainScreen(Screen):
 				self["set_Title"].setText("")
 				self["set_Text"].setText("")
 			
-			elif selectedElement.getType() in ["FS20", "FBDECT", "IT", "DOIF", "GHoma", "Hyperion"]:
+			elif selectedElement.getType() in ["FS20", "FBDECT", "IT", "DOIF", "GHoma", "Hyperion", "HUEDevice"]:
 				self["titleDetails"].setText("Details für " + selectedElement.getAlias())
 				
 				list = []
@@ -486,7 +487,7 @@ class MainScreen(Screen):
 						if selectedElement.getSubType() == "thermostat":
 							self.container.updateElementByName(selectedElement.Name, self["set_Text"].getText())
 					
-					elif selectedElement.getType() in ["CUL_HM" ,"FS20", "IT", "MQTT_DEVICE", "MQTT2_DEVICE", "DOIF", "AptToDate", "GHoma", "Hyperion"]:
+					elif selectedElement.getType() in ["CUL_HM" ,"FS20", "IT", "MQTT_DEVICE", "MQTT2_DEVICE", "DOIF", "AptToDate", "GHoma", "Hyperion", "HUEDevice"]:
 						self.container.updateElementByName(selectedElement.Name, self["set_Text"].getText())
 					
 					self.container.updateElementByName(selectedElement.Name, self["set_Text"].getText())
@@ -645,7 +646,9 @@ class FHEMElement(object):
 		elif self.getType() == "GHoma":
 			return GHoma_SPECIALS
 		elif self.getType() == "Hyperion":
-			return Hyperion_SPECIALS	
+			return Hyperion_SPECIALS
+		elif self.getType() == "HUEDevice":
+			return HUEDevice_SPECIALS
 		else:
 			return ["0"]
 	
@@ -904,6 +907,8 @@ class FHEMElement(object):
 				return str(self.Data["Readings"]["state"]["Value"])	
 			elif type == "Hyperion":
 				return str(self.Data["Readings"]["state"]["Value"])
+			elif type == "HUEDevice":
+				return str(self.Data["Readings"]["state"]["Value"])
 			else: 
 				return ""
 		except:
@@ -1070,6 +1075,8 @@ class FHEMElement(object):
 			return ""
 		elif type == "Hyperion":
 			return ""
+		elif type == "HUEDevice":
+			return ""
 		
 	def getUpdateCommand(self):
 		type = self.getType()
@@ -1100,6 +1107,8 @@ class FHEMElement(object):
 		elif type == "GHoma":
 			return "/fhem?XHR=1&cmd.%s=set %s %s " % (self.Name, self.Name, self.getUpdateableProperty())
 		elif type == "Hyperion":
+			return "/fhem?XHR=1&cmd.%s=set %s %s " % (self.Name, self.Name, self.getUpdateableProperty())
+		elif type == "HUEDevice":
 			return "/fhem?XHR=1&cmd.%s=set %s %s " % (self.Name, self.Name, self.getUpdateableProperty())
 			
 	def getHMChannels(self):
