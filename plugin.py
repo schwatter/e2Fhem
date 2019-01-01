@@ -30,7 +30,7 @@ from Components.config import getConfigListEntry, ConfigEnableDisable, \
 from enigma import getDesktop, eTimer, eListbox, eLabel, eListboxPythonMultiContent, gFont, eRect, eSize, RT_HALIGN_LEFT, RT_HALIGN_RIGHT, RT_HALIGN_CENTER, RT_VALIGN_CENTER, RT_VALIGN_TOP, RT_WRAP, BT_SCALE
 from Components.GUIComponent import GUIComponent
 
-ELEMENTS = ["MAX","FHT","FS20","CUL_HM","IT","CUL_TX","CUL_WS","FBDECT","Weather","MQTT_DEVICE","MQTT2_DEVICE","DOIF","FRITZBOX","CUL","notify","AptToDate","GHoma","Hyperion","HUEDevice"] #actual supported types - leave as it is
+ELEMENTS = ["MAX","FHT","FS20","CUL_HM","IT","CUL_TX","CUL_WS","FBDECT","Weather","MQTT_DEVICE","MQTT2_DEVICE","DOIF","FRITZBOX","CUL","notify","AptToDate","GHoma","Hyperion","HUEDevice","dummy"] #actual supported types - leave as it is
 
 MAX_LIMITS = [5.0, 30.0]
 MAX_SPECIALS = ["eco","comfort","boost","auto","off","on"]
@@ -366,7 +366,7 @@ class MainScreen(Screen):
 				self["set_Title"].setText("")
 				self["set_Text"].setText("")
 			
-			elif selectedElement.getType() in ["FS20", "FBDECT", "IT", "DOIF", "GHoma", "Hyperion", "HUEDevice"]:
+			elif selectedElement.getType() in ["FS20", "FBDECT", "IT", "DOIF", "GHoma", "Hyperion", "HUEDevice", "dummy"]:
 				self["titleDetails"].setText("Details für " + selectedElement.getAlias())
 				
 				list = []
@@ -487,7 +487,7 @@ class MainScreen(Screen):
 						if selectedElement.getSubType() == "thermostat":
 							self.container.updateElementByName(selectedElement.Name, self["set_Text"].getText())
 					
-					elif selectedElement.getType() in ["CUL_HM" ,"FS20", "IT", "MQTT_DEVICE", "MQTT2_DEVICE", "DOIF", "AptToDate", "GHoma", "Hyperion", "HUEDevice"]:
+					elif selectedElement.getType() in ["CUL_HM" ,"FS20", "IT", "MQTT_DEVICE", "MQTT2_DEVICE", "DOIF", "AptToDate", "GHoma", "Hyperion", "HUEDevice", "dummy"]:
 						self.container.updateElementByName(selectedElement.Name, self["set_Text"].getText())
 					
 					self.container.updateElementByName(selectedElement.Name, self["set_Text"].getText())
@@ -649,10 +649,13 @@ class FHEMElement(object):
 			return Hyperion_SPECIALS
 		elif self.getType() == "HUEDevice":
 			return HUEDevice_SPECIALS
+		elif self.getType() == "dummy" and self.getWebcmdstate() == "state":
+			return self.getSetlist()
+		elif self.getType() == "dummy":	
+			return self.getWebcmd()
 		else:
 			return ["0"]
 	
-		
 	def getType(self):
 		return str(self.Data["Internals"]["TYPE"])
 		
@@ -670,7 +673,25 @@ class FHEMElement(object):
 	
 	def getInternals(self):
 		return self.Data["Internals"]
-		
+	
+	def getWebcmd(self):
+		try:
+			return str(self.Data["Attributes"]["webCmd"]).split(':')
+		except:
+			return ('')
+	
+	def getSetlist(self):
+		try:
+			return str(self.Data["Attributes"]["setList"]).replace(':',' ').replace(',',' ').replace('state', '').split()
+		except:
+			return ('')
+	
+	def getWebcmdstate(self):
+		try:
+			return str(self.Data["Attributes"]["webCmd"])
+		except:
+			return ('')
+
 	def getAlias(self):
 		try:
 			if self.Data["Attributes"]["alias"] is not None:
@@ -806,7 +827,6 @@ class FHEMElement(object):
 		except:
 			return "no prop"
 	
-	
 	def getControlmode(self):
 		type = self.getType()
 		try:
@@ -869,7 +889,6 @@ class FHEMElement(object):
 		except:
 			return "no prop"
 	
-	
 	def getReadingState(self):
 		type = self.getType()
 		try:
@@ -908,6 +927,8 @@ class FHEMElement(object):
 			elif type == "Hyperion":
 				return str(self.Data["Readings"]["state"]["Value"])
 			elif type == "HUEDevice":
+				return str(self.Data["Readings"]["state"]["Value"])
+			elif type == "dummy":
 				return str(self.Data["Readings"]["state"]["Value"])
 			else: 
 				return ""
@@ -992,7 +1013,6 @@ class FHEMElement(object):
 		except:
 			return "no prop"
 	
-			
 	def getInternalsState(self):
 		type = self.getType()
 		try:
@@ -1077,6 +1097,8 @@ class FHEMElement(object):
 			return ""
 		elif type == "HUEDevice":
 			return ""
+		elif type == "dummy":
+			return ""
 		
 	def getUpdateCommand(self):
 		type = self.getType()
@@ -1109,6 +1131,8 @@ class FHEMElement(object):
 		elif type == "Hyperion":
 			return "/fhem?XHR=1&cmd.%s=set %s %s " % (self.Name, self.Name, self.getUpdateableProperty())
 		elif type == "HUEDevice":
+			return "/fhem?XHR=1&cmd.%s=set %s %s " % (self.Name, self.Name, self.getUpdateableProperty())
+		elif type == "dummy":
 			return "/fhem?XHR=1&cmd.%s=set %s %s " % (self.Name, self.Name, self.getUpdateableProperty())
 			
 	def getHMChannels(self):
