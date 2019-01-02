@@ -30,7 +30,8 @@ from Components.config import getConfigListEntry, ConfigEnableDisable, \
 from enigma import getDesktop, eTimer, eListbox, eLabel, eListboxPythonMultiContent, gFont, eRect, eSize, RT_HALIGN_LEFT, RT_HALIGN_RIGHT, RT_HALIGN_CENTER, RT_VALIGN_CENTER, RT_VALIGN_TOP, RT_WRAP, BT_SCALE
 from Components.GUIComponent import GUIComponent
 
-ELEMENTS = ["MAX","FHT","FS20","CUL_HM","IT","CUL_TX","CUL_WS","FBDECT","Weather","MQTT_DEVICE","MQTT2_DEVICE","DOIF","FRITZBOX","CUL","notify","AptToDate","GHoma","Hyperion","HUEDevice","dummy"] #actual supported types - leave as it is
+ELEMENTS = ["MAX","FHT","FS20","CUL_HM","IT","CUL_TX","CUL_WS","FBDECT","Weather","MQTT_DEVICE","MQTT2_DEVICE","DOIF","FRITZBOX","CUL","notify","AptToDate","GHoma","Hyperion","HUEDevice","dummy"] 
+ELEMENTS.extend(["ESPEasy","pilight_switch","pilight_temp"]) #actual supported types - leave as it is
 
 MAX_LIMITS = [5.0, 30.0]
 MAX_SPECIALS = ["eco","comfort","boost","auto","off","on"]
@@ -44,15 +45,12 @@ FS20_SPECIALS= ["off","on","dim06%","dim25%","dim50%","dim75%","dim100%"]
 CUL_HM_LIMITS = [6.0, 30.0]
 CUL_HM_SPECIALS = ["off","on"]
 
-FBDECT_SPECIALS = ["off","on","toggle","blink"]
-IT_SPECIALS = ["off","on"]
-MQTT_SPECIALS = ["off","on"]
-MQTT2_SPECIALS = ["off","on"]
-GHoma_SPECIALS = ["off","on"]
+BASIC_SPECIALS = ["off","on"]
 Hyperion_SPECIALS = ["off","on","dim06%","dim25%","dim50%","dim75%","dim100%"]
 HUEDevice_SPECIALS = ["off","on","dim06%","dim25%","dim50%","dim75%","dim100%","rgb ff0000","rgb DEFF26","rgb 0000ff","ct 490","ct 380","ct 270","ct 160"]
 DOIF_SPECIALS = ["cmd_2","cmd_1","cmd_3","cmd_4","cmd_5","cmd_6","cmd_7","cmd_8","disable","enable","initialize"]
 AptToDate_SPECIALS = ["repoSync"]
+DUMMY_VOLUME = ["0%","20%","40%","60%","80%","100%"]
 
 
 config.fhem = ConfigSubsection()
@@ -339,7 +337,7 @@ class MainScreen(Screen):
 					self["set_Title"].setText("Neuer Schaltstatus")
 					self["set_Text"].setText(selectedElement.getReadingState())
 			
-			elif selectedElement.getType() in ["CUL_TX"]:
+			elif selectedElement.getType() in ["CUL_TX","ESPEasy","pilight_temp"]:
 				self["titleDetails"].setText("Details für " + selectedElement.getAlias())
 				
 				list = []
@@ -366,7 +364,7 @@ class MainScreen(Screen):
 				self["set_Title"].setText("")
 				self["set_Text"].setText("")
 			
-			elif selectedElement.getType() in ["FS20", "FBDECT", "IT", "DOIF", "GHoma", "Hyperion", "HUEDevice", "dummy"]:
+			elif selectedElement.getType() in ["FS20", "IT", "DOIF", "GHoma", "Hyperion", "HUEDevice", "dummy", "pilight_switch"]:
 				self["titleDetails"].setText("Details für " + selectedElement.getAlias())
 				
 				list = []
@@ -385,6 +383,22 @@ class MainScreen(Screen):
 				list.append((["Leistung:",selectedElement.getENERGYPower() + " W"],))
 				list.append((["Energie heute:",selectedElement.getENERGYToday() + " kWh"],))
 				list.append((["Energie insgesamt:",selectedElement.getENERGYTotal() + " kWh"],))
+				list.append((["Present:",selectedElement.getPresent()],))
+				self["details"].setList(list, 3)
+				
+				self["set_Title"].setText("Neuer Schaltstatus")
+				self["set_Text"].setText(selectedElement.getReadingState())
+			
+			elif selectedElement.getType() in ["FBDECT"]:
+				self["titleDetails"].setText("Details für " + selectedElement.getAlias())
+				
+				list = []
+				list.append((["Einschaltstatus:",selectedElement.getReadingState()],))
+				list.append((["Mode:",selectedElement.getControlmode()],))
+				list.append((["Leistung:",selectedElement.getENERGYPower()],))
+				list.append((["Energie insgesamt:",selectedElement.getENERGYTotal()],))
+				list.append((["Temperatur:",selectedElement.getMeasuredTemp() + " °C"],))
+				list.append((["Present:",selectedElement.getPresent()],))
 				self["details"].setList(list, 3)
 				
 				self["set_Title"].setText("Neuer Schaltstatus")
@@ -649,10 +663,14 @@ class FHEMElement(object):
 			return Hyperion_SPECIALS
 		elif self.getType() == "HUEDevice":
 			return HUEDevice_SPECIALS
+		elif self.getType() == "dummy" and self.getSetlistslider() == "state:slider,0,1,100":
+			return DUMMY_VOLUME
 		elif self.getType() == "dummy" and self.getWebcmdstate() == "state":
 			return self.getSetlist()
 		elif self.getType() == "dummy":	
 			return self.getWebcmd()
+		elif self.getType() == "pilight_switch":
+			return BASIC_SPECIALS
 		else:
 			return ["0"]
 	
@@ -737,7 +755,11 @@ class FHEMElement(object):
 			elif type in ["CUL_WS"] and self.getSubType() == "THSensor":
 				return str(self.Data["Readings"]["humidity"]["Value"])
 			elif type in ["Weather"]:
-				return str(self.Data["Readings"]["humidity"]["Value"])	
+				return str(self.Data["Readings"]["humidity"]["Value"])
+			elif type in ["ESPEasy"]:
+				return str(self.Data["Readings"]["humidity"]["Value"])
+			elif type in ["pilight_temp"]:
+				return str(self.Data["Readings"]["humidity"]["Value"])
 			elif type in ["MAX"]:
 				return "no prop"
 			else: 
@@ -764,6 +786,10 @@ class FHEMElement(object):
 			elif type in ["Weather"]:
 				retval = str(self.Data["Readings"]["temperature"]["Value"])	
 			elif type in ["MAX"]:
+				retval = str(self.Data["Readings"]["temperature"]["Value"])
+			elif type in ["ESPEasy"]:
+				retval = str(self.Data["Readings"]["temperature"]["Value"])
+			elif type in ["pilight_temp"]:
 				retval = str(self.Data["Readings"]["temperature"]["Value"])
 			else: 
 				retval = "0.0"
@@ -929,6 +955,12 @@ class FHEMElement(object):
 			elif type == "HUEDevice":
 				return str(self.Data["Readings"]["state"]["Value"])
 			elif type == "dummy":
+				return str(self.Data["Readings"]["state"]["Value"])
+			elif type == "ESPEasy":
+				return str(self.Data["Readings"]["state"]["Value"])
+			elif type == "pilight_temp":
+				return str(self.Data["Readings"]["state"]["Value"])
+			elif type == "pilight_switch":
 				return str(self.Data["Readings"]["state"]["Value"])
 			else: 
 				return ""
@@ -1099,6 +1131,8 @@ class FHEMElement(object):
 			return ""
 		elif type == "dummy":
 			return ""
+		elif type == "pilight_switch":
+			return ""
 		
 	def getUpdateCommand(self):
 		type = self.getType()
@@ -1133,6 +1167,8 @@ class FHEMElement(object):
 		elif type == "HUEDevice":
 			return "/fhem?XHR=1&cmd.%s=set %s %s " % (self.Name, self.Name, self.getUpdateableProperty())
 		elif type == "dummy":
+			return "/fhem?XHR=1&cmd.%s=set %s %s " % (self.Name, self.Name, self.getUpdateableProperty())
+		elif type == "pilight_switch":
 			return "/fhem?XHR=1&cmd.%s=set %s %s " % (self.Name, self.Name, self.getUpdateableProperty())
 			
 	def getHMChannels(self):
