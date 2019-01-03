@@ -648,7 +648,7 @@ class FHEMElement(object):
 		elif self.getType() == "FS20":
 			return FS20_SPECIALS
 		elif self.getType() == "FBDECT":
-			return FBDECT_SPECIALS
+			return BASIC_SPECIALS
 		elif self.getType() == "MQTT_DEVICE":
 			return MQTT_SPECIALS
 		elif self.getType() == "MQTT2_DEVICE":
