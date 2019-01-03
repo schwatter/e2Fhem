@@ -791,6 +791,8 @@ class FHEMElement(object):
 				retval = str(self.Data["Readings"]["temperature"]["Value"])
 			elif type in ["pilight_temp"]:
 				retval = str(self.Data["Readings"]["temperature"]["Value"])
+			elif type in ["FBDECT"]:
+				retval = str(self.Data["Readings"]["temperature"]["Value"]).replace('C','')
 			else: 
 				retval = "0.0"
 				
@@ -839,12 +841,14 @@ class FHEMElement(object):
 		except:
 			return "no prop"
 	
-	def getPowerstate(self):
+	def getPresent(self):
 		type = self.getType()
 		try:
 			retval = ""
-			if type in ["CUL_HM"] and self.getSubType() == "switch":
-				retval = str(self.Data["Readings"]["state"]["Value"])
+			if type in ["MQTT2_DEVICE"]:
+				retval = str(self.Data["Readings"]["LWT"]["Value"])
+			elif type in ["FBDECT"]:
+				return str(self.Data["Readings"]["present"]["Value"])
 			else: 
 				retval = "0.0"
 				
@@ -858,6 +862,8 @@ class FHEMElement(object):
 		try:
 			if type in ["FHT","CUL_HM","MAX"]:
 				return str(self.Data["Readings"]["powerOn"]["Value"])
+			elif type in ["FBDECT"]:
+				return str(self.Data["Readings"]["mode"]["Value"])
 			else: 
 				return "no def"
 		except:
@@ -1006,6 +1012,8 @@ class FHEMElement(object):
 				return str(self.Data["Readings"]["ENERGY_Power"]["Value"])
 			elif type == "MQTT_DEVICE":
 				return str(self.Data["Readings"]["ENERGY_Power"]["Value"])
+			elif type == "FBDECT":
+				return str(self.Data["Readings"]["power"]["Value"])
 			else: 
 				return ""
 		except:
@@ -1029,7 +1037,9 @@ class FHEMElement(object):
 			if type == "MQTT2_DEVICE":
 				return str(self.Data["Readings"]["ENERGY_Total"]["Value"])
 			elif type == "MQTT_DEVICE":
-				return str(self.Data["Readings"]["ENERGY_Total"]["Value"])	
+				return str(self.Data["Readings"]["ENERGY_Total"]["Value"])
+			elif type == "FBDECT":
+				return str(self.Data["Readings"]["energy"]["Value"])
 			else: 
 				return ""
 		except:
