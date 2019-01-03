@@ -11,14 +11,6 @@ Thx Waldmensch for initial setup
 
 - Disable csrfToken.
 - Don't use unusual stateFormat's.
-- For https change:
-
-> conn = httplib.HTTPConnection(self.Address)
-
-  to
-
-> conn = httpslib.HTTPConnection(self.Address)
-  
 - sometimes at the first setup, there are problems with login details, so:
 
 > Telnet Vu+
