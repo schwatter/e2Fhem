@@ -30,8 +30,9 @@ from Components.config import getConfigListEntry, ConfigEnableDisable, \
 from enigma import getDesktop, eTimer, eListbox, eLabel, eListboxPythonMultiContent, gFont, eRect, eSize, RT_HALIGN_LEFT, RT_HALIGN_RIGHT, RT_HALIGN_CENTER, RT_VALIGN_CENTER, RT_VALIGN_TOP, RT_WRAP, BT_SCALE
 from Components.GUIComponent import GUIComponent
 
-ELEMENTS = ["MAX","FHT","FS20","CUL_HM","IT","CUL_TX","CUL_WS","FBDECT","Weather","MQTT_DEVICE","MQTT2_DEVICE","DOIF","FRITZBOX","CUL","notify","AptToDate","GHoma","Hyperion","HUEDevice","dummy"] 
-ELEMENTS.extend(["ESPEasy","pilight_switch","pilight_temp"]) #actual supported types - leave as it is
+d1 = ["MAX","FHT","FS20","CUL_HM","IT","CUL_TX","CUL_WS","FBDECT","Weather","MQTT_DEVICE","MQTT2_DEVICE","DOIF","FRITZBOX"]  #actual supported types - leave as it is
+d2 = ["CUL","notify","AptToDate","GHoma","Hyperion","HUEDevice","dummy","ESPEasy","pilight_switch","pilight_temp"]
+ELEMENTS = d1 +d2 
 
 MAX_LIMITS = [5.0, 30.0]
 MAX_SPECIALS = ["eco","comfort","boost","auto","off","on"]
