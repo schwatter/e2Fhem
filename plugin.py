@@ -49,8 +49,6 @@ CUL_HM_SPECIALS = ["off","on"]
 BASIC_SPECIALS = ["off","on"]
 Hyperion_SPECIALS = ["off","on","dim06%","dim25%","dim50%","dim75%","dim100%"]
 HUEDevice_SPECIALS = ["off","on","dim06%","dim25%","dim50%","dim75%","dim100%","rgb ff0000","rgb DEFF26","rgb 0000ff","ct 490","ct 380","ct 270","ct 160"]
-DOIF_SPECIALS = ["cmd_2","cmd_1","cmd_3","cmd_4","cmd_5","cmd_6","cmd_7","cmd_8","disable","enable","initialize"]
-AptToDate_SPECIALS = ["repoSync"]
 DUMMY_VOLUME = ["0%","20%","40%","60%","80%","100%"]
 
 
@@ -655,9 +653,9 @@ class FHEMElement(object):
 		elif self.getType() == "MQTT2_DEVICE":
 			return MQTT2_SPECIALS
 		elif self.getType() == "DOIF":
-			return DOIF_SPECIALS
+			return self.getPossibleSets()
 		elif self.getType() == "AptToDate":
-			return AptToDate_SPECIALS
+			return self.getPossibleSets()
 		elif self.getType() == "GHoma":
 			return GHoma_SPECIALS
 		elif self.getType() == "Hyperion":
@@ -708,6 +706,12 @@ class FHEMElement(object):
 	def getWebcmdstate(self):
 		try:
 			return str(self.Data["Attributes"]["webCmd"])
+		except:
+			return ('')
+		
+	def getPossibleSets(self):
+		try:
+			return str(self.Data["PossibleSets"]).replace(':noArg',' ').split()
 		except:
 			return ('')
 
@@ -1041,16 +1045,6 @@ class FHEMElement(object):
 				return str(self.Data["Readings"]["ENERGY_Total"]["Value"])
 			elif type == "FBDECT":
 				return str(self.Data["Readings"]["energy"]["Value"])
-			else: 
-				return ""
-		except:
-			return "no prop"
-	
-	def getDoifSpecials(self):
-		type = self.getType()
-		try:
-			if type == "DOIF":
-				return str(self.Data["Attributes"]["cmdState"]["Value"])
 			else: 
 				return ""
 		except:
