@@ -38,13 +38,11 @@ MAX_LIMITS = [5.0, 30.0]
 MAX_SPECIALS = ["eco","comfort","boost","auto","off","on"]
 
 FHT_LIMITS = [6.0, 30.0]
-FHT_SPECIALS = ["off","on"]
 
 FS20_LIMITS = [6.0, 30.0]
 FS20_SPECIALS= ["off","on","dim06%","dim25%","dim50%","dim75%","dim100%"]
 
 CUL_HM_LIMITS = [6.0, 30.0]
-CUL_HM_SPECIALS = ["off","on"]
 
 BASIC_SPECIALS = ["off","on"]
 Hyperion_SPECIALS = ["off","on","dim06%","dim25%","dim50%","dim75%","dim100%"]
@@ -637,13 +635,13 @@ class FHEMElement(object):
 	def getSpecials(self):
 		print "FHEM-debug: %s -- %s" % ("getSpecials", self.getType())
 		if self.getType() == "FHT":
-			return FHT_SPECIALS
+			return BASIC_SPECIALS
 		elif self.getType() == "IT":
 			return IT_SPECIALS
 		elif self.getType() == "MAX":
 			return MAX_SPECIALS
 		elif self.getType() == "CUL_HM":
-			return CUL_HM_SPECIALS
+			return BASIC_SPECIALS
 		elif self.getType() == "FS20":
 			return FS20_SPECIALS
 		elif self.getType() == "FBDECT":
