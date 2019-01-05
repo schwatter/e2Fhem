@@ -27,7 +27,7 @@ from Components.config import getConfigListEntry, ConfigEnableDisable, \
 	ConfigYesNo, ConfigText, ConfigClock, ConfigNumber, ConfigSelection, \
 	ConfigDateTime, config, NoSave, ConfigSubsection, ConfigInteger, ConfigIP, configfile
 	
-from enigma import getDesktop, eTimer, eListbox, eLabel, eListboxPythonMultiContent, gFont, eRect, eSize, RT_HALIGN_LEFT, RT_HALIGN_RIGHT, RT_HALIGN_CENTER, RT_VALIGN_CENTER, RT_VALIGN_TOP, RT_WRAP, BT_SCALE
+from enigma import getDesktop, eTimer, eListbox, eLabel, eListboxPythonMultiContent, gFont, eRect, eSize, RT_HALIGN_LEFT, RT_HALIGN_RIGHT, RT_HALIGN_CENTER
 from Components.GUIComponent import GUIComponent
 
 d1 = ["MAX","FHT","FS20","CUL_HM","IT","CUL_TX","CUL_WS","FBDECT","Weather","MQTT_DEVICE","MQTT2_DEVICE","DOIF","FRITZBOX"]  #actual supported types - leave as it is
