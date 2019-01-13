@@ -31,40 +31,40 @@ from enigma import getDesktop, eTimer, eListbox, eLabel, eListboxPythonMultiCont
 from Components.GUIComponent import GUIComponent
 from time import localtime
 
-d1 = ["MAX","FHT","FS20","CUL_HM","IT","CUL_TX","CUL_WS","FBDECT","Weather","MQTT_DEVICE","MQTT2_DEVICE","DOIF","FRITZBOX"]  #actual supported types - leave as it is
-d2 = ["CUL","notify","AptToDate","GHoma","Hyperion","HUEDevice","dummy","ESPEasy","pilight_switch","pilight_temp"]
+d1 = ['MAX','FHT','FS20','CUL_HM','IT','CUL_TX','CUL_WS','FBDECT','Weather','MQTT_DEVICE','MQTT2_DEVICE','DOIF','FRITZBOX']  #actual supported types - leave as it is
+d2 = ['CUL','notify','AptToDate','GHoma','Hyperion','HUEDevice','dummy','ESPEasy','pilight_switch','pilight_temp']
 ELEMENTS = d1 +d2
 
 fhemlog = '/usr/lib/enigma2/python/Plugins/Extensions/fhem/fhem.log'
 
 MAX_LIMITS = [5.0, 30.0]
-MAX_SPECIALS = ["eco","comfort","boost","auto","off","on"]
+MAX_SPECIALS = ['eco','comfort','boost','auto','off','on']
 
 FHT_LIMITS = [6.0, 30.0]
 
 FS20_LIMITS = [6.0, 30.0]
-FS20_SPECIALS= ["off","on","dim06%","dim25%","dim50%","dim75%","dim100%"]
+FS20_SPECIALS= ['off','on','dim06%','dim25%','dim50%','dim75%','dim100%']
 
 CUL_HM_LIMITS = [6.0, 30.0]
 
-BASIC_SPECIALS = ["off","on"]
-Hyperion_SPECIALS = ["off","on","dim06%","dim25%","dim50%","dim75%","dim100%"]
-HUEDevice_SPECIALS = ["off","on","dim06%","dim25%","dim50%","dim75%","dim100%","rgb ff0000","rgb DEFF26","rgb 0000ff","ct 490","ct 380","ct 270","ct 160"]
-DUMMY_VOLUME = ["0%","20%","40%","60%","80%","100%"]
+BASIC_SPECIALS = ['off','on']
+Hyperion_SPECIALS = ['off','on','dim06%','dim25%','dim50%','dim75%','dim100%']
+HUEDevice_SPECIALS = ['off','on','dim06%','dim25%','dim50%','dim75%','dim100%','rgb ff0000','rgb DEFF26','rgb 0000ff','ct 490','ct 380','ct 270','ct 160']
+DUMMY_VOLUME = ['0%','20%','40%','60%','80%','100%']
 
 
 config.fhem = ConfigSubsection()
-config.fhem.httpresponse = ConfigSelection(default="Http", choices = [("Http", _("Http")), ("Https", _("Https"))])
+config.fhem.httpresponse = ConfigSelection(default='Http', choices = [('Http', _('Http')), ('Https', _('Https'))])
 config.fhem.serverip = ConfigIP(default = [0,0,0,0])
 config.fhem.port = ConfigInteger(default=8083, limits=(8000, 9000))
-config.fhem.username = ConfigText(default="yourName")
-config.fhem.password = ConfigText(default="yourPass")
-config.fhem.grouping = ConfigSelection(default="ROOM", choices = [("TYPE", _("Type")), ("ROOM", _("Room"))])
-config.fhem.logfileswitch = ConfigSelection(default="Off", choices = [("On", _("On")), ("Off", _("Off"))])
+config.fhem.username = ConfigText(default='yourName')
+config.fhem.password = ConfigText(default='yourPass')
+config.fhem.grouping = ConfigSelection(default='ROOM', choices = [('TYPE', _('Type')), ('ROOM', _('Room'))])
+config.fhem.logfileswitch = ConfigSelection(default='Off', choices = [('On', _('On')), ('Off', _('Off'))])
 
 def writeLog(svalue):
 	lswitch = str(config.fhem.logfileswitch.value)
-	if lswitch == "On":
+	if lswitch == 'On':
 		try:
 			te = localtime()
 			logtime = '%02d:%02d:%02d' % (te.tm_hour, te.tm_min, te.tm_sec)
@@ -78,77 +78,77 @@ def writeLog(svalue):
 class MainScreen(Screen):
 	desktopSize = getDesktop(0).size()
 	if desktopSize.width() >= 1920:
-		skin = """
-		<screen position="300,645" size="1390,430" name="fhem" title="FHEM Haussteuerung" >
-			<widget name="titleMenu1" position="10,20" size="150,30" valign="center" halign="left" font="Regular;30"/>
-			<eLabel name="bgMenu1" position="9,49" size="252,334" backgroundColor="#808080" zPosition="0"/>
-			<widget name="Menu1" position="10,50" size="250,332" scrollbarMode="showOnDemand" zPosition="1"/>
-			<widget name="titleMenu2" position="280,20" size="150,30" valign="center" halign="left" font="Regular;30"/>
-			<eLabel name="bgMenu2" position="279,49" size="502,334" backgroundColor="#808080" zPosition="0"/>
-			<widget name="Menu2" position="280,50" size="500,332" scrollbarMode="showOnDemand" zPosition="1"/>
-			<widget name="titleDetails" position="800,20" size="580,30" valign="center" halign="left" font="Regular;30"/>
-			<eLabel name="bgDetails" position="799,49" size="582,182" backgroundColor="#808080" zPosition="0"/>
-			<widget name="details" position="800,50" size="580,180" zPosition="1"/>
-			<eLabel name="bgSetBox" position="799,259" size="582,122" backgroundColor="#808080" zPosition="0"/>
-			<widget name="set_Title" position="800,260" size="580,40" valign="center" halign="center" font="Regular;25" zPosition="1"/>
-			<widget name="set_ArrowLeft" position="800,301" size="100,79" valign="center" halign="center" font="Regular;30" zPosition="1"/>
-			<widget name="set_Text" position="900,301" size="380,79" valign="center" halign="center" font="Regular;30" zPosition="1"/>
-			<widget name="set_ArrowRight" position="1280,301" size="100,79" valign="center" halign="center" font="Regular;30" zPosition="1"/>
-			<widget name="spinner" position="600,390" size="140,40" valign="center" halign="right" font="Regular;25" foregroundColor="white" zPosition="1"/>
-			<ePixmap position="10,390" size="140,40" pixmap="skin_default/buttons/red.png" transparent="1" alphatest="on" />
-			<ePixmap position="150,390" size="140,40" pixmap="skin_default/buttons/green.png" transparent="1" alphatest="on" />
-			<ePixmap position="290,390" size="140,40" pixmap="skin_default/buttons/yellow.png" transparent="1" alphatest="on" />
-			<ePixmap position="430,390" size="140,40" pixmap="skin_default/buttons/blue.png" transparent="1" alphatest="on" />
-			<widget source="key_red" render="Label" position="10,390" zPosition="1" size="140,40" valign="center" halign="center" font="Regular;21" transparent="1" foregroundColor="white" shadowColor="black" shadowOffset="-1,-1" />
-			<widget source="key_green" render="Label" position="150,390" zPosition="1" size="140,40" valign="center" halign="center" font="Regular;21" transparent="1" foregroundColor="white" shadowColor="black" shadowOffset="-1,-1" />
-			<widget source="key_yellow" render="Label" position="290,390" zPosition="1" size="140,40" valign="center" halign="center" font="Regular;21" transparent="1" foregroundColor="white" shadowColor="black" shadowOffset="-1,-1" />
-			<widget source="key_blue" render="Label" position="430,390" zPosition="1" size="140,40" valign="center" halign="center" font="Regular;21" transparent="1" foregroundColor="white" shadowColor="black" shadowOffset="-1,-1" />
-			<widget backgroundColor="#808080" font="Regular; 22" position="830,395" render="Label" size="180,25" source="global.CurrentTime" transparent="1" valign="bottom" halign="right" zPosition="3" foregroundColor="white">
-				<convert type="ClockToText">Format:%A,</convert>
+		skin = '''
+		<screen position='300,645' size='1390,430' name='fhem' title='FHEM Haussteuerung' >
+			<widget name='titleMenu1' position='10,20' size='150,30' valign='center' halign='left' font='Regular;30'/>
+			<eLabel name='bgMenu1' position='9,49' size='252,334' backgroundColor='#808080' zPosition='0'/>
+			<widget name='Menu1' position='10,50' size='250,332' scrollbarMode='showOnDemand' zPosition='1'/>
+			<widget name='titleMenu2' position='280,20' size='150,30' valign='center' halign='left' font='Regular;30'/>
+			<eLabel name='bgMenu2' position='279,49' size='502,334' backgroundColor='#808080' zPosition='0'/>
+			<widget name='Menu2' position='280,50' size='500,332' scrollbarMode='showOnDemand' zPosition='1'/>
+			<widget name='titleDetails' position='800,20' size='580,30' valign='center' halign='left' font='Regular;30'/>
+			<eLabel name='bgDetails' position='799,49' size='582,182' backgroundColor='#808080' zPosition='0'/>
+			<widget name='details' position='800,50' size='580,180' zPosition='1'/>
+			<eLabel name='bgSetBox' position='799,259' size='582,122' backgroundColor='#808080' zPosition='0'/>
+			<widget name='set_Title' position='800,260' size='580,40' valign='center' halign='center' font='Regular;25' zPosition='1'/>
+			<widget name='set_ArrowLeft' position='800,301' size='100,79' valign='center' halign='center' font='Regular;30' zPosition='1'/>
+			<widget name='set_Text' position='900,301' size='380,79' valign='center' halign='center' font='Regular;30' zPosition='1'/>
+			<widget name='set_ArrowRight' position='1280,301' size='100,79' valign='center' halign='center' font='Regular;30' zPosition='1'/>
+			<widget name='spinner' position='600,390' size='140,40' valign='center' halign='right' font='Regular;25' foregroundColor='white' zPosition='1'/>
+			<ePixmap position='10,390' size='140,40' pixmap='skin_default/buttons/red.png' transparent='1' alphatest='on' />
+			<ePixmap position='150,390' size='140,40' pixmap='skin_default/buttons/green.png' transparent='1' alphatest='on' />
+			<ePixmap position='290,390' size='140,40' pixmap='skin_default/buttons/yellow.png' transparent='1' alphatest='on' />
+			<ePixmap position='430,390' size='140,40' pixmap='skin_default/buttons/blue.png' transparent='1' alphatest='on' />
+			<widget source='key_red' render='Label' position='10,390' zPosition='1' size='140,40' valign='center' halign='center' font='Regular;21' transparent='1' foregroundColor='white' shadowColor='black' shadowOffset='-1,-1' />
+			<widget source='key_green' render='Label' position='150,390' zPosition='1' size='140,40' valign='center' halign='center' font='Regular;21' transparent='1' foregroundColor='white' shadowColor='black' shadowOffset='-1,-1' />
+			<widget source='key_yellow' render='Label' position='290,390' zPosition='1' size='140,40' valign='center' halign='center' font='Regular;21' transparent='1' foregroundColor='white' shadowColor='black' shadowOffset='-1,-1' />
+			<widget source='key_blue' render='Label' position='430,390' zPosition='1' size='140,40' valign='center' halign='center' font='Regular;21' transparent='1' foregroundColor='white' shadowColor='black' shadowOffset='-1,-1' />
+			<widget backgroundColor='#808080' font='Regular; 22' position='830,395' render='Label' size='180,25' source='global.CurrentTime' transparent='1' valign='bottom' halign='right' zPosition='3' foregroundColor='white'>
+				<convert type='ClockToText'>Format:%A,</convert>
 			</widget>
-			<widget backgroundColor="#808080" font="Regular; 22" position="1030,395" render="Label" size="180,25" source="global.CurrentTime" transparent="1" valign="bottom" halign="left" zPosition="3" foregroundColor="white">
-				<convert type="ClockToText">Format:%d. %B -</convert>
+			<widget backgroundColor='#808080' font='Regular; 22' position='1030,395' render='Label' size='180,25' source='global.CurrentTime' transparent='1' valign='bottom' halign='left' zPosition='3' foregroundColor='white'>
+				<convert type='ClockToText'>Format:%d. %B -</convert>
 			</widget>
-			<widget source="global.CurrentTime" render="Label" position="1200,395" size="190,50" font="Regular; 22" halign="left" valign="top" foregroundColor="white" backgroundColor="#808080" transparent="1">
-				<convert type="ClockToText">WithSeconds</convert>
+			<widget source='global.CurrentTime' render='Label' position='1200,395' size='190,50' font='Regular; 22' halign='left' valign='top' foregroundColor='white' backgroundColor='#808080' transparent='1'>
+				<convert type='ClockToText'>WithSeconds</convert>
 			</widget>
-		</screen>"""
+		</screen>'''
 	else:
-		skin = """
-		<screen position="5,265" size="1270,450" name="fhem" title="FHEM Haussteuerung" >
-			<widget name="titleMenu1" position="10,20" size="150,25" valign="center" halign="left" font="Regular;25"/>
-			<eLabel name="bgMenu1" position="9,49" size="252,337" backgroundColor="#808080" zPosition="0"/>
-			<widget name="Menu1" position="10,50" size="250,335" scrollbarMode="showOnDemand" zPosition="1"/>
-			<widget name="titleMenu2" position="280,20" size="150,25" valign="center" halign="left" font="Regular;25"/>
-			<eLabel name="bgMenu2" position="279,49" size="502,337" backgroundColor="#808080" zPosition="0"/>
-			<widget name="Menu2" position="280,50" size="500,335" scrollbarMode="showOnDemand" zPosition="1"/>
-			<widget name="titleDetails" position="800,20" size="460,25" valign="center" halign="left" font="Regular;25"/>
-			<eLabel name="bgDetails" position="799,49" size="462,202" backgroundColor="#808080" zPosition="0"/>
-			<widget name="details" position="800,50" size="460,200" zPosition="1"/>
-			<eLabel name="bgSetBox" position="799,279" size="462,122" backgroundColor="#808080" zPosition="0"/>
-			<widget name="set_Title" position="800,280" size="460,40" valign="center" halign="center" font="Regular;25" zPosition="1"/>
-			<widget name="set_ArrowLeft" position="800,321" size="100,79" valign="center" halign="center" font="Regular;25" zPosition="1"/>
-			<widget name="set_Text" position="880,321" size="300,79" valign="center" halign="center" font="Regular;25" zPosition="1"/>
-			<widget name="set_ArrowRight" position="1160,321" size="100,79" valign="center" halign="center" font="Regular;25" zPosition="1"/>
-			<widget name="spinner" position="600,410" size="140,40" valign="center" halign="right" font="Regular;25" foregroundColor="white" zPosition="1"/>
-			<ePixmap position="10,410" size="140,40" pixmap="skin_default/buttons/red.png" transparent="1" alphatest="on" />
-			<ePixmap position="150,410" size="140,40" pixmap="skin_default/buttons/green.png" transparent="1" alphatest="on" />
-			<ePixmap position="290,410" size="140,40" pixmap="skin_default/buttons/yellow.png" transparent="1" alphatest="on" />
-			<ePixmap position="430,410" size="140,40" pixmap="skin_default/buttons/blue.png" transparent="1" alphatest="on" />
-			<widget source="key_red" render="Label" position="10,410" zPosition="1" size="140,40" valign="center" halign="center" font="Regular;21" transparent="1" foregroundColor="white" shadowColor="black" shadowOffset="-1,-1" />
-			<widget source="key_green" render="Label" position="150,410" zPosition="1" size="140,40" valign="center" halign="center" font="Regular;21" transparent="1" foregroundColor="white" shadowColor="black" shadowOffset="-1,-1" />
-			<widget source="key_yellow" render="Label" position="290,410" zPosition="1" size="140,40" valign="center" halign="center" font="Regular;21" transparent="1" foregroundColor="white" shadowColor="black" shadowOffset="-1,-1" />
-			<widget source="key_blue" render="Label" position="430,410" zPosition="1" size="140,40" valign="center" halign="center" font="Regular;21" transparent="1" foregroundColor="white" shadowColor="black" shadowOffset="-1,-1" />
-			<widget backgroundColor="#808080" font="Regular; 22" position="780,415" render="Label" size="180,25" source="global.CurrentTime" transparent="1" valign="bottom" halign="right" zPosition="3" foregroundColor="white">
-				<convert type="ClockToText">Format:%A,</convert>
+		skin = '''
+		<screen position='5,265' size='1270,450' name='fhem' title='FHEM Haussteuerung' >
+			<widget name='titleMenu1' position='10,20' size='150,25' valign='center' halign='left' font='Regular;25'/>
+			<eLabel name='bgMenu1' position='9,49' size='252,337' backgroundColor='#808080' zPosition='0'/>
+			<widget name='Menu1' position='10,50' size='250,335' scrollbarMode='showOnDemand' zPosition='1'/>
+			<widget name='titleMenu2' position='280,20' size='150,25' valign='center' halign='left' font='Regular;25'/>
+			<eLabel name='bgMenu2' position='279,49' size='502,337' backgroundColor='#808080' zPosition='0'/>
+			<widget name='Menu2' position='280,50' size='500,335' scrollbarMode='showOnDemand' zPosition='1'/>
+			<widget name='titleDetails' position='800,20' size='460,25' valign='center' halign='left' font='Regular;25'/>
+			<eLabel name='bgDetails' position='799,49' size='462,202' backgroundColor='#808080' zPosition='0'/>
+			<widget name='details' position='800,50' size='460,200' zPosition='1'/>
+			<eLabel name='bgSetBox' position='799,279' size='462,122' backgroundColor='#808080' zPosition='0'/>
+			<widget name='set_Title' position='800,280' size='460,40' valign='center' halign='center' font='Regular;25' zPosition='1'/>
+			<widget name='set_ArrowLeft' position='800,321' size='100,79' valign='center' halign='center' font='Regular;25' zPosition='1'/>
+			<widget name='set_Text' position='880,321' size='300,79' valign='center' halign='center' font='Regular;25' zPosition='1'/>
+			<widget name='set_ArrowRight' position='1160,321' size='100,79' valign='center' halign='center' font='Regular;25' zPosition='1'/>
+			<widget name='spinner' position='600,410' size='140,40' valign='center' halign='right' font='Regular;25' foregroundColor='white' zPosition='1'/>
+			<ePixmap position='10,410' size='140,40' pixmap='skin_default/buttons/red.png' transparent='1' alphatest='on' />
+			<ePixmap position='150,410' size='140,40' pixmap='skin_default/buttons/green.png' transparent='1' alphatest='on' />
+			<ePixmap position='290,410' size='140,40' pixmap='skin_default/buttons/yellow.png' transparent='1' alphatest='on' />
+			<ePixmap position='430,410' size='140,40' pixmap='skin_default/buttons/blue.png' transparent='1' alphatest='on' />
+			<widget source='key_red' render='Label' position='10,410' zPosition='1' size='140,40' valign='center' halign='center' font='Regular;21' transparent='1' foregroundColor='white' shadowColor='black' shadowOffset='-1,-1' />
+			<widget source='key_green' render='Label' position='150,410' zPosition='1' size='140,40' valign='center' halign='center' font='Regular;21' transparent='1' foregroundColor='white' shadowColor='black' shadowOffset='-1,-1' />
+			<widget source='key_yellow' render='Label' position='290,410' zPosition='1' size='140,40' valign='center' halign='center' font='Regular;21' transparent='1' foregroundColor='white' shadowColor='black' shadowOffset='-1,-1' />
+			<widget source='key_blue' render='Label' position='430,410' zPosition='1' size='140,40' valign='center' halign='center' font='Regular;21' transparent='1' foregroundColor='white' shadowColor='black' shadowOffset='-1,-1' />
+			<widget backgroundColor='#808080' font='Regular; 22' position='780,415' render='Label' size='180,25' source='global.CurrentTime' transparent='1' valign='bottom' halign='right' zPosition='3' foregroundColor='white'>
+				<convert type='ClockToText'>Format:%A,</convert>
 			</widget>
-			<widget backgroundColor="#808080" font="Regular; 22" position="970,415" render="Label" size="180,25" source="global.CurrentTime" transparent="1" valign="bottom" halign="left" zPosition="3" foregroundColor="white">
-				<convert type="ClockToText">Format:%d. %B -</convert>
+			<widget backgroundColor='#808080' font='Regular; 22' position='970,415' render='Label' size='180,25' source='global.CurrentTime' transparent='1' valign='bottom' halign='left' zPosition='3' foregroundColor='white'>
+				<convert type='ClockToText'>Format:%d. %B -</convert>
 			</widget>
-			<widget source="global.CurrentTime" render="Label" position="1095,415" size="190,50" font="Regular; 22" halign="left" valign="top" foregroundColor="white" backgroundColor="#808080" transparent="1">
-				<convert type="ClockToText">WithSeconds</convert>
+			<widget source='global.CurrentTime' render='Label' position='1095,415' size='190,50' font='Regular; 22' halign='left' valign='top' foregroundColor='white' backgroundColor='#808080' transparent='1'>
+				<convert type='ClockToText'>WithSeconds</convert>
 			</widget>
-		</screen>"""
+		</screen>'''
 		
 
 	def __init__(self, session, args = None):
@@ -158,23 +158,23 @@ class MainScreen(Screen):
 		self.onLayoutFinish.append(self.startRun)
 		self.grouping = str(config.fhem.grouping.value)
 		
-		self["set_Title"] = Label("Neue Solltemperatur")
-		self["set_ArrowLeft"] = Label("<")
-		self["set_ArrowRight"] = Label(">")
-		self["set_Text"] = Label()
-		self["details"] = ElementList()
-		self["titleMenu1"] = Label()
-		self["titleMenu2"] = Label("Element")
-		self["titleDetails"] = Label()
-		self["spinner"] = Label("")
+		self['set_Title'] = Label('Neue Solltemperatur')
+		self['set_ArrowLeft'] = Label('<')
+		self['set_ArrowRight'] = Label('>')
+		self['set_Text'] = Label()
+		self['details'] = ElementList()
+		self['titleMenu1'] = Label()
+		self['titleMenu2'] = Label('Element')
+		self['titleDetails'] = Label()
+		self['spinner'] = Label('')
 		
-		self["Menu2"] = ElementList() 
-		self["Menu2"].connectSelChanged(self.selChanged)
-		self["Menu2"].selectionEnabled(0)
-		self["Menu1"] = ElementList()
-		self["Menu1"].connectSelChanged(self.selChanged)
-		self["Menu1"].selectionEnabled(1)
-		self.selectedListObject = self["Menu1"]
+		self['Menu2'] = ElementList() 
+		self['Menu2'].connectSelChanged(self.selChanged)
+		self['Menu2'].selectionEnabled(0)
+		self['Menu1'] = ElementList()
+		self['Menu1'].connectSelChanged(self.selChanged)
+		self['Menu1'].selectionEnabled(1)
+		self.selectedListObject = self['Menu1']
 		self.selList = 0
 		
 		self.listSelTimer = eTimer()
@@ -191,29 +191,29 @@ class MainScreen(Screen):
 		self.threadIsRunning = False
 		
 		# Initialize Buttons
-		self["key_red"] = StaticText(_("Exit"))
-		self["key_green"] = StaticText(_("Transmit"))
-		self["key_yellow"] = StaticText(_("Refresh"))
- 		self["key_blue"] = StaticText(_("Setup"))
+		self['key_red'] = StaticText(_('Exit'))
+		self['key_green'] = StaticText(_('Transmit'))
+		self['key_yellow'] = StaticText(_('Refresh'))
+ 		self['key_blue'] = StaticText(_('Setup'))
 		
-		self["actions"] = ActionMap(["FHEM_Actions"],
+		self['actions'] = ActionMap(['FHEM_Actions'],
 		{
-				"key_ok": self.key_ok_Handler,
-				"key_num_left": self.key_num_left_Handler,
-				"key_num_right": self.key_num_right_Handler,
-				"key_channel_down": self.key_num_left_Handler,
-				"key_channel_up": self.key_num_right_Handler,
-				"key_0": self.key_0_Handler,
-				"key_green": self.key_green_Handler,
-				"key_yellow": self.key_yellow_Handler,
-				"key_blue": self.key_menu_Handler,
-				"key_red": self.close,
-				"key_menu": self.key_menu_Handler,
-				"key_cancel": self.close,
-				"key_left": self.key_left_right_Handler,
-				"key_right": self.key_left_right_Handler,
-				"key_up": self.key_Up_Handler,
-				"key_down": self.key_Down_Handler
+				'key_ok': self.key_ok_Handler,
+				'key_num_left': self.key_num_left_Handler,
+				'key_num_right': self.key_num_right_Handler,
+				'key_channel_down': self.key_num_left_Handler,
+				'key_channel_up': self.key_num_right_Handler,
+				'key_0': self.key_0_Handler,
+				'key_green': self.key_green_Handler,
+				'key_yellow': self.key_yellow_Handler,
+				'key_blue': self.key_menu_Handler,
+				'key_red': self.close,
+				'key_menu': self.key_menu_Handler,
+				'key_cancel': self.close,
+				'key_left': self.key_left_right_Handler,
+				'key_right': self.key_left_right_Handler,
+				'key_up': self.key_Up_Handler,
+				'key_down': self.key_Down_Handler
 		}, -1)
 		
 	def closeme(self):
@@ -246,43 +246,43 @@ class MainScreen(Screen):
 	def key_left_right_Handler(self):
 		if self.selList == 0:
 			self.selList = 1
-			self.selectedListObject = self["Menu2"]	
-			self["Menu1"].selectionEnabled(0)
-			self["Menu2"].selectionEnabled(1)
+			self.selectedListObject = self['Menu2']	
+			self['Menu1'].selectionEnabled(0)
+			self['Menu2'].selectionEnabled(1)
 			self.listSelectionChanged()
 		else:
 			self.selList = 0
-			self.selectedListObject = self["Menu1"]	
-			self["Menu1"].selectionEnabled(1)
-			self["Menu2"].selectionEnabled(0)
+			self.selectedListObject = self['Menu1']	
+			self['Menu1'].selectionEnabled(1)
+			self['Menu2'].selectionEnabled(0)
 			#clear Details
-			self["set_Title"].setText("")
-			self["set_Text"].setText("")
-			self["titleDetails"].setText("")
-			self["details"].setList([], 3)
+			self['set_Title'].setText('')
+			self['set_Text'].setText('')
+			self['titleDetails'].setText('')
+			self['details'].setList([], 3)
 
 		
 	def startRun(self):
-		server = "%d.%d.%d.%d" % tuple(config.fhem.serverip.value)
-		if server == "0.0.0.0":
+		server = '%d.%d.%d.%d' % tuple(config.fhem.serverip.value)
+		if server == '0.0.0.0':
 			return
 		self.isRunning = 1
 		self.reload_Screen()
-		self["Menu2"].selectionEnabled(0)
-		self["Menu1"].selectionEnabled(1)
-		self["details"].selectionEnabled(0)
+		self['Menu2'].selectionEnabled(0)
+		self['Menu1'].selectionEnabled(1)
+		self['details'].selectionEnabled(0)
 		self.selList = 0
-		self.selectedListObject = self["Menu1"]
+		self.selectedListObject = self['Menu1']
 		
 	def selChanged(self):
 		self.listSelTimer.start(200, True)
 			
 	def listSelectionChanged(self):
-		writeLog("FHEM-debug: %s -- %s" % ("listSelectionChanged", "enter"))
+		writeLog('FHEM-debug: %s -- %s' % ('listSelectionChanged', 'enter'))
 		if self.selList == 0:
 			
 			try:
-				typedef = self["Menu1"].l.getCurrentSelection()[0]
+				typedef = self['Menu1'].l.getCurrentSelection()[0]
 			except:
 				return
 			
@@ -294,187 +294,187 @@ class MainScreen(Screen):
 			
 			list = []
 
-			if self.grouping == "TYPE":
-				self["titleMenu1"].setText("Typ")
+			if self.grouping == 'TYPE':
+				self['titleMenu1'].setText('Typ')
 				for element in self.container.getElementsByType([typedef]):
 					list.append((element,))
 
-			if self.grouping == "ROOM":
-				self["titleMenu1"].setText("Raum")
+			if self.grouping == 'ROOM':
+				self['titleMenu1'].setText('Raum')
 				for element in self.container.getElementsByRoom([typedef]):
 					list.append((element,))
 					
-			self["Menu2"].setList(list, 2)
+			self['Menu2'].setList(list, 2)
 			
 		else:
 
 			try:
-				selectedElement = self["Menu2"].l.getCurrentSelection()[0]
+				selectedElement = self['Menu2'].l.getCurrentSelection()[0]
 			except:
 				return
 				
-			writeLog("FHEM-debug: %s -- %s" % ("listSelectionChanged", selectedElement.Name))
+			writeLog('FHEM-debug: %s -- %s' % ('listSelectionChanged', selectedElement.Name))
 			
-			if selectedElement.getType() in ["FHT", "MAX", "CUL_HM"]:			
-				if selectedElement.getSubType() == "thermostat":
-					self["titleDetails"].setText("Details für " + selectedElement.getAlias())
+			if selectedElement.getType() in ['FHT', 'MAX', 'CUL_HM']:			
+				if selectedElement.getSubType() == 'thermostat':
+					self['titleDetails'].setText('Details für ' + selectedElement.getAlias())
 					
 					list = []
-					list.append((["Solltemperatur:",selectedElement.getDesiredTemp() + " °C"],))
-					list.append((["Isttemperatur:",selectedElement.getMeasuredTemp() + " °C"],))
-					list.append((["Thermostat:",selectedElement.getActuator() + " %"],))
-					list.append((["Timestamp:",selectedElement.getLastrcv()],))
-					list.append((["Batterie:",selectedElement.getBattery()],))
-					self["details"].setList(list, 3)
+					list.append((['Solltemperatur:',selectedElement.getDesiredTemp() + ' °C'],))
+					list.append((['Isttemperatur:',selectedElement.getMeasuredTemp() + ' °C'],))
+					list.append((['Thermostat:',selectedElement.getActuator() + ' %'],))
+					list.append((['Timestamp:',selectedElement.getLastrcv()],))
+					list.append((['Batterie:',selectedElement.getBattery()],))
+					self['details'].setList(list, 3)
 					
-					self["set_Text"].setText(selectedElement.getDesiredTemp() + " °C")
-					self["set_Title"].setText("Neue Solltemperatur")
+					self['set_Text'].setText(selectedElement.getDesiredTemp() + ' °C')
+					self['set_Title'].setText('Neue Solltemperatur')
 				
-				elif selectedElement.getSubType() == "THSensor":
-					self["titleDetails"].setText("Details für " + selectedElement.getAlias())
+				elif selectedElement.getSubType() == 'THSensor':
+					self['titleDetails'].setText('Details für ' + selectedElement.getAlias())
 					
 					list = []
-					list.append((["Holzkessel:",selectedElement.getMeasuredTemp() + " °C"],))
-					list.append((["Warmwasser:",selectedElement.getMeasuredTemp1() + " °C"],))
-					list.append((["Timestamp:",selectedElement.getLastrcv1()],))
-					list.append((["Batterie:",selectedElement.getBattery()],))
-					self["details"].setList(list, 3)
+					list.append((['Holzkessel:',selectedElement.getMeasuredTemp() + ' °C'],))
+					list.append((['Warmwasser:',selectedElement.getMeasuredTemp1() + ' °C'],))
+					list.append((['Timestamp:',selectedElement.getLastrcv1()],))
+					list.append((['Batterie:',selectedElement.getBattery()],))
+					self['details'].setList(list, 3)
 				
-				elif selectedElement.getSubType() == "switch":
-					self["titleDetails"].setText("Details für " + selectedElement.getAlias())
+				elif selectedElement.getSubType() == 'switch':
+					self['titleDetails'].setText('Details für ' + selectedElement.getAlias())
 				
 					list = []
-					list.append((["Einschaltstatus:",selectedElement.getReadingState()],))
-					list.append((["Timestamp:",selectedElement.getLastrcv2()],))
-					self["details"].setList(list, 3)
+					list.append((['Einschaltstatus:',selectedElement.getReadingState()],))
+					list.append((['Timestamp:',selectedElement.getLastrcv2()],))
+					self['details'].setList(list, 3)
 				
-					self["set_Title"].setText("Neuer Schaltstatus")
-					self["set_Text"].setText(selectedElement.getReadingState())
+					self['set_Title'].setText('Neuer Schaltstatus')
+					self['set_Text'].setText(selectedElement.getReadingState())
 			
-			elif selectedElement.getType() in ["CUL_TX","ESPEasy","pilight_temp"]:
-				self["titleDetails"].setText("Details für " + selectedElement.getAlias())
+			elif selectedElement.getType() in ['CUL_TX','ESPEasy','pilight_temp']:
+				self['titleDetails'].setText('Details für ' + selectedElement.getAlias())
 				
 				list = []
-				list.append((["Temperatur:",selectedElement.getMeasuredTemp() + " °C"],))
-				list.append((["Luftfeuchte:",selectedElement.getHumidity() + " %"],))
-				if selectedElement.getPressure() != "no prop":
-					list.append((["Luftdruck:",selectedElement.getPressure() + " mBar"],))
-				self["details"].setList(list, 3)
+				list.append((['Temperatur:',selectedElement.getMeasuredTemp() + ' °C'],))
+				list.append((['Luftfeuchte:',selectedElement.getHumidity() + ' %'],))
+				if selectedElement.getPressure() != 'no prop':
+					list.append((['Luftdruck:',selectedElement.getPressure() + ' mBar'],))
+				self['details'].setList(list, 3)
 				
-				self["set_Title"].setText("")
-				self["set_Text"].setText("")
+				self['set_Title'].setText('')
+				self['set_Text'].setText('')
 				
-			elif selectedElement.getType() in ["Weather"]:
-				self["titleDetails"].setText("Details für " + selectedElement.getAlias())
+			elif selectedElement.getType() in ['Weather']:
+				self['titleDetails'].setText('Details für ' + selectedElement.getAlias())
 				
 				list = []
-				list.append((["Temperatur:",selectedElement.getMeasuredTemp() + " °C"],))
-				list.append((["Luftfeuchte:",selectedElement.getHumidity() + " %"],))
-				list.append((["Windstärke:",selectedElement.getWind() + " km/h"],))
-				if selectedElement.getPressure() != "no prop":
-					list.append((["Luftdruck:",selectedElement.getPressure() + " mBar"],))
-				self["details"].setList(list, 3)
+				list.append((['Temperatur:',selectedElement.getMeasuredTemp() + ' °C'],))
+				list.append((['Luftfeuchte:',selectedElement.getHumidity() + ' %'],))
+				list.append((['Windstärke:',selectedElement.getWind() + ' km/h'],))
+				if selectedElement.getPressure() != 'no prop':
+					list.append((['Luftdruck:',selectedElement.getPressure() + ' mBar'],))
+				self['details'].setList(list, 3)
 				
-				self["set_Title"].setText("")
-				self["set_Text"].setText("")
+				self['set_Title'].setText('')
+				self['set_Text'].setText('')
 			
-			elif selectedElement.getType() in ["FS20", "IT", "DOIF", "GHoma", "Hyperion", "HUEDevice", "dummy", "pilight_switch"]:
-				self["titleDetails"].setText("Details für " + selectedElement.getAlias())
+			elif selectedElement.getType() in ['FS20', 'IT', 'DOIF', 'GHoma', 'Hyperion', 'HUEDevice', 'dummy', 'pilight_switch']:
+				self['titleDetails'].setText('Details für ' + selectedElement.getAlias())
 				
 				list = []
-				list.append((["Einschaltstatus:",selectedElement.getReadingState()],))
-				self["details"].setList(list, 3)
+				list.append((['Einschaltstatus:',selectedElement.getReadingState()],))
+				self['details'].setList(list, 3)
 				
-				self["set_Title"].setText("Neuer Schaltstatus")
-				self["set_Text"].setText(selectedElement.getReadingState())
+				self['set_Title'].setText('Neuer Schaltstatus')
+				self['set_Text'].setText(selectedElement.getReadingState())
 			
-			elif selectedElement.getType() in ["MQTT_DEVICE", "MQTT2_DEVICE"]:
-				self["titleDetails"].setText("Details für " + selectedElement.getAlias())
+			elif selectedElement.getType() in ['MQTT_DEVICE', 'MQTT2_DEVICE']:
+				self['titleDetails'].setText('Details für ' + selectedElement.getAlias())
 				
 				list = []
-				list.append((["Einschaltstatus:",selectedElement.getReadingState()],))
-				list.append((["Strom:",selectedElement.getENERGYCurrent() + " A"],))
-				list.append((["Leistung:",selectedElement.getENERGYPower() + " W"],))
-				list.append((["Energie heute:",selectedElement.getENERGYToday() + " kWh"],))
-				list.append((["Energie insgesamt:",selectedElement.getENERGYTotal() + " kWh"],))
-				list.append((["Present:",selectedElement.getPresent()],))
-				self["details"].setList(list, 3)
+				list.append((['Einschaltstatus:',selectedElement.getReadingState()],))
+				list.append((['Strom:',selectedElement.getENERGYCurrent() + ' A'],))
+				list.append((['Leistung:',selectedElement.getENERGYPower() + ' W'],))
+				list.append((['Energie heute:',selectedElement.getENERGYToday() + ' kWh'],))
+				list.append((['Energie insgesamt:',selectedElement.getENERGYTotal() + ' kWh'],))
+				list.append((['Present:',selectedElement.getPresent()],))
+				self['details'].setList(list, 3)
 				
-				self["set_Title"].setText("Neuer Schaltstatus")
-				self["set_Text"].setText(selectedElement.getReadingState())
+				self['set_Title'].setText('Neuer Schaltstatus')
+				self['set_Text'].setText(selectedElement.getReadingState())
 			
-			elif selectedElement.getType() in ["FBDECT"]:
-				self["titleDetails"].setText("Details für " + selectedElement.getAlias())
+			elif selectedElement.getType() in ['FBDECT']:
+				self['titleDetails'].setText('Details für ' + selectedElement.getAlias())
 				
 				list = []
-				list.append((["Einschaltstatus:",selectedElement.getReadingState()],))
-				list.append((["Mode:",selectedElement.getControlmode()],))
-				list.append((["Leistung:",selectedElement.getENERGYPower()],))
-				list.append((["Energie insgesamt:",selectedElement.getENERGYTotal()],))
-				list.append((["Temperatur:",selectedElement.getMeasuredTemp() + " °C"],))
-				list.append((["Present:",selectedElement.getPresent()],))
-				self["details"].setList(list, 3)
+				list.append((['Einschaltstatus:',selectedElement.getReadingState()],))
+				list.append((['Mode:',selectedElement.getControlmode()],))
+				list.append((['Leistung:',selectedElement.getENERGYPower()],))
+				list.append((['Energie insgesamt:',selectedElement.getENERGYTotal()],))
+				list.append((['Temperatur:',selectedElement.getMeasuredTemp() + ' °C'],))
+				list.append((['Present:',selectedElement.getPresent()],))
+				self['details'].setList(list, 3)
 				
-				self["set_Title"].setText("Neuer Schaltstatus")
-				self["set_Text"].setText(selectedElement.getReadingState())
+				self['set_Title'].setText('Neuer Schaltstatus')
+				self['set_Text'].setText(selectedElement.getReadingState())
 			
-			elif selectedElement.getType() in ["FRITZBOX", "CUL", "notify"]:
-				self["titleDetails"].setText("Details für " + selectedElement.getAlias())
+			elif selectedElement.getType() in ['FRITZBOX', 'CUL', 'notify']:
+				self['titleDetails'].setText('Details für ' + selectedElement.getAlias())
 				
 				list = []
-				list.append((["State:",selectedElement.getReadingState()],))
-				self["details"].setList(list, 3)
+				list.append((['State:',selectedElement.getReadingState()],))
+				self['details'].setList(list, 3)
 				
-				self["set_Title"].setText("")
-				self["set_Text"].setText("")
+				self['set_Title'].setText('')
+				self['set_Text'].setText('')
 			
-			elif selectedElement.getType() in ["AptToDate"]:
-				self["titleDetails"].setText("Details für " + selectedElement.getAlias())
+			elif selectedElement.getType() in ['AptToDate']:
+				self['titleDetails'].setText('Details für ' + selectedElement.getAlias())
 				
 				list = []
-				list.append((["State:",selectedElement.getReadingState()],))
-				list.append((["Updates:",selectedElement.getUpdateAvState()],))
-				list.append((["repoSync:",selectedElement.getRepoSync()],))
-				self["details"].setList(list, 3)
+				list.append((['State:',selectedElement.getReadingState()],))
+				list.append((['Updates:',selectedElement.getUpdateAvState()],))
+				list.append((['repoSync:',selectedElement.getRepoSync()],))
+				self['details'].setList(list, 3)
 				
-				self["set_Title"].setText("AptToDate")
-				self["set_Text"].setText(selectedElement.getReadingState())
+				self['set_Title'].setText('AptToDate')
+				self['set_Text'].setText(selectedElement.getReadingState())
 			
-			elif selectedElement.getSubType() == "switch":
-				self["titleDetails"].setText("Details für " + selectedElement.getAlias())
+			elif selectedElement.getSubType() == 'switch':
+				self['titleDetails'].setText('Details für ' + selectedElement.getAlias())
 				
 				list = []
-				list.append((["Einschaltstatus:",selectedElement.getReadingState()],))
-				self["details"].setList(list, 3)
+				list.append((['Einschaltstatus:',selectedElement.getReadingState()],))
+				self['details'].setList(list, 3)
 				
-				self["set_Title"].setText("Neuer Schaltstatus")
-				self["set_Text"].setText(selectedElement.getReadingState())
+				self['set_Title'].setText('Neuer Schaltstatus')
+				self['set_Text'].setText(selectedElement.getReadingState())
 				
-			elif selectedElement.getSubType() in ["THSensor"]:
-				self["titleDetails"].setText("Details für " + selectedElement.getAlias())
-				
-				list = []
-				list.append((["Temperatur:",selectedElement.getMeasuredTemp() + " °C"],))
-				list.append((["Luftfeuchte:",selectedElement.getHumidity() + " %"],))
-				if selectedElement.getPressure() != "no prop":
-					list.append((["Luftdruck:",selectedElement.getPressure() + " mBar"],))
-				list.append((["Batterie:",selectedElement.getBattery()],))
-				self["details"].setList(list, 3)
-				
-				self["set_Title"].setText("")
-				self["set_Text"].setText("")
-				
-			elif selectedElement.getType() in ["CUL_HM"] and electedElement.getSubType() != "thermostat":
-				self["titleDetails"].setText("Details für " + selectedElement.getAlias())
+			elif selectedElement.getSubType() in ['THSensor']:
+				self['titleDetails'].setText('Details für ' + selectedElement.getAlias())
 				
 				list = []
-				list.append((["unbek. HM subtype:", selectedElement.getSubType()],))
-				list.append((["Bitte JSON für:", selectedElement.Name],))
-				list.append((["im Forum posten",""],))
-				self["details"].setList(list, 3)
+				list.append((['Temperatur:',selectedElement.getMeasuredTemp() + ' °C'],))
+				list.append((['Luftfeuchte:',selectedElement.getHumidity() + ' %'],))
+				if selectedElement.getPressure() != 'no prop':
+					list.append((['Luftdruck:',selectedElement.getPressure() + ' mBar'],))
+				list.append((['Batterie:',selectedElement.getBattery()],))
+				self['details'].setList(list, 3)
 				
-				self["set_Title"].setText("- - -")
-				self["set_Text"].setText("0")
+				self['set_Title'].setText('')
+				self['set_Text'].setText('')
+				
+			elif selectedElement.getType() in ['CUL_HM'] and electedElement.getSubType() != 'thermostat':
+				self['titleDetails'].setText('Details für ' + selectedElement.getAlias())
+				
+				list = []
+				list.append((['unbek. HM subtype:', selectedElement.getSubType()],))
+				list.append((['Bitte JSON für:', selectedElement.Name],))
+				list.append((['im Forum posten',''],))
+				self['details'].setList(list, 3)
+				
+				self['set_Title'].setText('- - -')
+				self['set_Text'].setText('0')
 	
 	
 	def key_0_Handler(self):
@@ -483,42 +483,42 @@ class MainScreen(Screen):
 	
 	def key_num_left_Handler(self):
 		if self.selList == 1:
-			selectedElement = self["Menu2"].l.getCurrentSelection()[0]
-			if selectedElement.getSubType() == "thermostat":
-				if self.is_number(self["set_Text"].getText()):
-					actvalue = float(self["set_Text"].getText())
+			selectedElement = self['Menu2'].l.getCurrentSelection()[0]
+			if selectedElement.getSubType() == 'thermostat':
+				if self.is_number(self['set_Text'].getText()):
+					actvalue = float(self['set_Text'].getText())
 					limits = selectedElement.getLimits()
 					if actvalue > limits[0]:
-						self["set_Text"].setText(str(actvalue - 0.5))
+						self['set_Text'].setText(str(actvalue - 0.5))
 				else:
-					self["set_Text"].setText(str(float(selectedElement.getDesiredTemp()) - 0.5))
+					self['set_Text'].setText(str(float(selectedElement.getDesiredTemp()) - 0.5))
 		
 	def key_num_right_Handler(self):
 		if self.selList == 1:
-			selectedElement = self["Menu2"].l.getCurrentSelection()[0]
-			if selectedElement.getSubType() == "thermostat":
-				if self.is_number(self["set_Text"].getText()):
-					actvalue = float(self["set_Text"].getText())
+			selectedElement = self['Menu2'].l.getCurrentSelection()[0]
+			if selectedElement.getSubType() == 'thermostat':
+				if self.is_number(self['set_Text'].getText()):
+					actvalue = float(self['set_Text'].getText())
 					limits = selectedElement.getLimits()
 					if actvalue < limits[1]:
-						self["set_Text"].setText(str(actvalue + 0.5))
+						self['set_Text'].setText(str(actvalue + 0.5))
 				else:
-					self["set_Text"].setText(str(float(selectedElement.getDesiredTemp()) + 0.5))
+					self['set_Text'].setText(str(float(selectedElement.getDesiredTemp()) + 0.5))
 		
 	def key_green_Handler(self):
 		if self.selList == 1:
-			selectedElement = self["Menu2"].l.getCurrentSelection()[0]
+			selectedElement = self['Menu2'].l.getCurrentSelection()[0]
 			
 			try:
-				if self["set_Text"].getText() != "":
-					if selectedElement.getType() in ["FHT", "MAX", "CUL_HM"]:
-						if selectedElement.getSubType() == "thermostat":
-							self.container.updateElementByName(selectedElement.Name, self["set_Text"].getText())
+				if self['set_Text'].getText() != '':
+					if selectedElement.getType() in ['FHT', 'MAX', 'CUL_HM']:
+						if selectedElement.getSubType() == 'thermostat':
+							self.container.updateElementByName(selectedElement.Name, self['set_Text'].getText())
 					
-					elif selectedElement.getType() in ["CUL_HM" ,"FS20", "IT", "MQTT_DEVICE", "MQTT2_DEVICE", "DOIF", "AptToDate", "GHoma", "Hyperion", "HUEDevice", "dummy"]:
-						self.container.updateElementByName(selectedElement.Name, self["set_Text"].getText())
+					elif selectedElement.getType() in ['CUL_HM' ,'FS20', 'IT', 'MQTT_DEVICE', 'MQTT2_DEVICE', 'DOIF', 'AptToDate', 'GHoma', 'Hyperion', 'HUEDevice', 'dummy']:
+						self.container.updateElementByName(selectedElement.Name, self['set_Text'].getText())
 					
-					self.container.updateElementByName(selectedElement.Name, self["set_Text"].getText())
+					self.container.updateElementByName(selectedElement.Name, self['set_Text'].getText())
 					self.setSpinner(True)
 					self.refreshTimer.start(500, True)
 			except:
@@ -530,28 +530,28 @@ class MainScreen(Screen):
 		
 	def key_ok_Handler(self):
 		if self.selList == 1:
-			selectedElement = self["Menu2"].l.getCurrentSelection()[0]
+			selectedElement = self['Menu2'].l.getCurrentSelection()[0]
 			specials = selectedElement.getSpecials()
-			actvalue = self["set_Text"].getText()
+			actvalue = self['set_Text'].getText()
 			if self.is_number(actvalue):
-				self["set_Text"].setText(specials[0])
+				self['set_Text'].setText(specials[0])
 			else:
 				for idx, svalue in enumerate(specials):
 					if svalue == actvalue:
 						if idx < len(specials) - 1:
-							self["set_Text"].setText(specials[idx + 1])
+							self['set_Text'].setText(specials[idx + 1])
 						
 						else:
-							self["set_Text"].setText(specials[0])
+							self['set_Text'].setText(specials[0])
 							
 						return
 
 					elif not actvalue:
 						if idx < len(specials) - 1:
-							self["set_Text"].setText(specials[idx + 1])
+							self['set_Text'].setText(specials[idx + 1])
 					
 					else:
-						self["set_Text"].setText(specials[0])
+						self['set_Text'].setText(specials[0])
 					
 	
 	def timerRefresh(self):
@@ -570,34 +570,34 @@ class MainScreen(Screen):
 		
 		list = []
 		
-		if self.grouping == "TYPE":
+		if self.grouping == 'TYPE':
 			for listentry in self.container.getTypes():
 				list.append((listentry,))
-			self["Menu1"].setList(list, 0)
-		elif self.grouping == "ROOM":
+			self['Menu1'].setList(list, 0)
+		elif self.grouping == 'ROOM':
 			for listentry in self.container.getRooms():
 				list.append((listentry,))
-			self["Menu1"].setList(list, 1)	
+			self['Menu1'].setList(list, 1)	
 		
 		self.selList = 0
-		self.selectedListObject = self["Menu1"]	
-		self["Menu1"].selectionEnabled(1)
-		self["Menu2"].selectionEnabled(0)
+		self.selectedListObject = self['Menu1']	
+		self['Menu1'].selectionEnabled(1)
+		self['Menu2'].selectionEnabled(0)
 		#clear Details
-		self["set_Title"].setText("")
-		self["set_Text"].setText("")
-		self["titleDetails"].setText("")
-		self["details"].setList([], 3)
+		self['set_Title'].setText('')
+		self['set_Text'].setText('')
+		self['titleDetails'].setText('')
+		self['details'].setList([], 3)
 			
 		self.listSelectionChanged()
 		#self.refreshTimer.start(1000, True)
-		writeLog("FHEM-debug: %s -- %s" % ("reload_Screen", "done"))
+		writeLog('FHEM-debug: %s -- %s' % ('reload_Screen', 'done'))
 	
 	def	setSpinner(self, enabled):
 		if enabled:
-			self["spinner"].setText("load...")
+			self['spinner'].setText('load...')
 		else:
-			self["spinner"].setText("")
+			self['spinner'].setText('')
 		
 	def is_number(self, s):
 		try:
@@ -615,10 +615,10 @@ def main(session, **kwargs):
 
 def Plugins(**kwargs):
 	return PluginDescriptor(
-			name="FHEM Haussteuerung",
-			description="Plugin zur Steuerung von FHEM",
+			name='FHEM Haussteuerung',
+			description='Plugin zur Steuerung von FHEM',
 			where = PluginDescriptor.WHERE_PLUGINMENU,
-			icon="fhem.png",
+			icon='fhem.png',
 			fnc=main)
 
 class LoadContainerBackgroundThread(threading.Thread):
@@ -639,101 +639,101 @@ class FHEMElement(object):
 		self.Data = data
 
 	def getLimits(self):
-		writeLog("FHEM-debug: %s -- %s" % ("getLimits", self.getType()))
-		if self.getType() == "FHT":
+		writeLog('FHEM-debug: %s -- %s' % ('getLimits', self.getType()))
+		if self.getType() == 'FHT':
 			return FHT_LIMITS
-		elif self.getType() == "MAX":
+		elif self.getType() == 'MAX':
 			return MAX_LIMITS
-		elif self.getType() == "CUL_HM":
+		elif self.getType() == 'CUL_HM':
 			return CUL_HM_LIMITS
 		else:
 			return [0,0]
 			
 	def getSpecials(self):
-		writeLog("FHEM-debug: %s -- %s" % ("getSpecials", self.getType()))
-		if self.getType() == "FHT":
+		writeLog('FHEM-debug: %s -- %s' % ('getSpecials', self.getType()))
+		if self.getType() == 'FHT':
 			return BASIC_SPECIALS
-		elif self.getType() == "IT":
+		elif self.getType() == 'IT':
 			return IT_SPECIALS
-		elif self.getType() == "MAX":
+		elif self.getType() == 'MAX':
 			return MAX_SPECIALS
-		elif self.getType() == "CUL_HM":
+		elif self.getType() == 'CUL_HM':
 			return BASIC_SPECIALS
-		elif self.getType() == "FS20":
+		elif self.getType() == 'FS20':
 			return FS20_SPECIALS
-		elif self.getType() == "FBDECT":
+		elif self.getType() == 'FBDECT':
 			return BASIC_SPECIALS
-		elif self.getType() == "MQTT_DEVICE":
+		elif self.getType() == 'MQTT_DEVICE':
 			return MQTT_SPECIALS
-		elif self.getType() == "MQTT2_DEVICE":
+		elif self.getType() == 'MQTT2_DEVICE':
 			return MQTT2_SPECIALS
-		elif self.getType() == "DOIF":
+		elif self.getType() == 'DOIF':
 			return self.getPossibleSets()
-		elif self.getType() == "AptToDate":
+		elif self.getType() == 'AptToDate':
 			return self.getPossibleSets()
-		elif self.getType() == "GHoma":
+		elif self.getType() == 'GHoma':
 			return GHoma_SPECIALS
-		elif self.getType() == "Hyperion":
+		elif self.getType() == 'Hyperion':
 			return Hyperion_SPECIALS
-		elif self.getType() == "HUEDevice":
+		elif self.getType() == 'HUEDevice':
 			return HUEDevice_SPECIALS
-		elif self.getType() == "dummy" and self.getSetlistslider() == "state:slider,0,1,100":
+		elif self.getType() == 'dummy' and self.getSetlistslider() == 'state:slider,0,1,100':
 			return DUMMY_VOLUME
-		elif self.getType() == "dummy" and self.getWebcmdstate() == "state":
+		elif self.getType() == 'dummy' and self.getWebcmdstate() == 'state':
 			return self.getSetlist()
-		elif self.getType() == "dummy":	
+		elif self.getType() == 'dummy':	
 			return self.getWebcmd()
-		elif self.getType() == "pilight_switch":
+		elif self.getType() == 'pilight_switch':
 			return BASIC_SPECIALS
 		else:
-			return ["0"]
+			return ['0']
 	
 	def getType(self):
-		return str(self.Data["Internals"]["TYPE"])
+		return str(self.Data['Internals']['TYPE'])
 		
 	def getRoom(self):
 		try:
-			return str(self.Data["Attributes"]["room"]).split(',')
+			return str(self.Data['Attributes']['room']).split(',')
 		except:
 			return ('')
 		
 	def getReadings(self):
-		return self.Data["Readings"]
+		return self.Data['Readings']
 		
 	def getAttributes(self):
-		return self.Data["Attributes"]
+		return self.Data['Attributes']
 	
 	def getInternals(self):
-		return self.Data["Internals"]
+		return self.Data['Internals']
 	
 	def getWebcmd(self):
 		try:
-			return str(self.Data["Attributes"]["webCmd"]).split(':')
+			return str(self.Data['Attributes']['webCmd']).split(':')
 		except:
 			return ('')
 	
 	def getSetlist(self):
 		try:
-			return str(self.Data["Attributes"]["setList"]).replace(':',' ').replace(',',' ').replace('state', '').split()
+			return str(self.Data['Attributes']['setList']).replace(':',' ').replace(',',' ').replace('state', '').split()
 		except:
 			return ('')
 	
 	def getWebcmdstate(self):
 		try:
-			return str(self.Data["Attributes"]["webCmd"])
+			return str(self.Data['Attributes']['webCmd'])
 		except:
 			return ('')
 		
 	def getPossibleSets(self):
 		try:
-			return str(self.Data["PossibleSets"]).replace(':noArg',' ').split()
+			return str(self.Data['PossibleSets']).replace(':noArg',' ').split()
 		except:
 			return ('')
 
 	def getAlias(self):
 		try:
-			if self.Data["Attributes"]["alias"] is not None:
-				return str(self.Data["Attributes"]["alias"])
+			if self.Data['Attributes']['alias'] is not None:
+				return str(self.Data['Attributes']['alias'])
 			else:
 				return self.Name
 		except:
@@ -742,461 +742,461 @@ class FHEMElement(object):
 	def getDesiredTemp(self):
 		type = self.getType()
 		try:
-			if type in ["FHT","CUL_HM"]:
-				return str(self.Data["Readings"]["desired-temp"]["Value"])
-			elif type == "MAX":
-				if str(self.Data["Readings"]["desiredTemperature"]["Value"]) == "off":
-					return "0"
+			if type in ['FHT','CUL_HM']:
+				return str(self.Data['Readings']['desired-temp']['Value'])
+			elif type == 'MAX':
+				if str(self.Data['Readings']['desiredTemperature']['Value']) == 'off':
+					return '0'
 				else:	
-					return str(self.Data["Readings"]["desiredTemperature"]["Value"])
+					return str(self.Data['Readings']['desiredTemperature']['Value'])
 			else: 
-				return "no def"
+				return 'no def'
 		except:
-			return "no prop"
+			return 'no prop'
 	
 	def getPressure(self):
 		type = self.getType()
 		try:
-			return str(self.Data["Readings"]["pressure"]["Value"])
+			return str(self.Data['Readings']['pressure']['Value'])
 		except:
-			return "no prop"
+			return 'no prop'
 			
 	def getHumidity(self):
 		type = self.getType()
 		try:
-			if type in ["FHT"]:
-				return "no prop"
-			elif type in ["CUL_HM"] and self.getSubType() == "thermostat":
-				return str(self.Data["Readings"]["humidity"]["Value"])
-			elif type in ["CUL_HM"] and self.getSubType() == "THSensor":
-				return str(self.Data["Readings"]["humidity"]["Value"])
-			elif type in ["CUL_TX"] and self.getSubType() == "THSensor":
-				return str(self.Data["Readings"]["humidity"]["Value"])	
-			elif type in ["CUL_WS"] and self.getSubType() == "THSensor":
-				return str(self.Data["Readings"]["humidity"]["Value"])
-			elif type in ["Weather"]:
-				return str(self.Data["Readings"]["humidity"]["Value"])
-			elif type in ["ESPEasy"]:
-				return str(self.Data["Readings"]["humidity"]["Value"])
-			elif type in ["pilight_temp"]:
-				return str(self.Data["Readings"]["humidity"]["Value"])
-			elif type in ["MAX"]:
-				return "no prop"
+			if type in ['FHT']:
+				return 'no prop'
+			elif type in ['CUL_HM'] and self.getSubType() == 'thermostat':
+				return str(self.Data['Readings']['humidity']['Value'])
+			elif type in ['CUL_HM'] and self.getSubType() == 'THSensor':
+				return str(self.Data['Readings']['humidity']['Value'])
+			elif type in ['CUL_TX'] and self.getSubType() == 'THSensor':
+				return str(self.Data['Readings']['humidity']['Value'])	
+			elif type in ['CUL_WS'] and self.getSubType() == 'THSensor':
+				return str(self.Data['Readings']['humidity']['Value'])
+			elif type in ['Weather']:
+				return str(self.Data['Readings']['humidity']['Value'])
+			elif type in ['ESPEasy']:
+				return str(self.Data['Readings']['humidity']['Value'])
+			elif type in ['pilight_temp']:
+				return str(self.Data['Readings']['humidity']['Value'])
+			elif type in ['MAX']:
+				return 'no prop'
 			else: 
-				return "no def"
+				return 'no def'
 		except:
-			return "no prop"
+			return 'no prop'
 	
 	def getMeasuredTemp(self):
 		type = self.getType()
 		try:
-			retval = "0.0"
-			if type in ["FHT"]:
-				retval = str(self.Data["Readings"]["measured-temp"]["Value"])
-			elif type in ["CUL_HM"] and self.getSubType() == "thermostat":
-				retval = str(self.Data["Readings"]["measured-temp"]["Value"])
-			elif type in ["CUL_HM"] and self.getSubType() == "THSensor":
-				retval = str(self.Data["Readings"]["T1"]["Value"])
-			elif type in ["CUL_HM"] and self.getSubType() == "THSensor":
-				retval = str(self.Data["Readings"]["temperature"]["Value"])
-			elif type in ["CUL_TX"] and self.getSubType() == "THSensor":
-				retval = str(self.Data["Readings"]["temperature"]["Value"])	
-			elif type in ["CUL_WS"] and self.getSubType() == "THSensor":
-				retval = str(self.Data["Readings"]["temperature"]["Value"])
-			elif type in ["Weather"]:
-				retval = str(self.Data["Readings"]["temperature"]["Value"])	
-			elif type in ["MAX"]:
-				retval = str(self.Data["Readings"]["temperature"]["Value"])
-			elif type in ["ESPEasy"]:
-				retval = str(self.Data["Readings"]["temperature"]["Value"])
-			elif type in ["pilight_temp"]:
-				retval = str(self.Data["Readings"]["temperature"]["Value"])
-			elif type in ["FBDECT"]:
-				retval = str(self.Data["Readings"]["temperature"]["Value"]).replace('C','')
+			retval = '0.0'
+			if type in ['FHT']:
+				retval = str(self.Data['Readings']['measured-temp']['Value'])
+			elif type in ['CUL_HM'] and self.getSubType() == 'thermostat':
+				retval = str(self.Data['Readings']['measured-temp']['Value'])
+			elif type in ['CUL_HM'] and self.getSubType() == 'THSensor':
+				retval = str(self.Data['Readings']['T1']['Value'])
+			elif type in ['CUL_HM'] and self.getSubType() == 'THSensor':
+				retval = str(self.Data['Readings']['temperature']['Value'])
+			elif type in ['CUL_TX'] and self.getSubType() == 'THSensor':
+				retval = str(self.Data['Readings']['temperature']['Value'])	
+			elif type in ['CUL_WS'] and self.getSubType() == 'THSensor':
+				retval = str(self.Data['Readings']['temperature']['Value'])
+			elif type in ['Weather']:
+				retval = str(self.Data['Readings']['temperature']['Value'])	
+			elif type in ['MAX']:
+				retval = str(self.Data['Readings']['temperature']['Value'])
+			elif type in ['ESPEasy']:
+				retval = str(self.Data['Readings']['temperature']['Value'])
+			elif type in ['pilight_temp']:
+				retval = str(self.Data['Readings']['temperature']['Value'])
+			elif type in ['FBDECT']:
+				retval = str(self.Data['Readings']['temperature']['Value']).replace('C','')
 			else: 
-				retval = "0.0"
+				retval = '0.0'
 				
 			return retval
 			
 		except:
-			return "no prop"
+			return 'no prop'
 				
 	def getMeasuredTemp1(self):
 		type = self.getType()
 		try:
-			retval = "0.0"
-			if type in ["FHT"]:
-				retval = str(self.Data["Readings"]["measured-temp"]["Value"])
-			elif type in ["CUL_HM"] and self.getSubType() == "thermostat":
-				retval = str(self.Data["Readings"]["measured-temp"]["Value"])
-			elif type in ["CUL_HM"] and self.getSubType() == "THSensor":
-				retval = str(self.Data["Readings"]["T2"]["Value"])	
-			elif type in ["CUL_HM"] and self.getSubType() == "THSensor":
-				retval = str(self.Data["Readings"]["temperature"]["Value"])
-			elif type in ["CUL_WS"] and self.getSubType() == "THSensor":
-				retval = str(self.Data["Readings"]["temperature"]["Value"])
-			elif type in ["MAX"]:
-				retval = str(self.Data["Readings"]["temperature"]["Value"])
+			retval = '0.0'
+			if type in ['FHT']:
+				retval = str(self.Data['Readings']['measured-temp']['Value'])
+			elif type in ['CUL_HM'] and self.getSubType() == 'thermostat':
+				retval = str(self.Data['Readings']['measured-temp']['Value'])
+			elif type in ['CUL_HM'] and self.getSubType() == 'THSensor':
+				retval = str(self.Data['Readings']['T2']['Value'])	
+			elif type in ['CUL_HM'] and self.getSubType() == 'THSensor':
+				retval = str(self.Data['Readings']['temperature']['Value'])
+			elif type in ['CUL_WS'] and self.getSubType() == 'THSensor':
+				retval = str(self.Data['Readings']['temperature']['Value'])
+			elif type in ['MAX']:
+				retval = str(self.Data['Readings']['temperature']['Value'])
 			else: 
-				retval = "0.0"
+				retval = '0.0'
 				
-			#m = re.search("\d{1,2}.\d{1,2}", retval)
+			#m = re.search('\d{1,2}.\d{1,2}', retval)
 			#return m.group(1)
 			return retval
 			
 		except:
-			return "no prop"
+			return 'no prop'
 			
 	def getWind(self):
 		type = self.getType()
 		try:
-			retval = ""
-			if type in ["Weather"]:
-				retval = str(self.Data["Readings"]["wind"]["Value"])
+			retval = ''
+			if type in ['Weather']:
+				retval = str(self.Data['Readings']['wind']['Value'])
 			else: 
-				retval = "0.0"
+				retval = '0.0'
 				
 			return retval
 			
 		except:
-			return "no prop"
+			return 'no prop'
 	
 	def getPresent(self):
 		type = self.getType()
 		try:
-			retval = ""
-			if type in ["MQTT2_DEVICE"]:
-				retval = str(self.Data["Readings"]["LWT"]["Value"])
-			elif type in ["FBDECT"]:
-				return str(self.Data["Readings"]["present"]["Value"])
+			retval = ''
+			if type in ['MQTT2_DEVICE']:
+				retval = str(self.Data['Readings']['LWT']['Value'])
+			elif type in ['FBDECT']:
+				return str(self.Data['Readings']['present']['Value'])
 			else: 
-				retval = "0.0"
+				retval = '0.0'
 				
 			return retval
 			
 		except:
-			return "no prop"
+			return 'no prop'
 	
 	def getControlmode(self):
 		type = self.getType()
 		try:
-			if type in ["FHT","CUL_HM","MAX"]:
-				return str(self.Data["Readings"]["powerOn"]["Value"])
-			elif type in ["FBDECT"]:
-				return str(self.Data["Readings"]["mode"]["Value"])
+			if type in ['FHT','CUL_HM','MAX']:
+				return str(self.Data['Readings']['powerOn']['Value'])
+			elif type in ['FBDECT']:
+				return str(self.Data['Readings']['mode']['Value'])
 			else: 
-				return "no def"
+				return 'no def'
 		except:
-			return "no prop"
+			return 'no prop'
 			
 	def getActuator(self):
 		type = self.getType()
 		try:
-			if type in ["FHT","CUL_HM"]:
-				return str(self.Data["Readings"]["actuator"]["Value"])
-			elif type == "MAX":
-				return str(self.Data["Readings"]["valveposition"]["Value"])
+			if type in ['FHT','CUL_HM']:
+				return str(self.Data['Readings']['actuator']['Value'])
+			elif type == 'MAX':
+				return str(self.Data['Readings']['valveposition']['Value'])
 			else: 
-				return "no def"
+				return 'no def'
 		except:
-			return "no prop"
+			return 'no prop'
 			
 	def getBattery(self):
 		type = self.getType()
 		try:
-			if type in ["FHT","CUL_HM","MAX"]:
-				return str(self.Data["Readings"]["battery"]["Value"])
+			if type in ['FHT','CUL_HM','MAX']:
+				return str(self.Data['Readings']['battery']['Value'])
 			else: 
-				return "no def"
+				return 'no def'
 		except:
-			return "no prop"
+			return 'no prop'
 					
 	def getLastrcv(self):
 		type = self.getType()
 		try:
-			if type in ["FHT","CUL_HM","MAX"]:
-				return str(self.Data["Readings"]["measured-temp"]["Time"])
+			if type in ['FHT','CUL_HM','MAX']:
+				return str(self.Data['Readings']['measured-temp']['Time'])
 			else: 
-				return "no def"
+				return 'no def'
 		except:
-			return "no prop"
+			return 'no prop'
 			
 	def getLastrcv1(self):
 		type = self.getType()
 		try:
-			if type in ["FHT","CUL_HM","MAX"]:
-				return str(self.Data["Readings"]["T1"]["Time"])
+			if type in ['FHT','CUL_HM','MAX']:
+				return str(self.Data['Readings']['T1']['Time'])
 			else: 
-				return "no def"
+				return 'no def'
 		except:
-			return "no prop"
+			return 'no prop'
 			
 	def getLastrcv2(self):
 		type = self.getType()
 		try:
-			if type in ["FHT","CUL_HM","MAX"]:
-				return str(self.Data["Readings"]["powerOn"]["Time"])
+			if type in ['FHT','CUL_HM','MAX']:
+				return str(self.Data['Readings']['powerOn']['Time'])
 			else: 
-				return "no def"
+				return 'no def'
 		except:
-			return "no prop"
+			return 'no prop'
 	
 	def getReadingState(self):
 		type = self.getType()
 		try:
-			if type == "FHT":
-				return str(self.Data["Readings"]["state"]["Value"]).replace("measured-temp: ","")
-			elif type == "MAX":
-				return str(self.Data["Readings"]["state"]["Value"])
-			elif type == "FS20":
-				return str(self.Data["Readings"]["state"]["Value"])
-			elif type == "IT":
-				return str(self.Data["Readings"]["state"]["Value"])
-			elif type == "CUL_HM":
-				return str(self.Data["Readings"]["state"]["Value"])
-			elif type == "MQTT_DEVICE":
-				return str(self.Data["Readings"]["state"]["Value"])
-			elif type == "MQTT2_DEVICE":
-				return str(self.Data["Readings"]["state"]["Value"])
-			elif type == "CUL_TX":
-				return ""
-			elif type == "CUL_WS":
+			if type == 'FHT':
+				return str(self.Data['Readings']['state']['Value']).replace('measured-temp: ','')
+			elif type == 'MAX':
+				return str(self.Data['Readings']['state']['Value'])
+			elif type == 'FS20':
+				return str(self.Data['Readings']['state']['Value'])
+			elif type == 'IT':
+				return str(self.Data['Readings']['state']['Value'])
+			elif type == 'CUL_HM':
+				return str(self.Data['Readings']['state']['Value'])
+			elif type == 'MQTT_DEVICE':
+				return str(self.Data['Readings']['state']['Value'])
+			elif type == 'MQTT2_DEVICE':
+				return str(self.Data['Readings']['state']['Value'])
+			elif type == 'CUL_TX':
+				return ''
+			elif type == 'CUL_WS':
 				return self.getMeasuredTemp()
-			elif type == "FBDECT":
-				return str(self.Data["Readings"]["state"]["Value"]).replace("set_","")
-			elif type == "DOIF":
-				return str(self.Data["Readings"]["state"]["Value"])
-			elif type == "FRITZBOX":
-				return str(self.Data["Readings"]["state"]["Value"])
-			elif type == "CUL":
-				return str(self.Data["Readings"]["state"]["Value"])
-			elif type == "notify":
-				return str(self.Data["Readings"]["state"]["Value"])
-			elif type == "AptToDate":
-				return str(self.Data["Readings"]["state"]["Value"])
-			elif type == "GHoma":
-				return str(self.Data["Readings"]["state"]["Value"])	
-			elif type == "Hyperion":
-				return str(self.Data["Readings"]["state"]["Value"])
-			elif type == "HUEDevice":
-				return str(self.Data["Readings"]["state"]["Value"])
-			elif type == "dummy":
-				return str(self.Data["Readings"]["state"]["Value"])
-			elif type == "ESPEasy":
-				return str(self.Data["Readings"]["state"]["Value"])
-			elif type == "pilight_temp":
-				return str(self.Data["Readings"]["state"]["Value"])
-			elif type == "pilight_switch":
-				return str(self.Data["Readings"]["state"]["Value"])
+			elif type == 'FBDECT':
+				return str(self.Data['Readings']['state']['Value']).replace('set_','')
+			elif type == 'DOIF':
+				return str(self.Data['Readings']['state']['Value'])
+			elif type == 'FRITZBOX':
+				return str(self.Data['Readings']['state']['Value'])
+			elif type == 'CUL':
+				return str(self.Data['Readings']['state']['Value'])
+			elif type == 'notify':
+				return str(self.Data['Readings']['state']['Value'])
+			elif type == 'AptToDate':
+				return str(self.Data['Readings']['state']['Value'])
+			elif type == 'GHoma':
+				return str(self.Data['Readings']['state']['Value'])	
+			elif type == 'Hyperion':
+				return str(self.Data['Readings']['state']['Value'])
+			elif type == 'HUEDevice':
+				return str(self.Data['Readings']['state']['Value'])
+			elif type == 'dummy':
+				return str(self.Data['Readings']['state']['Value'])
+			elif type == 'ESPEasy':
+				return str(self.Data['Readings']['state']['Value'])
+			elif type == 'pilight_temp':
+				return str(self.Data['Readings']['state']['Value'])
+			elif type == 'pilight_switch':
+				return str(self.Data['Readings']['state']['Value'])
 			else: 
-				return ""
+				return ''
 		except:
-			return "no prop"
+			return 'no prop'
 	
 	def getUpdateAvState(self):
 		type = self.getType()
 		try:
-			if type == "AptToDate":
-				return str(self.Data["Readings"]["updatesAvailable"]["Value"])	
+			if type == 'AptToDate':
+				return str(self.Data['Readings']['updatesAvailable']['Value'])	
 			else: 
-				return ""
+				return ''
 		except:
-			return "no prop"
+			return 'no prop'
 	
 	def getRepoSync(self):
 		type = self.getType()
 		try:
-			if type == "AptToDate":
-				return str(self.Data["Readings"]["repoSync"]["Value"])	
+			if type == 'AptToDate':
+				return str(self.Data['Readings']['repoSync']['Value'])	
 			else: 
-				return ""
+				return ''
 		except:
-			return "no prop"
+			return 'no prop'
 			
 	def getENERGYCurrent(self):
 		type = self.getType()
 		try:
-			if type == "MQTT2_DEVICE":
-				return str(self.Data["Readings"]["ENERGY_Current"]["Value"])
-			elif type == "MQTT_DEVICE":
-				return str(self.Data["Readings"]["ENERGY_Current"]["Value"])
+			if type == 'MQTT2_DEVICE':
+				return str(self.Data['Readings']['ENERGY_Current']['Value'])
+			elif type == 'MQTT_DEVICE':
+				return str(self.Data['Readings']['ENERGY_Current']['Value'])
 			else: 
-				return ""
+				return ''
 		except:
-			return "no prop"
+			return 'no prop'
 	
 	def getENERGYPower(self):
 		type = self.getType()
 		try:
-			if type == "MQTT2_DEVICE":
-				return str(self.Data["Readings"]["ENERGY_Power"]["Value"])
-			elif type == "MQTT_DEVICE":
-				return str(self.Data["Readings"]["ENERGY_Power"]["Value"])
-			elif type == "FBDECT":
-				return str(self.Data["Readings"]["power"]["Value"])
+			if type == 'MQTT2_DEVICE':
+				return str(self.Data['Readings']['ENERGY_Power']['Value'])
+			elif type == 'MQTT_DEVICE':
+				return str(self.Data['Readings']['ENERGY_Power']['Value'])
+			elif type == 'FBDECT':
+				return str(self.Data['Readings']['power']['Value'])
 			else: 
-				return ""
+				return ''
 		except:
-			return "no prop"
+			return 'no prop'
 	
 	def getENERGYToday(self):
 		type = self.getType()
 		try:
-			if type == "MQTT2_DEVICE":
-				return str(self.Data["Readings"]["ENERGY_Today"]["Value"])
-			elif type == "MQTT_DEVICE":
-				return str(self.Data["Readings"]["ENERGY_Today"]["Value"])
+			if type == 'MQTT2_DEVICE':
+				return str(self.Data['Readings']['ENERGY_Today']['Value'])
+			elif type == 'MQTT_DEVICE':
+				return str(self.Data['Readings']['ENERGY_Today']['Value'])
 			else: 
-				return ""
+				return ''
 		except:
-			return "no prop"
+			return 'no prop'
 			
 	def getENERGYTotal(self):
 		type = self.getType()
 		try:
-			if type == "MQTT2_DEVICE":
-				return str(self.Data["Readings"]["ENERGY_Total"]["Value"])
-			elif type == "MQTT_DEVICE":
-				return str(self.Data["Readings"]["ENERGY_Total"]["Value"])
-			elif type == "FBDECT":
-				return str(self.Data["Readings"]["energy"]["Value"])
+			if type == 'MQTT2_DEVICE':
+				return str(self.Data['Readings']['ENERGY_Total']['Value'])
+			elif type == 'MQTT_DEVICE':
+				return str(self.Data['Readings']['ENERGY_Total']['Value'])
+			elif type == 'FBDECT':
+				return str(self.Data['Readings']['energy']['Value'])
 			else: 
-				return ""
+				return ''
 		except:
-			return "no prop"
+			return 'no prop'
 	
 	def getInternalsState(self):
 		type = self.getType()
 		try:
-			if type == "FHT":
-				return str(self.Data["Internals"]["protLastRcv"]["Value"]).replace("measured-temp: ","")
-			elif type == "MAX":
-				return str(self.Data["Internals"]["protLastRcv"]["Value"])
-			elif type == "FS20":
-				return str(self.Data["Internals"]["protLastRcv"]["Value"])
-			elif type == "CUL_HM":
-				return str(self.Data["Internals"]["protLastRcv"]["Value"])
-			elif type == "CUL_WS":
+			if type == 'FHT':
+				return str(self.Data['Internals']['protLastRcv']['Value']).replace('measured-temp: ','')
+			elif type == 'MAX':
+				return str(self.Data['Internals']['protLastRcv']['Value'])
+			elif type == 'FS20':
+				return str(self.Data['Internals']['protLastRcv']['Value'])
+			elif type == 'CUL_HM':
+				return str(self.Data['Internals']['protLastRcv']['Value'])
+			elif type == 'CUL_WS':
 				return self.getMeasuredTemp()
-			elif type == "FBDECT":
-				return str(self.Data["Internals"]["protLastRcv"]["Value"]).replace("set_","") 
+			elif type == 'FBDECT':
+				return str(self.Data['Internals']['protLastRcv']['Value']).replace('set_','') 
 			else: 
-				return "no def"
+				return 'no def'
 		except:
-			return "no prop"
+			return 'no prop'
 	
 	def getSubType(self):
 		type = self.getType()
-		if type == "CUL_HM":
+		if type == 'CUL_HM':
 			try:
-				subtype = str(self.Data["Attributes"]["subType"])
+				subtype = str(self.Data['Attributes']['subType'])
 			except:
-				subtype = "unknown"
+				subtype = 'unknown'
 			return subtype
-		elif type == "FHT":
-			return "thermostat"
-		elif type == "FS20":
-			return "switch"
-		elif type == "MAX":
-			return "thermostat"
-		elif type == "CUL_TX":	
-			return "THSensor"	
-		elif type == "CUL_WS":	
-			return "THSensor"
-		elif type == "FBDECT":	
-			return str(self.Data["Internals"]["props"])	
+		elif type == 'FHT':
+			return 'thermostat'
+		elif type == 'FS20':
+			return 'switch'
+		elif type == 'MAX':
+			return 'thermostat'
+		elif type == 'CUL_TX':	
+			return 'THSensor'	
+		elif type == 'CUL_WS':	
+			return 'THSensor'
+		elif type == 'FBDECT':	
+			return str(self.Data['Internals']['props'])	
 		else:
-			return "unknown"
+			return 'unknown'
 	
 	def getmodel(self):
 		type = self.getType()
-		if type == "CUL_HM":
+		if type == 'CUL_HM':
 			try:
-				subtype = str(self.Data["Attributes"]["model"])
+				subtype = str(self.Data['Attributes']['model'])
 			except:
-				subtype = "unknown"
+				subtype = 'unknown'
 			return subtype
 		else:
-			return "unknown"
+			return 'unknown'
 	
 	def getUpdateableProperty(self):
 		type = self.getType()
-		if type in ["FHT"]:
-			return "desired-temp"
-		elif type == "CUL_HM" and self.getSubType() == "switch":
-			return ""
-		elif type == "CUL_HM" and self.getSubType() == "thermostat":
-			return "desired-temp"	
-		elif type == "MAX":
-			return "desiredTemperature"
-		elif type == "FS20":
-			return ""
-		elif type == "FBDECT":
-			return ""
-		elif type == "IT":
-			return ""	
-		elif type == "MQTT_DEVICE":
-			return ""
-		elif type == "MQTT2_DEVICE":
-			return ""
-		elif type == "DOIF":
-			return ""
-		elif type == "AptToDate":
-			return ""
-		elif type == "GHoma":
-			return ""
-		elif type == "Hyperion":
-			return ""
-		elif type == "HUEDevice":
-			return ""
-		elif type == "dummy":
-			return ""
-		elif type == "pilight_switch":
-			return ""
+		if type in ['FHT']:
+			return 'desired-temp'
+		elif type == 'CUL_HM' and self.getSubType() == 'switch':
+			return ''
+		elif type == 'CUL_HM' and self.getSubType() == 'thermostat':
+			return 'desired-temp'	
+		elif type == 'MAX':
+			return 'desiredTemperature'
+		elif type == 'FS20':
+			return ''
+		elif type == 'FBDECT':
+			return ''
+		elif type == 'IT':
+			return ''	
+		elif type == 'MQTT_DEVICE':
+			return ''
+		elif type == 'MQTT2_DEVICE':
+			return ''
+		elif type == 'DOIF':
+			return ''
+		elif type == 'AptToDate':
+			return ''
+		elif type == 'GHoma':
+			return ''
+		elif type == 'Hyperion':
+			return ''
+		elif type == 'HUEDevice':
+			return ''
+		elif type == 'dummy':
+			return ''
+		elif type == 'pilight_switch':
+			return ''
 		
 	def getUpdateCommand(self):
 		type = self.getType()
-		if type in ["FHT"]:
-			return "/fhem?XHR=1&cmd.%s=set %s %s " % (self.Name, self.Name, self.getUpdateableProperty())
-		elif type == "CUL_HM" and self.getSubType() == "switch":
-			return "/fhem?XHR=1&cmd=set %s %s " % (self.Name, self.getUpdateableProperty())		
-		elif type == "CUL_HM" and self.getmodel() == "HM-CC-RT-DN":
-			return "/fhem?XHR=1&cmd=set %s %s " % (self.Name + "_Clima", self.getUpdateableProperty())
-		elif type == "CUL_HM" and self.getmodel() == "HM-TC-IT-WM-W-EU":
-			return "/fhem?XHR=1&cmd=set %s %s " % (self.Name + "_Climate", self.getUpdateableProperty())
-		elif type == "MAX":
-			return "/fhem?XHR=1&cmd=set %s %s " % (self.Name, self.getUpdateableProperty())
-		elif type == "FS20":
-			return "/fhem?XHR=1&cmd.%s=set %s %s " % (self.Name, self.Name, self.getUpdateableProperty())
-		elif type == "FBDECT":
-			return "/fhem?XHR=1&cmd.%s=set %s %s " % (self.Name, self.Name, self.getUpdateableProperty())
-		elif type == "IT":
-			return "/fhem?XHR=1&cmd.%s=set %s %s " % (self.Name, self.Name, self.getUpdateableProperty())
-		elif type == "MQTT_DEVICE":
-			return "/fhem?XHR=1&cmd.%s=set %s %s " % (self.Name, self.Name, self.getUpdateableProperty())
-		elif type == "MQTT2_DEVICE":
-			return "/fhem?XHR=1&cmd.%s=set %s %s " % (self.Name, self.Name, self.getUpdateableProperty())
-		elif type == "DOIF":
-			return "/fhem?XHR=1&cmd.%s=set %s %s " % (self.Name, self.Name, self.getUpdateableProperty())
-		elif type == "AptToDate":
-			return "/fhem?XHR=1&cmd.%s=set %s %s " % (self.Name, self.Name, self.getUpdateableProperty())
-		elif type == "GHoma":
-			return "/fhem?XHR=1&cmd.%s=set %s %s " % (self.Name, self.Name, self.getUpdateableProperty())
-		elif type == "Hyperion":
-			return "/fhem?XHR=1&cmd.%s=set %s %s " % (self.Name, self.Name, self.getUpdateableProperty())
-		elif type == "HUEDevice":
-			return "/fhem?XHR=1&cmd.%s=set %s %s " % (self.Name, self.Name, self.getUpdateableProperty())
-		elif type == "dummy":
-			return "/fhem?XHR=1&cmd.%s=set %s %s " % (self.Name, self.Name, self.getUpdateableProperty())
-		elif type == "pilight_switch":
-			return "/fhem?XHR=1&cmd.%s=set %s %s " % (self.Name, self.Name, self.getUpdateableProperty())
+		if type in ['FHT']:
+			return '/fhem?XHR=1&cmd.%s=set %s %s ' % (self.Name, self.Name, self.getUpdateableProperty())
+		elif type == 'CUL_HM' and self.getSubType() == 'switch':
+			return '/fhem?XHR=1&cmd=set %s %s ' % (self.Name, self.getUpdateableProperty())		
+		elif type == 'CUL_HM' and self.getmodel() == 'HM-CC-RT-DN':
+			return '/fhem?XHR=1&cmd=set %s %s ' % (self.Name + '_Clima', self.getUpdateableProperty())
+		elif type == 'CUL_HM' and self.getmodel() == 'HM-TC-IT-WM-W-EU':
+			return '/fhem?XHR=1&cmd=set %s %s ' % (self.Name + '_Climate', self.getUpdateableProperty())
+		elif type == 'MAX':
+			return '/fhem?XHR=1&cmd=set %s %s ' % (self.Name, self.getUpdateableProperty())
+		elif type == 'FS20':
+			return '/fhem?XHR=1&cmd.%s=set %s %s ' % (self.Name, self.Name, self.getUpdateableProperty())
+		elif type == 'FBDECT':
+			return '/fhem?XHR=1&cmd.%s=set %s %s ' % (self.Name, self.Name, self.getUpdateableProperty())
+		elif type == 'IT':
+			return '/fhem?XHR=1&cmd.%s=set %s %s ' % (self.Name, self.Name, self.getUpdateableProperty())
+		elif type == 'MQTT_DEVICE':
+			return '/fhem?XHR=1&cmd.%s=set %s %s ' % (self.Name, self.Name, self.getUpdateableProperty())
+		elif type == 'MQTT2_DEVICE':
+			return '/fhem?XHR=1&cmd.%s=set %s %s ' % (self.Name, self.Name, self.getUpdateableProperty())
+		elif type == 'DOIF':
+			return '/fhem?XHR=1&cmd.%s=set %s %s ' % (self.Name, self.Name, self.getUpdateableProperty())
+		elif type == 'AptToDate':
+			return '/fhem?XHR=1&cmd.%s=set %s %s ' % (self.Name, self.Name, self.getUpdateableProperty())
+		elif type == 'GHoma':
+			return '/fhem?XHR=1&cmd.%s=set %s %s ' % (self.Name, self.Name, self.getUpdateableProperty())
+		elif type == 'Hyperion':
+			return '/fhem?XHR=1&cmd.%s=set %s %s ' % (self.Name, self.Name, self.getUpdateableProperty())
+		elif type == 'HUEDevice':
+			return '/fhem?XHR=1&cmd.%s=set %s %s ' % (self.Name, self.Name, self.getUpdateableProperty())
+		elif type == 'dummy':
+			return '/fhem?XHR=1&cmd.%s=set %s %s ' % (self.Name, self.Name, self.getUpdateableProperty())
+		elif type == 'pilight_switch':
+			return '/fhem?XHR=1&cmd.%s=set %s %s ' % (self.Name, self.Name, self.getUpdateableProperty())
 			
 	def getHMChannels(self):
 		type = self.getType()
 		retval = []
-		if type == "CUL_HM":
+		if type == 'CUL_HM':
 			data = self.getInternals()
-			for s in ["channel_01","channel_02","protState"]:
+			for s in ['channel_01','channel_02','protState']:
 				if data.get(s):
 					retval.append(s)
 		return retval
@@ -1213,23 +1213,23 @@ class FHEMElementCollection(object):
 	def reload(self):
 		self.data = self.worker.getJson(self.Type, 0)
 		if self.data is not None:
-			for element in self.data["Results"]:
-				if str(element["state"]) != "???":
-					eldata = self.worker.getJson(element["name"], 1)
-					if self.Type == "CUL_HM":
+			for element in self.data['Results']:
+				if str(element['state']) != '???':
+					eldata = self.worker.getJson(element['name'], 1)
+					if self.Type == 'CUL_HM':
 						try:
-							el = FHEMElement(str(element["name"]), eldata["Results"][0])
+							el = FHEMElement(str(element['name']), eldata['Results'][0])
 							channels = el.getHMChannels()
 							if channels:
 								self.Elements.append(el)
 						except:
-							writeLog("FHEM-debug: %s -- %s" % ("reload, error loading", element["name"]))
+							writeLog('FHEM-debug: %s -- %s' % ('reload, error loading', element['name']))
 					else:
 						try:
-							el = FHEMElement(str(element["name"]), eldata["Results"][0])
+							el = FHEMElement(str(element['name']), eldata['Results'][0])
 							self.Elements.append(el)
 						except:
-							writeLog("FHEM-debug: %s -- %s" % ("reload, error loading", element["name"]))
+							writeLog('FHEM-debug: %s -- %s' % ('reload, error loading', element['name']))
 					
 	def refresh(self):
 		for element in self.Elements:
@@ -1240,7 +1240,7 @@ class FHEMElementCollection(object):
 			for element in self.Elements:
 				if element.Name == name:
 					json = self.worker.getJson(name, 1)
-					element.Data = json["Results"][0] 
+					element.Data = json['Results'][0] 
 	
 	def getData(self):
 		return self.Data
@@ -1333,33 +1333,33 @@ class WebWorker(object):
 		self.hasError = False
 	
 		self.httpres = str(config.fhem.httpresponse.value)
-		self.server = "%d.%d.%d.%d" % tuple(config.fhem.serverip.value)
+		self.server = '%d.%d.%d.%d' % tuple(config.fhem.serverip.value)
 		self.port = int(config.fhem.port.value)
 		self.username = str(config.fhem.username.value)
 		self.password = str(config.fhem.password.value)
 		
-		self.Address = self.server + ":" + str(self.port)
-		self.Prefix = ["/fhem?XHR=1&cmd=jsonlist+","/fhem?XHR=1&cmd=jsonlist2+"]
+		self.Address = self.server + ':' + str(self.port)
+		self.Prefix = ['/fhem?XHR=1&cmd=jsonlist+','/fhem?XHR=1&cmd=jsonlist2+']
 		self.isAuth = len(self.username) + len(self.password)
 		
 		if self.isAuth != 0: 
-			self.credentialss = self.username + ":" + self.password
-			self.credentialsb = self.credentialss.encode("utf-8")
-			self.credentials64 = base64.b64encode(self.credentialsb).decode("ascii")
+			self.credentialss = self.username + ':' + self.password
+			self.credentialsb = self.credentialss.encode('utf-8')
+			self.credentials64 = base64.b64encode(self.credentialsb).decode('ascii')
 			self.headers = { 'Authorization' : 'Basic %s' %  self.credentials64 }
 		
 	def getHtml(self, elements, listtype):
-		if self.httpres == "Http":
+		if self.httpres == 'Http':
 			try:
 				conn = httplib.HTTPConnection(self.Address, timeout=10)
 				if self.isAuth != 0:
-					conn.request("GET", self.Prefix[listtype] + elements, headers = self.headers)
+					conn.request('GET', self.Prefix[listtype] + elements, headers = self.headers)
 				else:
-					conn.request("GET", self.Prefix[listtype] + elements)
+					conn.request('GET', self.Prefix[listtype] + elements)
 			
 				response = conn.getresponse()
 				if response.status != 200:
-					writeLog("FHEM-debug: %s -- %s" % ("response", str(response.status) + " --- reason: " + response.reason))
+					writeLog('FHEM-debug: %s -- %s' % ('response', str(response.status) + ' --- reason: ' + response.reason))
 				
 				self.hasError = False
 				return response
@@ -1371,13 +1371,13 @@ class WebWorker(object):
 			try:
 				conn = httplib.HTTPSConnection(self.Address, timeout=10)
 				if self.isAuth != 0:
-					conn.request("GET", self.Prefix[listtype] + elements, headers = self.headers)
+					conn.request('GET', self.Prefix[listtype] + elements, headers = self.headers)
 				else:
-					conn.request("GET", self.Prefix[listtype] + elements)
+					conn.request('GET', self.Prefix[listtype] + elements)
 			
 				response = conn.getresponse()
 				if response.status != 200:
-					writeLog("FHEM-debug: %s -- %s" % ("response", str(response.status) + " --- reason: " + response.reason))
+					writeLog('FHEM-debug: %s -- %s' % ('response', str(response.status) + ' --- reason: ' + response.reason))
 				
 				self.hasError = False
 				return response
@@ -1393,46 +1393,46 @@ class WebWorker(object):
 			return None
 		
 	def setPropertyValue(self, command, value):
-		if self.httpres == "Http":
+		if self.httpres == 'Http':
 			conn = httplib.HTTPConnection(self.Address)
 			message = command + value
-			writeLog("FHEM-debug: %s -- %s" % ("Message to send:", message))
-			message = message.replace(" ","%20")
+			writeLog('FHEM-debug: %s -- %s' % ('Message to send:', message))
+			message = message.replace(' ','%20')
 
 		
 
 			if self.isAuth != 0:
-				conn.request("GET", message, headers = self.headers)
+				conn.request('GET', message, headers = self.headers)
 			else:
-				conn.request("GET", message)
+				conn.request('GET', message)
 
 			response = conn.getresponse()
 			if response.status != 200:
-				writeLog("FHEM-debug: %s -- %s" % ("response", str(response.status) + " --- reason: " + response.reason))
+				writeLog('FHEM-debug: %s -- %s' % ('response', str(response.status) + ' --- reason: ' + response.reason))
 				self.hasError = True
 		
-			writeLog("FHEM-debug: %s -- %s" % ("Message sent", "Result: " + str(response.status) + " Reason: " + response.reason))			
+			writeLog('FHEM-debug: %s -- %s' % ('Message sent', 'Result: ' + str(response.status) + ' Reason: ' + response.reason))			
 			self.hasError = False
 		
 		else:
 			conn = httplib.HTTPSConnection(self.Address)
 			message = command + value
-			writeLog("FHEM-debug: %s -- %s" % ("Message to send:", message))
-			message = message.replace(" ","%20")
+			writeLog('FHEM-debug: %s -- %s' % ('Message to send:', message))
+			message = message.replace(' ','%20')
 
 		
 
 			if self.isAuth != 0:
-				conn.request("GET", message, headers = self.headers)
+				conn.request('GET', message, headers = self.headers)
 			else:
-				conn.request("GET", message)
+				conn.request('GET', message)
 
 			response = conn.getresponse()
 			if response.status != 200:
-				writeLog("FHEM-debug: %s -- %s" % ("response", str(response.status) + " --- reason: " + response.reason))
+				writeLog('FHEM-debug: %s -- %s' % ('response', str(response.status) + ' --- reason: ' + response.reason))
 				self.hasError = True
 		
-			writeLog("FHEM-debug: %s -- %s" % ("Message sent", "Result: " + str(response.status) + " Reason: " + response.reason))	
+			writeLog('FHEM-debug: %s -- %s' % ('Message sent', 'Result: ' + str(response.status) + ' Reason: ' + response.reason))	
 			self.hasError = False
 
 ############################################     Config    #################################
@@ -1440,45 +1440,45 @@ class WebWorker(object):
 class FHEM_Setup(Screen, ConfigListScreen):
 	desktopSize = getDesktop(0).size()
 	if desktopSize.width() >= 1920:
-		skin = """
-		<screen name="picshow" position="300,645" size="660,350" title="FHEM Settings" >
-			<ePixmap pixmap="skin_default/buttons/red.png" position="0,300" size="140,40" alphatest="on" />
-			<ePixmap pixmap="skin_default/buttons/green.png" position="140,300" size="140,40" alphatest="on" />
-			<widget source="key_red" render="Label" position="0,300" zPosition="1" size="140,40" font="Regular;21" halign="center" valign="center" backgroundColor="#9f1313" transparent="1" />
-			<widget source="key_green" render="Label" position="140,300" zPosition="1" size="140,40" font="Regular;21" halign="center" valign="center" backgroundColor="#1f771f" transparent="1" />
-			<widget source="label" render="Label" position="10,10" size="640,40" font="Regular;24" backgroundColor="#25062748" transparent="1"  />
-			<widget name="config" position="10,50" zPosition="2" size="640,255" itemHeight="38" font="Regular;24" scrollbarMode="showOnDemand" />
-		</screen>"""
+		skin = '''
+		<screen name='picshow' position='300,645' size='660,350' title='FHEM Settings' >
+			<ePixmap pixmap='skin_default/buttons/red.png' position='0,300' size='140,40' alphatest='on' />
+			<ePixmap pixmap='skin_default/buttons/green.png' position='140,300' size='140,40' alphatest='on' />
+			<widget source='key_red' render='Label' position='0,300' zPosition='1' size='140,40' font='Regular;21' halign='center' valign='center' backgroundColor='#9f1313' transparent='1' />
+			<widget source='key_green' render='Label' position='140,300' zPosition='1' size='140,40' font='Regular;21' halign='center' valign='center' backgroundColor='#1f771f' transparent='1' />
+			<widget source='label' render='Label' position='10,10' size='640,40' font='Regular;24' backgroundColor='#25062748' transparent='1'  />
+			<widget name='config' position='10,50' zPosition='2' size='640,255' itemHeight='38' font='Regular;24' scrollbarMode='showOnDemand' />
+		</screen>'''
 	else:
-		skin = """
-		<screen name="picshow" position="5,265" size="660,320" title="FHEM Settings" >
-			<ePixmap pixmap="skin_default/buttons/red.png" position="0,270" size="140,40" alphatest="on" />
-			<ePixmap pixmap="skin_default/buttons/green.png" position="140,270" size="140,40" alphatest="on" />
-			<widget source="key_red" render="Label" position="0,270" zPosition="1" size="140,40" font="Regular;21" halign="center" valign="center" backgroundColor="#9f1313" transparent="1" />
-			<widget source="key_green" render="Label" position="140,270" zPosition="1" size="140,40" font="Regular;21" halign="center" valign="center" backgroundColor="#1f771f" transparent="1" />
-			<widget source="label" render="Label" position="10,10" size="640,40" font="Regular;24" backgroundColor="#25062748" transparent="1"  />
-			<widget name="config" position="10,50" zPosition="2" size="640,200" itemHeight="38" font="Regular;24" scrollbarMode="showOnDemand" />
-		</screen>"""
+		skin = '''
+		<screen name='picshow' position='5,265' size='660,320' title='FHEM Settings' >
+			<ePixmap pixmap='skin_default/buttons/red.png' position='0,270' size='140,40' alphatest='on' />
+			<ePixmap pixmap='skin_default/buttons/green.png' position='140,270' size='140,40' alphatest='on' />
+			<widget source='key_red' render='Label' position='0,270' zPosition='1' size='140,40' font='Regular;21' halign='center' valign='center' backgroundColor='#9f1313' transparent='1' />
+			<widget source='key_green' render='Label' position='140,270' zPosition='1' size='140,40' font='Regular;21' halign='center' valign='center' backgroundColor='#1f771f' transparent='1' />
+			<widget source='label' render='Label' position='10,10' size='640,40' font='Regular;24' backgroundColor='#25062748' transparent='1'  />
+			<widget name='config' position='10,50' zPosition='2' size='640,200' itemHeight='38' font='Regular;24' scrollbarMode='showOnDemand' />
+		</screen>'''
 		
 		
 	def __init__(self, session):
 		Screen.__init__(self, session)
 		# for the skin: first try MediaPlayerSettings, then Setup, this allows individual skinning
-		#self.skinName = ["PicturePlayerSetup", "Setup" ]
-		self.setup_title = _("Settings")
+		#self.skinName = ['PicturePlayerSetup', 'Setup' ]
+		self.setup_title = _('Settings')
 		self.onChangedEntry = [ ]
 		self.session = session
 
-		self["actions"] = ActionMap(["SetupActions"],
+		self['actions'] = ActionMap(['SetupActions'],
 			{
-				"cancel": self.keyCancel,
-				"save": self.keySave,
-				"ok": self.keySave,
+				'cancel': self.keyCancel,
+				'save': self.keySave,
+				'ok': self.keySave,
 			}, -2)
 
-		self["key_red"] = StaticText(_("Cancel"))
-		self["key_green"] = StaticText(_("OK"))
-		self["label"] = StaticText("")
+		self['key_red'] = StaticText(_('Cancel'))
+		self['key_green'] = StaticText(_('OK'))
+		self['label'] = StaticText('')
 
 		self.list = []
 		ConfigListScreen.__init__(self, self.list, session = self.session, on_change = self.changedEntry)
@@ -1490,14 +1490,14 @@ class FHEM_Setup(Screen, ConfigListScreen):
 
 	def createSetup(self):
 		self.list = []
-		self.list.append(getConfigListEntry(_("Http/Https"), config.fhem.httpresponse))
-		self.list.append(getConfigListEntry(_("Server IP"), config.fhem.serverip))
-		self.list.append(getConfigListEntry(_("Port"), config.fhem.port))
-		self.list.append(getConfigListEntry(_("Username"), config.fhem.username))
-		self.list.append(getConfigListEntry(_("Password"), config.fhem.password))
-		self.list.append(getConfigListEntry(_("Group Elements By"), config.fhem.grouping))
-		self["config"].list = self.list
-		self["config"].l.setList(self.list)
+		self.list.append(getConfigListEntry(_('Http/Https'), config.fhem.httpresponse))
+		self.list.append(getConfigListEntry(_('Server IP'), config.fhem.serverip))
+		self.list.append(getConfigListEntry(_('Port'), config.fhem.port))
+		self.list.append(getConfigListEntry(_('Username'), config.fhem.username))
+		self.list.append(getConfigListEntry(_('Password'), config.fhem.password))
+		self.list.append(getConfigListEntry(_('Group Elements By'), config.fhem.grouping))
+		self['config'].list = self.list
+		self['config'].l.setList(self.list)
 
 	def keyLeft(self):
 		ConfigListScreen.keyLeft(self)
@@ -1511,10 +1511,10 @@ class FHEM_Setup(Screen, ConfigListScreen):
 			x()
 
 	def getCurrentEntry(self):
-		return self["config"].getCurrent()[0]
+		return self['config'].getCurrent()[0]
 
 	def getCurrentValue(self):
-		return str(self["config"].getCurrent()[1].getText())
+		return str(self['config'].getCurrent()[1].getText())
 
 	def createSummary(self):
 		from Screens.Setup import SetupSummary
@@ -1611,7 +1611,7 @@ class ElementList(GUIComponent, object):
 				try:
 					x()
 				except: # FIXME!!!
-					print "FIXME in ElementList.selectionChanged"
+					print 'FIXME in ElementList.selectionChanged'
 					pass
 		
 	def getCurrentSelection(self):
