@@ -358,7 +358,7 @@ class MainScreen(Screen):
 				list.append((['Temperatur:',selectedElement.getMeasuredTemp() + ' °C'],))
 				list.append((['Luftfeuchte:',selectedElement.getHumidity() + ' %'],))
 				if selectedElement.getPressure() != 'no prop':
-					list.append((['Luftdruck:',selectedElement.getPressure() + ' mBar'],))
+					list.append((['Luftdruck:',selectedElement.getPressure() + ' hPa'],))
 				self['details'].setList(list, 3)
 				
 				self['set_Title'].setText('')
@@ -372,7 +372,7 @@ class MainScreen(Screen):
 				list.append((['Luftfeuchte:',selectedElement.getHumidity() + ' %'],))
 				list.append((['Windstärke:',selectedElement.getWind() + ' km/h'],))
 				if selectedElement.getPressure() != 'no prop':
-					list.append((['Luftdruck:',selectedElement.getPressure() + ' mBar'],))
+					list.append((['Luftdruck:',selectedElement.getPressure() + ' hPa'],))
 				self['details'].setList(list, 3)
 				
 				self['set_Title'].setText('')
@@ -457,7 +457,7 @@ class MainScreen(Screen):
 				list.append((['Temperatur:',selectedElement.getMeasuredTemp() + ' °C'],))
 				list.append((['Luftfeuchte:',selectedElement.getHumidity() + ' %'],))
 				if selectedElement.getPressure() != 'no prop':
-					list.append((['Luftdruck:',selectedElement.getPressure() + ' mBar'],))
+					list.append((['Luftdruck:',selectedElement.getPressure() + ' hPa'],))
 				list.append((['Batterie:',selectedElement.getBattery()],))
 				self['details'].setList(list, 3)
 				
