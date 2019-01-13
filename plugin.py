@@ -29,10 +29,13 @@ from Components.config import getConfigListEntry, ConfigEnableDisable, \
 	
 from enigma import getDesktop, eTimer, eListbox, eLabel, eListboxPythonMultiContent, gFont, eRect, eSize, RT_HALIGN_LEFT, RT_HALIGN_RIGHT, RT_HALIGN_CENTER, RT_VALIGN_CENTER, RT_VALIGN_TOP, RT_WRAP
 from Components.GUIComponent import GUIComponent
+from time import localtime
 
 d1 = ["MAX","FHT","FS20","CUL_HM","IT","CUL_TX","CUL_WS","FBDECT","Weather","MQTT_DEVICE","MQTT2_DEVICE","DOIF","FRITZBOX"]  #actual supported types - leave as it is
 d2 = ["CUL","notify","AptToDate","GHoma","Hyperion","HUEDevice","dummy","ESPEasy","pilight_switch","pilight_temp"]
-ELEMENTS = d1 +d2 
+ELEMENTS = d1 +d2
+
+fhemlog = '/usr/lib/enigma2/python/Plugins/Extensions/fhem/fhem.log'
 
 MAX_LIMITS = [5.0, 30.0]
 MAX_SPECIALS = ["eco","comfort","boost","auto","off","on"]
@@ -57,6 +60,20 @@ config.fhem.port = ConfigInteger(default=8083, limits=(8000, 9000))
 config.fhem.username = ConfigText(default="yourName")
 config.fhem.password = ConfigText(default="yourPass")
 config.fhem.grouping = ConfigSelection(default="ROOM", choices = [("TYPE", _("Type")), ("ROOM", _("Room"))])
+config.fhem.logfileswitch = ConfigSelection(default="Off", choices = [("On", _("On")), ("Off", _("Off"))])
+
+def writeLog(svalue):
+	lswitch = str(config.fhem.logfileswitch.value)
+	if lswitch == "On":
+		try:
+			te = localtime()
+			logtime = '%02d:%02d:%02d' % (te.tm_hour, te.tm_min, te.tm_sec)
+			logF = open(fhemlog, 'a')
+			logF.write(str(logtime) + ' - ' + str(svalue) + '\n')
+			logF.close()
+	
+		except:
+			return None	
 
 class MainScreen(Screen):
 	desktopSize = getDesktop(0).size()
@@ -261,7 +278,7 @@ class MainScreen(Screen):
 		self.listSelTimer.start(200, True)
 			
 	def listSelectionChanged(self):
-		print "FHEM-debug: %s -- %s" % ("listSelectionChanged", "enter")
+		writeLog("FHEM-debug: %s -- %s" % ("listSelectionChanged", "enter"))
 		if self.selList == 0:
 			
 			try:
@@ -296,7 +313,7 @@ class MainScreen(Screen):
 			except:
 				return
 				
-			print "FHEM-debug: %s -- %s" % ("listSelectionChanged", selectedElement.Name)
+			writeLog("FHEM-debug: %s -- %s" % ("listSelectionChanged", selectedElement.Name))
 			
 			if selectedElement.getType() in ["FHT", "MAX", "CUL_HM"]:			
 				if selectedElement.getSubType() == "thermostat":
@@ -574,7 +591,7 @@ class MainScreen(Screen):
 			
 		self.listSelectionChanged()
 		#self.refreshTimer.start(1000, True)
-		print "FHEM-debug: %s -- %s" % ("reload_Screen", "done")
+		writeLog("FHEM-debug: %s -- %s" % ("reload_Screen", "done"))
 	
 	def	setSpinner(self, enabled):
 		if enabled:
@@ -622,7 +639,7 @@ class FHEMElement(object):
 		self.Data = data
 
 	def getLimits(self):
-		print "FHEM-debug: %s -- %s" % ("getLimits", self.getType())
+		writeLog("FHEM-debug: %s -- %s" % ("getLimits", self.getType()))
 		if self.getType() == "FHT":
 			return FHT_LIMITS
 		elif self.getType() == "MAX":
@@ -633,7 +650,7 @@ class FHEMElement(object):
 			return [0,0]
 			
 	def getSpecials(self):
-		print "FHEM-debug: %s -- %s" % ("getSpecials", self.getType())
+		writeLog("FHEM-debug: %s -- %s" % ("getSpecials", self.getType()))
 		if self.getType() == "FHT":
 			return BASIC_SPECIALS
 		elif self.getType() == "IT":
@@ -1206,13 +1223,13 @@ class FHEMElementCollection(object):
 							if channels:
 								self.Elements.append(el)
 						except:
-							print "FHEM-debug: %s -- %s" % ("reload, error loading", element["name"])
+							writeLog("FHEM-debug: %s -- %s" % ("reload, error loading", element["name"]))
 					else:
 						try:
 							el = FHEMElement(str(element["name"]), eldata["Results"][0])
 							self.Elements.append(el)
 						except:
-							print "FHEM-debug: %s -- %s" % ("reload, error loading", element["name"])
+							writeLog("FHEM-debug: %s -- %s" % ("reload, error loading", element["name"]))
 					
 	def refresh(self):
 		for element in self.Elements:
@@ -1342,9 +1359,7 @@ class WebWorker(object):
 			
 				response = conn.getresponse()
 				if response.status != 200:
-					print "FHEM-debug: %s -- %s" % ("response", str(response.status) + " --- reason: " + response.reason)
-					self.hasError = True
-					return None
+					writeLog("FHEM-debug: %s -- %s" % ("response", str(response.status) + " --- reason: " + response.reason))
 				
 				self.hasError = False
 				return response
@@ -1362,9 +1377,7 @@ class WebWorker(object):
 			
 				response = conn.getresponse()
 				if response.status != 200:
-					print "FHEM-debug: %s -- %s" % ("response", str(response.status) + " --- reason: " + response.reason)
-					self.hasError = True
-					return None
+					writeLog("FHEM-debug: %s -- %s" % ("response", str(response.status) + " --- reason: " + response.reason))
 				
 				self.hasError = False
 				return response
@@ -1383,7 +1396,7 @@ class WebWorker(object):
 		if self.httpres == "Http":
 			conn = httplib.HTTPConnection(self.Address)
 			message = command + value
-			print "FHEM-debug: %s -- %s" % ("Message to send:", message)
+			writeLog("FHEM-debug: %s -- %s" % ("Message to send:", message))
 			message = message.replace(" ","%20")
 
 		
@@ -1395,16 +1408,16 @@ class WebWorker(object):
 
 			response = conn.getresponse()
 			if response.status != 200:
-				print "FHEM-debug: %s -- %s" % ("response", str(response.status) + " --- reason: " + response.reason)
+				writeLog("FHEM-debug: %s -- %s" % ("response", str(response.status) + " --- reason: " + response.reason))
 				self.hasError = True
 		
-			print "FHEM-debug: %s -- %s" % ("Message sent", "Result: " + str(response.status) + " Reason: " + response.reason)		
+			writeLog("FHEM-debug: %s -- %s" % ("Message sent", "Result: " + str(response.status) + " Reason: " + response.reason))			
 			self.hasError = False
 		
 		else:
 			conn = httplib.HTTPSConnection(self.Address)
 			message = command + value
-			print "FHEM-debug: %s -- %s" % ("Message to send:", message)
+			writeLog("FHEM-debug: %s -- %s" % ("Message to send:", message))
 			message = message.replace(" ","%20")
 
 		
@@ -1416,10 +1429,10 @@ class WebWorker(object):
 
 			response = conn.getresponse()
 			if response.status != 200:
-				print "FHEM-debug: %s -- %s" % ("response", str(response.status) + " --- reason: " + response.reason)
+				writeLog("FHEM-debug: %s -- %s" % ("response", str(response.status) + " --- reason: " + response.reason))
 				self.hasError = True
 		
-			print "FHEM-debug: %s -- %s" % ("Message sent", "Result: " + str(response.status) + " Reason: " + response.reason)		
+			writeLog("FHEM-debug: %s -- %s" % ("Message sent", "Result: " + str(response.status) + " Reason: " + response.reason))	
 			self.hasError = False
 
 ############################################     Config    #################################
