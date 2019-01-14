@@ -334,8 +334,8 @@ class MainScreen(Screen):
 					self['titleDetails'].setText('Details für ' + selectedElement.getAlias())
 					
 					list = []
-					list.append((['Holzkessel:',selectedElement.getMeasuredTemp() + ' °C'],))
-					list.append((['Warmwasser:',selectedElement.getMeasuredTemp1() + ' °C'],))
+					list.append((['TempSensor1:',selectedElement.getMeasuredTemp() + ' °C'],))
+					list.append((['TempSensor2:',selectedElement.getMeasuredTemp1() + ' °C'],))
 					list.append((['Timestamp:',selectedElement.getLastrcv1()],))
 					list.append((['Batterie:',selectedElement.getBattery()],))
 					self['details'].setList(list, 3)
