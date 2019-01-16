@@ -14,10 +14,15 @@ Thx Waldmensch for initial setup
 - Sometimes at the first setup, there are problems with logindetails, so:
 
 > Telnet Vu+
+
 > init 4
+
 > edit /etc/enigma2/settings and add 
+
 > config.fhem.username=yourUsername
+
 > config.fhem.password=yourPassword
+
 > init 3
 
 - It is essential to have both, 98_JsonList.pm and 98_JsonList2.pm at server
