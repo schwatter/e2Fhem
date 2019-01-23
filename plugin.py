@@ -31,37 +31,39 @@ from enigma import getDesktop, eTimer, eListbox, eLabel, eListboxPythonMultiCont
 from Components.GUIComponent import GUIComponent
 from time import localtime
 
-d1 = ['MAX','FHT','FS20','CUL_HM','IT','CUL_TX','CUL_WS','FBDECT','Weather','MQTT_DEVICE','MQTT2_DEVICE','DOIF','FRITZBOX']  #actual supported types - leave as it is
-d2 = ['CUL','notify','AptToDate','GHoma','Hyperion','HUEDevice','dummy','ESPEasy','pilight_switch','pilight_temp']
+d1 = ['MAX','FHT','FS20','CUL_HM','IT','CUL_TX','CUL_WS','FBDECT','Weather','MQTT_DEVICE','MQTT2_DEVICE','DOIF','FRITZBOX','CUL']  #actual supported types - leave as it is
+d2 = ['notify','AptToDate','GHoma','Hyperion','HUEDevice','dummy','ESPEasy','pilight_switch','pilight_temp','LightScene']
 ELEMENTS = d1 +d2
 
 fhemlog = '/usr/lib/enigma2/python/Plugins/Extensions/fhem/fhem.log'
 
-MAX_LIMITS = [5.0, 30.0]
-MAX_SPECIALS = ['eco','comfort','boost','auto','off','on']
+MAX_LIMITS 	 		= [5.0, 30.0]
+MAX_SPECIALS 		= ['eco','comfort','boost','auto','off','on']
 
-FHT_LIMITS = [6.0, 30.0]
+FHT_LIMITS			= [6.0, 30.0]
 
-FS20_LIMITS = [6.0, 30.0]
-FS20_SPECIALS= ['off','on','dim06%','dim25%','dim50%','dim75%','dim100%']
+FS20_LIMITS 		= [6.0, 100.0]
+FS20_SPECIALS		= ['off','on','dim06%','dim25%','dim50%','dim75%','dim100%']
 
-CUL_HM_LIMITS = [6.0, 30.0]
+CUL_HM_LIMITS		= [6.0, 30.0]
+DIMMER_LIMITS 		= [0.0, 100.0]
+DUMMY_LIMITS  		= [0, 100]
+THERMO_LIMITS 		= [6.0, 30.0]
 
-APTTODATE_SPECIALS = ['repoSync']
-BASIC_SPECIALS = ['off','on']
-Hyperion_SPECIALS = ['off','on','dim06%','dim25%','dim50%','dim75%','dim100%']
-HUEDevice_SPECIALS = ['off','on','dim06%','dim25%','dim50%','dim75%','dim100%','rgb ff0000','rgb DEFF26','rgb 0000ff','ct 490','ct 380','ct 270','ct 160']
-DUMMY_VOLUME = ['0%','20%','40%','60%','80%','100%']
+APTTODATE_SPECIALS 	= ['repoSync']
+BASIC_SPECIALS 		= ['off','on']
+Hyperion_SPECIALS 	= ['off','on','clearall','dim06%','dim25%','dim50%','dim75%','dim100%']
+HUEDevice_SPECIALS 	= ['off','on','dim06%','dim25%','dim50%','dim75%','dim100%','rgb ff0000','rgb DEFF26','rgb 0000ff','ct 490','ct 380','ct 270','ct 160']
 
 
-config.fhem = ConfigSubsection()
-config.fhem.httpresponse = ConfigSelection(default='Http', choices = [('Http', _('Http')), ('Https', _('Https'))])
-config.fhem.serverip = ConfigIP(default = [0,0,0,0])
-config.fhem.port = ConfigInteger(default=8083, limits=(8000, 9000))
-config.fhem.username = ConfigText(default='yourName')
-config.fhem.password = ConfigText(default='yourPass')
-config.fhem.grouping = ConfigSelection(default='ROOM', choices = [('TYPE', _('Type')), ('ROOM', _('Room'))])
-config.fhem.logfileswitch = ConfigSelection(default='Off', choices = [('On', _('On')), ('Off', _('Off'))])
+config.fhem 				= ConfigSubsection()
+config.fhem.httpresponse 	= ConfigSelection(default='Http', choices = [('Http', _('Http')), ('Https', _('Https'))])
+config.fhem.serverip 		= ConfigIP(default = [0,0,0,0])
+config.fhem.port 			= ConfigInteger(default=8083, limits=(8000, 9000))
+config.fhem.username 		= ConfigText(default='yourName')
+config.fhem.password 		= ConfigText(default='yourPass')
+config.fhem.grouping 		= ConfigSelection(default='ROOM', choices = [('TYPE', _('Type')), ('ROOM', _('Room'))])
+config.fhem.logfileswitch 	= ConfigSelection(default='Off', choices = [('On', _('On')), ('Off', _('Off'))])
 
 def writeLog(svalue):
 	lswitch = str(config.fhem.logfileswitch.value)
@@ -379,7 +381,7 @@ class MainScreen(Screen):
 				self['set_Title'].setText('')
 				self['set_Text'].setText('')
 			
-			elif selectedElement.getType() in ['FS20', 'IT', 'DOIF', 'GHoma', 'Hyperion', 'HUEDevice', 'dummy', 'pilight_switch']:
+			elif selectedElement.getType() in ['FS20','IT','DOIF','GHoma','Hyperion','HUEDevice','dummy','pilight_switch','LightScene']:
 				self['titleDetails'].setText('Details für ' + selectedElement.getAlias())
 				
 				list = []
@@ -493,6 +495,16 @@ class MainScreen(Screen):
 						self['set_Text'].setText(str(actvalue - 0.5))
 				else:
 					self['set_Text'].setText(str(float(selectedElement.getDesiredTemp()) - 0.5))
+					
+			elif selectedElement.getType() in ['dummy'] and selectedElement.getSetlistslider() == 'state:slider,0,1,100':
+				if self.is_number(self['set_Text'].getText()):
+					actvalue = int(self['set_Text'].getText())
+					limits = selectedElement.getLimits()
+					if actvalue > limits[0]:
+						try:
+							self['set_Text'].setText(str(actvalue - 5))
+						except ValueError:
+							pass
 		
 	def key_num_right_Handler(self):
 		if self.selList == 1:
@@ -505,6 +517,16 @@ class MainScreen(Screen):
 						self['set_Text'].setText(str(actvalue + 0.5))
 				else:
 					self['set_Text'].setText(str(float(selectedElement.getDesiredTemp()) + 0.5))
+					
+			elif selectedElement.getType() in ['dummy'] and selectedElement.getSetlistslider() == 'state:slider,0,1,100':
+				if self.is_number(self['set_Text'].getText()):
+					actvalue = int(self['set_Text'].getText())
+					limits = selectedElement.getLimits()
+					if actvalue < limits[1]:
+						try:
+							self['set_Text'].setText(str(actvalue + 5))
+						except ValueError:
+							pass
 		
 	def key_green_Handler(self):
 		if self.selList == 1:
@@ -516,7 +538,7 @@ class MainScreen(Screen):
 						if selectedElement.getSubType() == 'thermostat':
 							self.container.updateElementByName(selectedElement.Name, self['set_Text'].getText())
 					
-					elif selectedElement.getType() in ['CUL_HM' ,'FS20', 'IT', 'MQTT_DEVICE', 'MQTT2_DEVICE', 'DOIF', 'AptToDate', 'GHoma', 'Hyperion', 'HUEDevice', 'dummy']:
+					elif selectedElement.getType() in ['CUL_HM','FS20','IT','MQTT_DEVICE','MQTT2_DEVICE','DOIF','AptToDate','GHoma','Hyperion','HUEDevice','dummy','LightScene']:
 						self.container.updateElementByName(selectedElement.Name, self['set_Text'].getText())
 					
 					self.container.updateElementByName(selectedElement.Name, self['set_Text'].getText())
@@ -647,6 +669,8 @@ class FHEMElement(object):
 			return MAX_LIMITS
 		elif self.getType() == 'CUL_HM':
 			return CUL_HM_LIMITS
+		elif self.getType() == 'dummy':
+			return DUMMY_LIMITS
 		else:
 			return [0,0]
 			
@@ -678,14 +702,14 @@ class FHEMElement(object):
 			return Hyperion_SPECIALS
 		elif self.getType() == 'HUEDevice':
 			return HUEDevice_SPECIALS
-		elif self.getType() == 'dummy' and self.getSetlistslider() == 'state:slider,0,1,100':
-			return DUMMY_VOLUME
 		elif self.getType() == 'dummy' and self.getWebcmdstate() == 'state':
 			return self.getSetlist()
 		elif self.getType() == 'dummy':	
 			return self.getWebcmd()
 		elif self.getType() == 'pilight_switch':
 			return BASIC_SPECIALS
+		elif self.getType() == 'LightScene':
+			return self.getPossibleSets()
 		else:
 			return ['0']
 	
@@ -726,10 +750,16 @@ class FHEMElement(object):
 			return ('')
 		
 	def getPossibleSets(self):
-		try:
-			return str(self.Data['PossibleSets']).replace(':noArg',' ').split()
-		except:
-			return ('')
+		if self.getType() == 'dummy':
+			try:
+				return str(self.Data['PossibleSets']).replace(':noArg',' ').split()
+			except:
+				return ('')
+		elif self.getType() == 'LightScene':
+			try:
+				return str(self.Data['PossibleSets']).split('scene',1)[1].replace(':',' ').replace(',',' ').split('all')[0].split()
+			except:
+				return ('')
 
 	def getAlias(self):
 		try:
@@ -989,6 +1019,8 @@ class FHEMElement(object):
 				return str(self.Data['Readings']['state']['Value'])
 			elif type == 'pilight_switch':
 				return str(self.Data['Readings']['state']['Value'])
+			elif type == 'LightScene':
+				return str(self.Data['Readings']['state']['Value'])
 			else: 
 				return ''
 		except:
@@ -1154,6 +1186,8 @@ class FHEMElement(object):
 			return ''
 		elif type == 'pilight_switch':
 			return ''
+		elif type == 'LightScene':
+			return ''
 		
 	def getUpdateCommand(self):
 		type = self.getType()
@@ -1191,6 +1225,8 @@ class FHEMElement(object):
 			return '/fhem?XHR=1&cmd.%s=set %s %s ' % (self.Name, self.Name, self.getUpdateableProperty())
 		elif type == 'pilight_switch':
 			return '/fhem?XHR=1&cmd.%s=set %s %s ' % (self.Name, self.Name, self.getUpdateableProperty())
+		elif type == 'LightScene':
+			return '/fhem?XHR=1&cmd.%s=set %s scene %s ' % (self.Name, self.Name, self.getUpdateableProperty())
 			
 	def getHMChannels(self):
 		type = self.getType()
