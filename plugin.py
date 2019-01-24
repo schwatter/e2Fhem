@@ -33,16 +33,16 @@ from time import localtime
 
 d1 = ['MAX','FHT','FS20','CUL_HM','IT','CUL_TX','CUL_WS','FBDECT','Weather','MQTT_DEVICE','MQTT2_DEVICE','DOIF','FRITZBOX','CUL']  #actual supported types - leave as it is
 d2 = ['notify','AptToDate','GHoma','Hyperion','HUEDevice','dummy','ESPEasy','pilight_switch','pilight_temp','LightScene']
-ELEMENTS = d1 +d2
+ELEMENTS = d1 + d2
 
 fhemlog = '/usr/lib/enigma2/python/Plugins/Extensions/fhem/fhem.log'
 
-MAX_LIMITS 	 		= [5.0, 30.0]
+MAX_LIMITS 	 	= [5.0, 30.0]
 MAX_SPECIALS 		= ['eco','comfort','boost','auto','off','on']
 
-FHT_LIMITS			= [6.0, 30.0]
+FHT_LIMITS		= [6.0, 30.0]
 
-FS20_LIMITS 		= [6.0, 100.0]
+FS20_LIMITS 		= [6.0, 30.0]
 FS20_SPECIALS		= ['off','on','dim06%','dim25%','dim50%','dim75%','dim100%']
 
 CUL_HM_LIMITS		= [6.0, 30.0]
