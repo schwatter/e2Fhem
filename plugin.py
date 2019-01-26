@@ -392,19 +392,31 @@ class MainScreen(Screen):
 				self['set_Text'].setText(selectedElement.getReadingState())
 			
 			elif selectedElement.getType() in ['MQTT_DEVICE', 'MQTT2_DEVICE']:
-				self['titleDetails'].setText('Details für ' + selectedElement.getAlias())
-				
-				list = []
-				list.append((['Einschaltstatus:',selectedElement.getReadingState()],))
-				list.append((['Strom:',selectedElement.getENERGYCurrent() + ' A'],))
-				list.append((['Leistung:',selectedElement.getENERGYPower() + ' W'],))
-				list.append((['Energie heute:',selectedElement.getENERGYToday() + ' kWh'],))
-				list.append((['Energie insgesamt:',selectedElement.getENERGYTotal() + ' kWh'],))
-				list.append((['Present:',selectedElement.getPresent()],))
-				self['details'].setList(list, 3)
-				
-				self['set_Title'].setText('Neuer Schaltstatus')
-				self['set_Text'].setText(selectedElement.getReadingState())
+				if selectedElement.getENERGYTotal() == 'no prop':
+					self['titleDetails'].setText('Details für ' + selectedElement.getAlias())
+					
+					list = []
+					list.append((['Einschaltstatus:',selectedElement.getReadingState()],))
+					list.append((['Present:',selectedElement.getPresent()],))
+					self['details'].setList(list, 3)
+					
+					self['set_Title'].setText('Neuer Schaltstatus')
+					self['set_Text'].setText(selectedElement.getReadingState())
+					
+				elif selectedElement.getENERGYCurrent() != 'no prop':
+					self['titleDetails'].setText('Details für ' + selectedElement.getAlias())
+					
+					list = []
+					list.append((['Einschaltstatus:',selectedElement.getReadingState()],))
+					list.append((['Strom:',selectedElement.getENERGYCurrent() + ' A'],))
+					list.append((['Leistung:',selectedElement.getENERGYPower() + ' W'],))
+					list.append((['Energie heute:',selectedElement.getENERGYToday() + ' kWh'],))
+					list.append((['Energie insgesamt:',selectedElement.getENERGYTotal() + ' kWh'],))
+					list.append((['Present:',selectedElement.getPresent()],))
+					self['details'].setList(list, 3)
+					
+					self['set_Title'].setText('Neuer Schaltstatus')
+					self['set_Text'].setText(selectedElement.getReadingState())
 			
 			elif selectedElement.getType() in ['FBDECT']:
 				self['titleDetails'].setText('Details für ' + selectedElement.getAlias())
