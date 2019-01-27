@@ -37,24 +37,23 @@ ELEMENTS = d1 + d2
 
 fhemlog = '/usr/lib/enigma2/python/Plugins/Extensions/fhem/fhem.log'
 
-MAX_LIMITS 	 	= [5.0, 30.0]
+MAX_LIMITS 	 		= [5.0, 30.0]
 MAX_SPECIALS 		= ['eco','comfort','boost','auto','off','on']
 
-FHT_LIMITS		= [6.0, 30.0]
+FHT_LIMITS			= [6.0, 30.0]
 
 FS20_LIMITS 		= [6.0, 30.0]
-FS20_SPECIALS		= ['off','on','dim06%','dim25%','dim50%','dim75%','dim100%']
+FS20_SPECIALS		= ['off','on']
 
 CUL_HM_LIMITS		= [6.0, 30.0]
-DIMMER_LIMITS 		= [0.0, 100.0]
 DUMMY_LIMITS  		= [0, 100]
 THERMO_LIMITS 		= [6.0, 30.0]
 
 APTTODATE_SPECIALS 	= ['repoSync']
 BASIC_SPECIALS 		= ['off','on']
 Hyperion_SPECIALS 	= ['off','on','clearall','dim06%','dim25%','dim50%','dim75%','dim100%']
-HUEDevice_SPECIALS 	= ['off','on','dim06%','dim25%','dim50%','dim75%','dim100%','rgb ff0000','rgb DEFF26','rgb 0000ff','ct 490','ct 380','ct 270','ct 160']
-
+HUEDevice_SPECIALS 	= ['off','on','rgb ff0000','rgb DEFF26','rgb 0000ff','ct 490','ct 380','ct 270','ct 160']
+DIMMER_SPECIALS		= ['dim06%','dim12%','dim18%','dim25%','dim31%','dim37%','dim41%','dim43%','dim50%','dim56%','dim62%','dim68%','dim75%','dim81%','dim87%','dim93%','dim100%']
 
 config.fhem 				= ConfigSubsection()
 config.fhem.httpresponse 	= ConfigSelection(default='Http', choices = [('Http', _('Http')), ('Https', _('Https'))])
@@ -381,11 +380,22 @@ class MainScreen(Screen):
 				self['set_Title'].setText('')
 				self['set_Text'].setText('')
 			
-			elif selectedElement.getType() in ['FS20','IT','DOIF','GHoma','Hyperion','HUEDevice','dummy','pilight_switch','LightScene']:
+			elif selectedElement.getType() in ['FS20','IT','DOIF','GHoma','Hyperion','dummy','pilight_switch','LightScene']:
 				self['titleDetails'].setText('Details für ' + selectedElement.getAlias())
 				
 				list = []
 				list.append((['Einschaltstatus:',selectedElement.getReadingState()],))
+				self['details'].setList(list, 3)
+				
+				self['set_Title'].setText('Neuer Schaltstatus')
+				self['set_Text'].setText(selectedElement.getReadingState())
+			
+			elif selectedElement.getType() in ['HUEDevice']:
+				self['titleDetails'].setText('Details für ' + selectedElement.getAlias())
+				
+				list = []
+				list.append((['Einschaltstatus:',selectedElement.getReadingState()],))
+				list.append((['Helligkeit:',selectedElement.getBri()],))
 				self['details'].setList(list, 3)
 				
 				self['set_Title'].setText('Neuer Schaltstatus')
@@ -518,6 +528,29 @@ class MainScreen(Screen):
 						except ValueError:
 							pass
 		
+			elif selectedElement.getType() in ['HUEDevice','FS20']:
+				specials = selectedElement.getSpecials1()
+				actvalue = self['set_Text'].getText()
+				if self.is_number(actvalue):
+					self['set_Text'].setText(specials[1])
+				else:
+					for idx, svalue in enumerate(specials):
+						if svalue == actvalue:
+							if idx < len(specials) + 1:
+								self['set_Text'].setText(specials[idx - 1])
+							
+							else:
+								self['set_Text'].setText(specials[1])
+								
+							return
+
+						elif not actvalue:
+							if idx < len(specials) + 1:
+								self['set_Text'].setText(specials[idx - 1])
+						
+						else:
+							self['set_Text'].setText(specials[1])	
+		
 	def key_num_right_Handler(self):
 		if self.selList == 1:
 			selectedElement = self['Menu2'].l.getCurrentSelection()[0]
@@ -539,6 +572,29 @@ class MainScreen(Screen):
 							self['set_Text'].setText(str(actvalue + 5))
 						except ValueError:
 							pass
+							
+			elif selectedElement.getType() in ['HUEDevice','FS20']:
+				specials = selectedElement.getSpecials1()
+				actvalue = self['set_Text'].getText()
+				if self.is_number(actvalue):
+					self['set_Text'].setText(specials[0])
+				else:
+					for idx, svalue in enumerate(specials):
+						if svalue == actvalue:
+							if idx < len(specials) - 1:
+								self['set_Text'].setText(specials[idx + 1])
+							
+							else:
+								self['set_Text'].setText(specials[0])
+								
+							return
+
+						elif not actvalue:
+							if idx < len(specials) - 1:
+								self['set_Text'].setText(specials[idx + 1])
+						
+						else:
+							self['set_Text'].setText(specials[0])
 		
 	def key_green_Handler(self):
 		if self.selList == 1:
@@ -724,6 +780,15 @@ class FHEMElement(object):
 			return self.getPossibleSets()
 		else:
 			return ['0']
+			
+	def getSpecials1(self):
+		writeLog('FHEM-debug: %s -- %s' % ('getSpecials1', self.getType()))
+		if self.getType() == 'HUEDevice':
+			return DIMMER_SPECIALS
+		elif self.getType() == 'FS20':
+			return DIMMER_SPECIALS
+		else:
+			return ['0']
 	
 	def getType(self):
 		return str(self.Data['Internals']['TYPE'])
@@ -811,6 +876,8 @@ class FHEMElement(object):
 				return 'no prop'
 			elif type in ['CUL_HM'] and self.getSubType() == 'thermostat':
 				return str(self.Data['Readings']['humidity']['Value'])
+			elif type in ['CUL_HM'] and self.getModel() == 'HM-TC-IT-WM-W-EU':
+				return str(self.Name + '_Climate'['Readings']['humidity']['Value'])
 			elif type in ['CUL_HM'] and self.getSubType() == 'THSensor':
 				return str(self.Data['Readings']['humidity']['Value'])
 			elif type in ['CUL_TX'] and self.getSubType() == 'THSensor':
@@ -1021,6 +1088,8 @@ class FHEMElement(object):
 				return str(self.Data['Readings']['state']['Value'])	
 			elif type == 'Hyperion':
 				return str(self.Data['Readings']['state']['Value'])
+			elif type == 'HUEDevice' and self.getGroup() == 'HUEGroup':
+				return str('dim') + str(self.Data['Readings']['pct']['Value'] + '%')
 			elif type == 'HUEDevice':
 				return str(self.Data['Readings']['state']['Value'])
 			elif type == 'dummy':
@@ -1153,11 +1222,22 @@ class FHEMElement(object):
 		else:
 			return 'unknown'
 	
-	def getmodel(self):
+	def getModel(self):
 		type = self.getType()
 		if type == 'CUL_HM':
 			try:
 				subtype = str(self.Data['Attributes']['model'])
+			except:
+				subtype = 'unknown'
+			return subtype
+		else:
+			return 'unknown'
+	
+	def getGroup(self):
+		type = self.getType()
+		if type == 'HUEDevice':
+			try:
+				subtype = str(self.Data['Attributes']['group'])
 			except:
 				subtype = 'unknown'
 			return subtype
@@ -1207,9 +1287,9 @@ class FHEMElement(object):
 			return '/fhem?XHR=1&cmd.%s=set %s %s ' % (self.Name, self.Name, self.getUpdateableProperty())
 		elif type == 'CUL_HM' and self.getSubType() == 'switch':
 			return '/fhem?XHR=1&cmd=set %s %s ' % (self.Name, self.getUpdateableProperty())		
-		elif type == 'CUL_HM' and self.getmodel() == 'HM-CC-RT-DN':
+		elif type == 'CUL_HM' and self.getModel() == 'HM-CC-RT-DN':
 			return '/fhem?XHR=1&cmd=set %s %s ' % (self.Name + '_Clima', self.getUpdateableProperty())
-		elif type == 'CUL_HM' and self.getmodel() == 'HM-TC-IT-WM-W-EU':
+		elif type == 'CUL_HM' and self.getModel() == 'HM-TC-IT-WM-W-EU':
 			return '/fhem?XHR=1&cmd=set %s %s ' % (self.Name + '_Climate', self.getUpdateableProperty())
 		elif type == 'MAX':
 			return '/fhem?XHR=1&cmd=set %s %s ' % (self.Name, self.getUpdateableProperty())
