@@ -846,6 +846,12 @@ class FHEMElement(object):
 				return self.Name
 		except:
 			return self.Name
+		
+	def getBri(self):
+		try:
+			return str(self.Data['Readings']['pct']['Value'])
+		except:
+			return ('')
 			
 	def getDesiredTemp(self):
 		type = self.getType()
@@ -950,8 +956,6 @@ class FHEMElement(object):
 			else: 
 				retval = '0.0'
 				
-			#m = re.search('\d{1,2}.\d{1,2}', retval)
-			#return m.group(1)
 			return retval
 			
 		except:
