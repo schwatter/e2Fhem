@@ -40,20 +40,17 @@ fhemlog = '/usr/lib/enigma2/python/Plugins/Extensions/fhem/fhem.log'
 MAX_LIMITS 	 		= [5.0, 30.0]
 MAX_SPECIALS 		= ['eco','comfort','boost','auto','off','on']
 
-FHT_LIMITS			= [6.0, 30.0]
-
-FS20_LIMITS 		= [6.0, 30.0]
 FS20_SPECIALS		= ['off','on']
 
-CUL_HM_LIMITS		= [6.0, 30.0]
 DUMMY_LIMITS  		= [0, 100]
 THERMO_LIMITS 		= [6.0, 30.0]
 
 APTTODATE_SPECIALS 	= ['repoSync']
 BASIC_SPECIALS 		= ['off','on']
-Hyperion_SPECIALS 	= ['off','on','clearall','dim06%','dim25%','dim50%','dim75%','dim100%']
-HUEDevice_SPECIALS 	= ['off','on','rgb ff0000','rgb DEFF26','rgb 0000ff','ct 490','ct 380','ct 270','ct 160']
 DIMMER_SPECIALS		= ['dim06%','dim12%','dim18%','dim25%','dim31%','dim37%','dim41%','dim43%','dim50%','dim56%','dim62%','dim68%','dim75%','dim81%','dim87%','dim93%','dim100%']
+HUEDevice_SPECIALS 	= ['off','on','rgb ff0000','rgb DEFF26','rgb 0000ff','ct 490','ct 380','ct 270','ct 160']
+Hyperion_SPECIALS 	= ['off','on','clearall','dim06%','dim25%','dim50%','dim75%','dim100%']
+FS20_SPECIALS		= ['off','on']
 
 config.fhem 				= ConfigSubsection()
 config.fhem.httpresponse 	= ConfigSelection(default='Http', choices = [('Http', _('Http')), ('Https', _('Https'))])
@@ -528,7 +525,7 @@ class MainScreen(Screen):
 						except ValueError:
 							pass
 		
-			elif selectedElement.getType() in ['HUEDevice','FS20']:
+			elif selectedElement.getType() in ['FS20','HUEDevice','Hyperion']:
 				specials = selectedElement.getSpecials1()
 				actvalue = self['set_Text'].getText()
 				if self.is_number(actvalue):
@@ -573,7 +570,7 @@ class MainScreen(Screen):
 						except ValueError:
 							pass
 							
-			elif selectedElement.getType() in ['HUEDevice','FS20']:
+			elif selectedElement.getType() in ['FS20','HUEDevice','Hyperion']:
 				specials = selectedElement.getSpecials1()
 				actvalue = self['set_Text'].getText()
 				if self.is_number(actvalue):
@@ -732,11 +729,13 @@ class FHEMElement(object):
 	def getLimits(self):
 		writeLog('FHEM-debug: %s -- %s' % ('getLimits', self.getType()))
 		if self.getType() == 'FHT':
-			return FHT_LIMITS
+			return THERMO_LIMITS
 		elif self.getType() == 'MAX':
 			return MAX_LIMITS
 		elif self.getType() == 'CUL_HM':
-			return CUL_HM_LIMITS
+			return THERMO_LIMITS
+		elif self.getType() == 'FS20':
+			return THERMO_LIMITS
 		elif self.getType() == 'dummy':
 			return DUMMY_LIMITS
 		else:
@@ -786,6 +785,8 @@ class FHEMElement(object):
 		if self.getType() == 'HUEDevice':
 			return DIMMER_SPECIALS
 		elif self.getType() == 'FS20':
+			return DIMMER_SPECIALS
+		elif self.getType() == 'Hyperion':
 			return DIMMER_SPECIALS
 		else:
 			return ['0']
