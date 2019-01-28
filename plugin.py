@@ -828,7 +828,7 @@ class FHEMElement(object):
 			return ('')
 		
 	def getPossibleSets(self):
-		if self.getType() == 'dummy':
+		if self.getType() in ['dummy', 'DOIF']:
 			try:
 				return str(self.Data['PossibleSets']).replace(':noArg',' ').split()
 			except:
