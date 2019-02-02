@@ -94,10 +94,10 @@ class MainScreen(Screen):
 			<widget name='set_Text' position='900,301' size='380,79' valign='center' halign='center' font='Regular;30' zPosition='1'/>
 			<widget name='set_ArrowRight' position='1280,301' size='100,79' valign='center' halign='center' font='Regular;30' zPosition='1'/>
 			<widget name='spinner' position='600,390' size='140,40' valign='center' halign='right' font='Regular;25' foregroundColor='white' zPosition='1'/>
-			<ePixmap position='10,390' size='140,40' pixmap='skin_default/buttons/red.png' transparent='1' alphatest='on' />
-			<ePixmap position='150,390' size='140,40' pixmap='skin_default/buttons/green.png' transparent='1' alphatest='on' />
-			<ePixmap position='290,390' size='140,40' pixmap='skin_default/buttons/yellow.png' transparent='1' alphatest='on' />
-			<ePixmap position='430,390' size='140,40' pixmap='skin_default/buttons/blue.png' transparent='1' alphatest='on' />
+			<ePixmap position='10,420' size='140,40' pixmap='skin_default/buttons/red.png' transparent='1' alphatest='on' />
+			<ePixmap position='150,420' size='140,40' pixmap='skin_default/buttons/green.png' transparent='1' alphatest='on' />
+			<ePixmap position='290,420' size='140,40' pixmap='skin_default/buttons/yellow.png' transparent='1' alphatest='on' />
+			<ePixmap position='430,420' size='140,40' pixmap='skin_default/buttons/blue.png' transparent='1' alphatest='on' />
 			<widget source='key_red' render='Label' position='10,390' zPosition='1' size='140,40' valign='center' halign='center' font='Regular;21' transparent='1' foregroundColor='white' shadowColor='black' shadowOffset='-1,-1' />
 			<widget source='key_green' render='Label' position='150,390' zPosition='1' size='140,40' valign='center' halign='center' font='Regular;21' transparent='1' foregroundColor='white' shadowColor='black' shadowOffset='-1,-1' />
 			<widget source='key_yellow' render='Label' position='290,390' zPosition='1' size='140,40' valign='center' halign='center' font='Regular;21' transparent='1' foregroundColor='white' shadowColor='black' shadowOffset='-1,-1' />
@@ -105,10 +105,10 @@ class MainScreen(Screen):
 			<widget backgroundColor='#808080' font='Regular; 22' position='830,395' render='Label' size='180,25' source='global.CurrentTime' transparent='1' valign='bottom' halign='right' zPosition='3' foregroundColor='white'>
 				<convert type='ClockToText'>Format:%A,</convert>
 			</widget>
-			<widget backgroundColor='#808080' font='Regular; 22' position='1030,395' render='Label' size='180,25' source='global.CurrentTime' transparent='1' valign='bottom' halign='left' zPosition='3' foregroundColor='white'>
+			<widget backgroundColor='#808080' font='Regular; 23' position='1145,395' render='Label' size='180,25' source='global.CurrentTime' transparent='1' valign='bottom' halign='left' zPosition='3' foregroundColor='white'>
 				<convert type='ClockToText'>Format:%d. %B -</convert>
 			</widget>
-			<widget source='global.CurrentTime' render='Label' position='1200,395' size='190,50' font='Regular; 22' halign='left' valign='top' foregroundColor='white' backgroundColor='#808080' transparent='1'>
+			<widget source='global.CurrentTime' render='Label' position='1030,395' size='190,50' font='Regular; 27' halign='left' valign='top' foregroundColor='white' backgroundColor='#808080' transparent='1'>
 				<convert type='ClockToText'>WithSeconds</convert>
 			</widget>
 		</screen>'''
