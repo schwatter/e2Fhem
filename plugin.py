@@ -759,8 +759,10 @@ class FHEMElement(object):
 			return MQTT_SPECIALS
 		elif self.getType() == 'MQTT2_DEVICE':
 			return MQTT2_SPECIALS
-		elif self.getType() == 'DOIF':
+		elif self.getType() == 'DOIF' and self.getCmdState() == 'no prop':
 			return self.getPossibleSets()
+		elif self.getType() == 'DOIF':
+			return self.getCmdState()	
 		elif self.getType() == 'AptToDate':
 			return APTTODATE_SPECIALS
 		elif self.getType() == 'GHoma':
@@ -838,6 +840,12 @@ class FHEMElement(object):
 				return str(self.Data['PossibleSets']).split('scene',1)[1].replace(':',' ').replace(',',' ').split('all')[0].split()
 			except:
 				return ('')
+				
+	def getCmdState(self):
+		try:
+			return str(self.Data['Attributes']['cmdState']).split('|')
+		except:
+			return 'no prop'
 
 	def getAlias(self):
 		try:
