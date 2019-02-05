@@ -599,13 +599,6 @@ class MainScreen(Screen):
 			
 			try:
 				if self['set_Text'].getText() != '':
-					if selectedElement.getType() in ['FHT', 'MAX', 'CUL_HM']:
-						if selectedElement.getSubType() == 'thermostat':
-							self.container.updateElementByName(selectedElement.Name, self['set_Text'].getText())
-					
-					elif selectedElement.getType() in ['CUL_HM','FS20','IT','MQTT_DEVICE','MQTT2_DEVICE','DOIF','AptToDate','GHoma','Hyperion','HUEDevice','dummy','LightScene']:
-						self.container.updateElementByName(selectedElement.Name, self['set_Text'].getText())
-					
 					self.container.updateElementByName(selectedElement.Name, self['set_Text'].getText())
 					self.setSpinner(True)
 					self.refreshTimer.start(500, True)
