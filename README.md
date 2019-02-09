@@ -9,7 +9,7 @@ Thx Waldmensch for initial setup
 
 # Setup
 
-- Disable csrfToken.
+- static csrfToken is ok. Dynamic not till yet.
 - Don't use unusual stateFormat's.
 - Sometimes at the first setup, there are problems with logindetails, so:
 
@@ -35,7 +35,7 @@ Thx Waldmensch for initial setup
 # TODO
 
 - <del>autoswitch- or manualswitch for http/https</del>
-- add csrfToken
+- <del>add csrfToken</del> 
 - full switch to jsonlist2+
 - add more devices
 - ...
