@@ -58,6 +58,8 @@ config.fhem.serverip 		= ConfigIP(default = [0,0,0,0])
 config.fhem.port 			= ConfigInteger(default=8083, limits=(8000, 9000))
 config.fhem.username 		= ConfigText(default='yourName')
 config.fhem.password 		= ConfigText(default='yourPass')
+config.fhem.csrfswitch 		= ConfigSelection(default='Off', choices = [('On', _('On')), ('Off', _('Off'))])
+config.fhem.csrftoken 		= ConfigText(default='yourToken')
 config.fhem.grouping 		= ConfigSelection(default='ROOM', choices = [('TYPE', _('Type')), ('ROOM', _('Room'))])
 config.fhem.logfileswitch 	= ConfigSelection(default='Off', choices = [('On', _('On')), ('Off', _('Off'))])
 
@@ -224,6 +226,7 @@ class MainScreen(Screen):
 		config.fhem.port.save()
 		config.fhem.username.save()
 		config.fhem.password.save()
+		config.fhem.csrftoken.save()
 		config.fhem.grouping.save() 
  		configfile.save()
 
@@ -1472,10 +1475,13 @@ class WebWorker(object):
 		self.port = int(config.fhem.port.value)
 		self.username = str(config.fhem.username.value)
 		self.password = str(config.fhem.password.value)
+		self.csrfswitch = str(config.fhem.csrfswitch.value)
+		self.csrftoken = str(config.fhem.csrftoken.value)
 		
 		self.Address = self.server + ':' + str(self.port)
 		self.Prefix = ['/fhem?XHR=1&cmd=jsonlist+','/fhem?XHR=1&cmd=jsonlist2+']
 		self.isAuth = len(self.username) + len(self.password)
+		self.basicToken = '&fwcsrf=' + self.csrftoken
 		
 		if self.isAuth != 0: 
 			self.credentialss = self.username + ':' + self.password
@@ -1488,7 +1494,10 @@ class WebWorker(object):
 			try:
 				conn = httplib.HTTPConnection(self.Address, timeout=10)
 				if self.isAuth != 0:
-					conn.request('GET', self.Prefix[listtype] + elements, headers = self.headers)
+					if self.csrfswitch == 'On':
+						conn.request('GET', self.Prefix[listtype] + elements + self.basicToken, headers = self.headers)
+					elif self.csrfswitch == 'Off':
+						conn.request('GET', self.Prefix[listtype] + elements, headers = self.headers)
 				else:
 					conn.request('GET', self.Prefix[listtype] + elements)
 			
@@ -1506,7 +1515,10 @@ class WebWorker(object):
 			try:
 				conn = httplib.HTTPSConnection(self.Address, timeout=10)
 				if self.isAuth != 0:
-					conn.request('GET', self.Prefix[listtype] + elements, headers = self.headers)
+					if self.csrfswitch == 'On':
+						conn.request('GET', self.Prefix[listtype] + elements + self.basicToken, headers = self.headers)
+					elif self.csrfswitch == 'Off':
+						conn.request('GET', self.Prefix[listtype] + elements, headers = self.headers)
 				else:
 					conn.request('GET', self.Prefix[listtype] + elements)
 			
@@ -1537,7 +1549,10 @@ class WebWorker(object):
 		
 
 			if self.isAuth != 0:
-				conn.request('GET', message, headers = self.headers)
+				if self.csrfswitch == 'On':
+					conn.request('GET', message + self.basicToken, headers = self.headers)
+				elif self.csrfswitch == 'Off':
+					conn.request('GET', message, headers = self.headers)	
 			else:
 				conn.request('GET', message)
 
@@ -1558,7 +1573,10 @@ class WebWorker(object):
 		
 
 			if self.isAuth != 0:
-				conn.request('GET', message, headers = self.headers)
+				if self.csrfswitch == 'On':
+					conn.request('GET', message + self.basicToken, headers = self.headers)
+				elif self.csrfswitch == 'Off':
+					conn.request('GET', message, headers = self.headers)	
 			else:
 				conn.request('GET', message)
 
@@ -1576,13 +1594,13 @@ class FHEM_Setup(Screen, ConfigListScreen):
 	desktopSize = getDesktop(0).size()
 	if desktopSize.width() >= 1920:
 		skin = '''
-		<screen name='picshow' position='300,645' size='660,350' title='FHEM Settings' >
-			<ePixmap pixmap='skin_default/buttons/red.png' position='0,300' size='140,40' alphatest='on' />
-			<ePixmap pixmap='skin_default/buttons/green.png' position='140,300' size='140,40' alphatest='on' />
-			<widget source='key_red' render='Label' position='0,300' zPosition='1' size='140,40' font='Regular;21' halign='center' valign='center' backgroundColor='#9f1313' transparent='1' />
-			<widget source='key_green' render='Label' position='140,300' zPosition='1' size='140,40' font='Regular;21' halign='center' valign='center' backgroundColor='#1f771f' transparent='1' />
+		<screen name='picshow' position='300,645' size='660,420' title='FHEM Settings' >
+			<ePixmap pixmap='skin_default/buttons/red.png' position='0,410' size='140,40' alphatest='on' />
+			<ePixmap pixmap='skin_default/buttons/green.png' position='140,410' size='140,40' alphatest='on' />
+			<widget source='key_red' render='Label' position='0,383' zPosition='1' size='140,40' font='Regular;21' halign='center' valign='center' backgroundColor='#9f1313' transparent='1' />
+			<widget source='key_green' render='Label' position='140,383' zPosition='1' size='140,40' font='Regular;21' halign='center' valign='center' backgroundColor='#1f771f' transparent='1' />
 			<widget source='label' render='Label' position='10,10' size='640,40' font='Regular;24' backgroundColor='#25062748' transparent='1'  />
-			<widget name='config' position='10,50' zPosition='2' size='640,255' itemHeight='38' font='Regular;24' scrollbarMode='showOnDemand' />
+			<widget name='config' position='10,50' zPosition='2' size='640,350' itemHeight='38' font='Regular;24' scrollbarMode='showOnDemand' />
 		</screen>'''
 	else:
 		skin = '''
@@ -1630,7 +1648,10 @@ class FHEM_Setup(Screen, ConfigListScreen):
 		self.list.append(getConfigListEntry(_('Port'), config.fhem.port))
 		self.list.append(getConfigListEntry(_('Username'), config.fhem.username))
 		self.list.append(getConfigListEntry(_('Password'), config.fhem.password))
+		self.list.append(getConfigListEntry(_('CsrfStatus'), config.fhem.csrfswitch))
+		self.list.append(getConfigListEntry(_('CsrfToken'), config.fhem.csrftoken))
 		self.list.append(getConfigListEntry(_('Group Elements By'), config.fhem.grouping))
+		self.list.append(getConfigListEntry(_('logfile'), config.fhem.logfileswitch))
 		self['config'].list = self.list
 		self['config'].l.setList(self.list)
 
