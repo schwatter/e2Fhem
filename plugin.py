@@ -83,10 +83,10 @@ class MainScreen(Screen):
 		<screen position='300,645' size='1390,430' name='fhem' title='FHEM Haussteuerung' >
 			<widget name='titleMenu1' position='10,20' size='150,30' valign='center' halign='left' font='Regular;30'/>
 			<eLabel name='bgMenu1' position='9,49' size='252,334' backgroundColor='#808080' zPosition='0'/>
-			<widget name='Menu1' position='10,50' size='250,332' scrollbarMode='showOnDemand' zPosition='1'/>
+			<widget name='Menu1' position='10,50' size='250,332' scrollbarMode='showOnDemand' zPosition='1' scrollbarWidth='3'/>
 			<widget name='titleMenu2' position='280,20' size='150,30' valign='center' halign='left' font='Regular;30'/>
 			<eLabel name='bgMenu2' position='279,49' size='502,334' backgroundColor='#808080' zPosition='0'/>
-			<widget name='Menu2' position='280,50' size='500,332' scrollbarMode='showOnDemand' zPosition='1'/>
+			<widget name='Menu2' position='280,50' size='500,332' scrollbarMode='showOnDemand' zPosition='1' scrollbarWidth='3'/>
 			<widget name='titleDetails' position='800,20' size='580,30' valign='center' halign='left' font='Regular;30'/>
 			<eLabel name='bgDetails' position='799,49' size='582,182' backgroundColor='#808080' zPosition='0'/>
 			<widget name='details' position='800,50' size='580,180' zPosition='1'/>
@@ -119,10 +119,10 @@ class MainScreen(Screen):
 		<screen position='5,265' size='1270,450' name='fhem' title='FHEM Haussteuerung' >
 			<widget name='titleMenu1' position='10,20' size='150,25' valign='center' halign='left' font='Regular;25'/>
 			<eLabel name='bgMenu1' position='9,49' size='252,337' backgroundColor='#808080' zPosition='0'/>
-			<widget name='Menu1' position='10,50' size='250,335' scrollbarMode='showOnDemand' zPosition='1'/>
+			<widget name='Menu1' position='10,50' size='250,335' scrollbarMode='showOnDemand' zPosition='1' scrollbarWidth='3'/>
 			<widget name='titleMenu2' position='280,20' size='150,25' valign='center' halign='left' font='Regular;25'/>
 			<eLabel name='bgMenu2' position='279,49' size='502,337' backgroundColor='#808080' zPosition='0'/>
-			<widget name='Menu2' position='280,50' size='500,335' scrollbarMode='showOnDemand' zPosition='1'/>
+			<widget name='Menu2' position='280,50' size='500,335' scrollbarMode='showOnDemand' zPosition='1' scrollbarWidth='3'/>
 			<widget name='titleDetails' position='800,20' size='460,25' valign='center' halign='left' font='Regular;25'/>
 			<eLabel name='bgDetails' position='799,49' size='462,202' backgroundColor='#808080' zPosition='0'/>
 			<widget name='details' position='800,50' size='460,200' zPosition='1'/>
@@ -1600,7 +1600,7 @@ class FHEM_Setup(Screen, ConfigListScreen):
 			<widget source='key_red' render='Label' position='0,383' zPosition='1' size='140,40' font='Regular;21' halign='center' valign='center' backgroundColor='#9f1313' transparent='1' />
 			<widget source='key_green' render='Label' position='140,383' zPosition='1' size='140,40' font='Regular;21' halign='center' valign='center' backgroundColor='#1f771f' transparent='1' />
 			<widget source='label' render='Label' position='10,10' size='640,40' font='Regular;24' backgroundColor='#25062748' transparent='1'  />
-			<widget name='config' position='10,50' zPosition='2' size='640,350' itemHeight='38' font='Regular;24' scrollbarMode='showOnDemand' />
+			<widget name='config' position='10,50' zPosition='2' size='640,350' itemHeight='38' font='Regular;24' scrollbarMode='showOnDemand' scrollbarWidth='3'/>
 		</screen>'''
 	else:
 		skin = '''
@@ -1610,7 +1610,7 @@ class FHEM_Setup(Screen, ConfigListScreen):
 			<widget source='key_red' render='Label' position='0,270' zPosition='1' size='140,40' font='Regular;21' halign='center' valign='center' backgroundColor='#9f1313' transparent='1' />
 			<widget source='key_green' render='Label' position='140,270' zPosition='1' size='140,40' font='Regular;21' halign='center' valign='center' backgroundColor='#1f771f' transparent='1' />
 			<widget source='label' render='Label' position='10,10' size='640,40' font='Regular;24' backgroundColor='#25062748' transparent='1'  />
-			<widget name='config' position='10,50' zPosition='2' size='640,200' itemHeight='38' font='Regular;24' scrollbarMode='showOnDemand' />
+			<widget name='config' position='10,50' zPosition='2' size='640,200' itemHeight='38' font='Regular;24' scrollbarMode='showOnDemand' scrollbarWidth='3'/>
 		</screen>'''
 		
 		
