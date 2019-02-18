@@ -755,7 +755,7 @@ class FHEMElement(object):
 			return MQTT_SPECIALS
 		elif self.getType() == 'MQTT2_DEVICE':
 			return MQTT2_SPECIALS
-		elif self.getType() == 'DOIF' and self.getCmdState() == 'no prop':
+		elif self.getType() == 'DOIF' and self.getCmdState() == '':
 			return self.getPossibleSets()
 		elif self.getType() == 'DOIF':
 			return self.getCmdState()	
@@ -841,7 +841,7 @@ class FHEMElement(object):
 		try:
 			return str(self.Data['Attributes']['cmdState']).split('|')
 		except:
-			return 'no prop'
+			return ''
 
 	def getAlias(self):
 		try:
