@@ -51,6 +51,14 @@ DIMMER_SPECIALS		= ['dim06%','dim12%','dim18%','dim25%','dim31%','dim37%','dim41
 HUEDevice_SPECIALS 	= ['off','on','rgb ff0000','rgb DEFF26','rgb 0000ff','ct 490','ct 380','ct 270','ct 160']
 Hyperion_SPECIALS 	= ['off','on','clearall','dim06%','dim25%','dim50%','dim75%','dim100%']
 FS20_SPECIALS		= ['off','on']
+SWITCH4FOUR_DU1 	= ['on1 off','on1 on']
+SWITCH4FOUR_DU2 	= ['on2 off','on2 on']
+SWITCH4FOUR_DU3 	= ['on3 off','on3 on']
+SWITCH4FOUR_DU4 	= ['on4 off','on4 on']
+SWITCH4FOUR_HM1 	= ['_Sw_01 off','_Sw_01 on']
+SWITCH4FOUR_HM2 	= ['_Sw_02 off','_Sw_02 on']
+SWITCH4FOUR_HM3 	= ['_Sw_03 off','_Sw_03 on']
+SWITCH4FOUR_HM4 	= ['_Sw_04 off','_Sw_04 on']
 
 config.fhem 				= ConfigSubsection()
 config.fhem.httpresponse 	= ConfigSelection(default='Http', choices = [('Http', _('Http')), ('Https', _('Https'))])
@@ -505,6 +513,105 @@ class MainScreen(Screen):
 	def key_0_Handler(self):
 		pass
 		
+	def key_1_Handler(self):
+		if self.selList == 1:
+			selectedElement = self['Menu2'].l.getCurrentSelection()[0]
+			specials = selectedElement.getSpecials1()
+			actvalue = self['set_Text'].getText()
+			if self.is_number(actvalue):
+				self['set_Text'].setText(specials[0])
+			else:
+				for idx, svalue in enumerate(specials):
+					if svalue == actvalue:
+						if idx < len(specials) - 1:
+							self['set_Text'].setText(specials[idx + 1])
+						
+						else:
+							self['set_Text'].setText(specials[0])
+							
+						return
+
+					elif not actvalue:
+						if idx < len(specials) - 1:
+							self['set_Text'].setText(specials[idx + 1])
+					
+					else:
+						self['set_Text'].setText(specials[0])
+						
+	def key_2_Handler(self):
+		if self.selList == 1:
+			selectedElement = self['Menu2'].l.getCurrentSelection()[0]
+			specials = selectedElement.getSpecials2()
+			actvalue = self['set_Text'].getText()
+			if self.is_number(actvalue):
+				self['set_Text'].setText(specials[0])
+			else:
+				for idx, svalue in enumerate(specials):
+					if svalue == actvalue:
+						if idx < len(specials) - 1:
+							self['set_Text'].setText(specials[idx + 1])
+						
+						else:
+							self['set_Text'].setText(specials[0])
+							
+						return
+
+					elif not actvalue:
+						if idx < len(specials) - 1:
+							self['set_Text'].setText(specials[idx + 1])
+					
+					else:
+						self['set_Text'].setText(specials[0])
+		
+	def key_3_Handler(self):
+		if self.selList == 1:
+			selectedElement = self['Menu2'].l.getCurrentSelection()[0]
+			specials = selectedElement.getSpecials3()
+			actvalue = self['set_Text'].getText()
+			if self.is_number(actvalue):
+				self['set_Text'].setText(specials[0])
+			else:
+				for idx, svalue in enumerate(specials):
+					if svalue == actvalue:
+						if idx < len(specials) - 1:
+							self['set_Text'].setText(specials[idx + 1])
+						
+						else:
+							self['set_Text'].setText(specials[0])
+							
+						return
+
+					elif not actvalue:
+						if idx < len(specials) - 1:
+							self['set_Text'].setText(specials[idx + 1])
+					
+					else:
+						self['set_Text'].setText(specials[0])
+						
+	def key_4_Handler(self):
+		if self.selList == 1:
+			selectedElement = self['Menu2'].l.getCurrentSelection()[0]
+			specials = selectedElement.getSpecials4()
+			actvalue = self['set_Text'].getText()
+			if self.is_number(actvalue):
+				self['set_Text'].setText(specials[0])
+			else:
+				for idx, svalue in enumerate(specials):
+					if svalue == actvalue:
+						if idx < len(specials) - 1:
+							self['set_Text'].setText(specials[idx + 1])
+						
+						else:
+							self['set_Text'].setText(specials[0])
+							
+						return
+
+					elif not actvalue:
+						if idx < len(specials) - 1:
+							self['set_Text'].setText(specials[idx + 1])
+					
+					else:
+						self['set_Text'].setText(specials[0])
 	
 	def key_num_left_Handler(self):
 		if self.selList == 1:
@@ -529,7 +636,7 @@ class MainScreen(Screen):
 							pass
 		
 			elif selectedElement.getType() in ['FS20','HUEDevice','Hyperion']:
-				specials = selectedElement.getSpecials1()
+				specials = selectedElement.getSpecials0()
 				actvalue = self['set_Text'].getText()
 				if self.is_number(actvalue):
 					self['set_Text'].setText(specials[1])
@@ -574,7 +681,7 @@ class MainScreen(Screen):
 							pass
 							
 			elif selectedElement.getType() in ['FS20','HUEDevice','Hyperion']:
-				specials = selectedElement.getSpecials1()
+				specials = selectedElement.getSpecials0()
 				actvalue = self['set_Text'].getText()
 				if self.is_number(actvalue):
 					self['set_Text'].setText(specials[0])
@@ -778,14 +885,50 @@ class FHEMElement(object):
 		else:
 			return ['0']
 			
-	def getSpecials1(self):
-		writeLog('FHEM-debug: %s -- %s' % ('getSpecials1', self.getType()))
+	def getSpecials0(self):
+		writeLog('FHEM-debug: %s -- %s' % ('getSpecials0', self.getType()))
 		if self.getType() == 'HUEDevice':
 			return DIMMER_SPECIALS
 		elif self.getType() == 'FS20':
 			return DIMMER_SPECIALS
 		elif self.getType() == 'Hyperion':
 			return DIMMER_SPECIALS
+		else:
+			return ['0']
+			
+	def getSpecials1(self):
+		writeLog('FHEM-debug: %s -- %s' % ('getSpecials1', self.getType()))
+		if self.getType() == 'dummy':
+			return SWITCH4FOUR_DU1
+		elif self.getType() == 'CUL_HM' and self.getModel() == 'HM-LC-SW4-BA-PCB':
+			return SWITCH4FOUR_HM1
+		else:
+			return ['0']
+	
+	def getSpecials2(self):
+		writeLog('FHEM-debug: %s -- %s' % ('getSpecials2', self.getType()))
+		if self.getType() == 'dummy':	
+			return SWITCH4FOUR_DU2
+		elif self.getType() == 'CUL_HM' and self.getModel() == 'HM-LC-SW4-BA-PCB':
+			return SWITCH4FOUR_HM2
+		else:
+			return ['0']
+			
+	def getSpecials3(self):
+		writeLog('FHEM-debug: %s -- %s' % ('getSpecials3', self.getType()))
+		if self.getType() == 'dummy':	
+			return SWITCH4FOUR_DU3
+		elif self.getType() == 'CUL_HM' and self.getModel() == 'HM-LC-SW4-BA-PCB':
+			return SWITCH4FOUR_HM3
+		else:
+			return ['0']
+			
+	def getSpecials4(self):
+		writeLog('FHEM-debug: %s -- %s' % ('getSpecials4', self.getType()))
+		if self.getType() == 'dummy':	
+			return SWITCH4FOUR_DU4
+		elif self.getType() == 'CUL_HM' and self.getModel() == 'HM-LC-SW4-BA-PCB':
+			return SWITCH4FOUR_HM4
 		else:
 			return ['0']
 	
@@ -1102,7 +1245,7 @@ class FHEMElement(object):
 			elif type == 'HUEDevice':
 				return str(self.Data['Readings']['state']['Value'])
 			elif type == 'dummy':
-				return str(self.Data['Readings']['state']['Value'])
+				return str(self.Data['Internals']['STATE'])
 			elif type == 'ESPEasy':
 				return str(self.Data['Readings']['state']['Value'])
 			elif type == 'pilight_temp':
@@ -1294,6 +1437,8 @@ class FHEMElement(object):
 		type = self.getType()
 		if type in ['FHT']:
 			return '/fhem?XHR=1&cmd=set %s %s ' % (self.Name,  self.getUpdateableProperty())
+		elif type == 'CUL_HM' and self.getModel() == 'HM-LC-SW4-BA-PCB':
+			return '/fhem?XHR=1&cmd=set %s' % (self.Name + self.getUpdateableProperty())
 		elif type == 'CUL_HM' and self.getSubType() == 'switch':
 			return '/fhem?XHR=1&cmd=set %s %s ' % (self.Name, self.getUpdateableProperty())		
 		elif type == 'CUL_HM' and self.getModel() == 'HM-CC-RT-DN':
