@@ -55,10 +55,6 @@ SWITCH4FOUR_DU1 	= ['on1 off','on1 on']
 SWITCH4FOUR_DU2 	= ['on2 off','on2 on']
 SWITCH4FOUR_DU3 	= ['on3 off','on3 on']
 SWITCH4FOUR_DU4 	= ['on4 off','on4 on']
-SWITCH4FOUR_HM1 	= ['_Sw_01 off','_Sw_01 on']
-SWITCH4FOUR_HM2 	= ['_Sw_02 off','_Sw_02 on']
-SWITCH4FOUR_HM3 	= ['_Sw_03 off','_Sw_03 on']
-SWITCH4FOUR_HM4 	= ['_Sw_04 off','_Sw_04 on']
 
 config.fhem 				= ConfigSubsection()
 config.fhem.httpresponse 	= ConfigSelection(default='Http', choices = [('Http', _('Http')), ('Https', _('Https'))])
@@ -887,7 +883,7 @@ class FHEMElement(object):
 		elif self.getType() == 'LightScene':
 			return self.getPossibleSets()
 		else:
-			return ['0']
+			return ['']
 			
 	def getSpecials0(self):
 		writeLog('FHEM-debug: %s -- %s' % ('getSpecials0', self.getType()))
@@ -898,43 +894,43 @@ class FHEMElement(object):
 		elif self.getType() == 'Hyperion':
 			return DIMMER_SPECIALS
 		else:
-			return ['0']
+			return ['']
 			
 	def getSpecials1(self):
 		writeLog('FHEM-debug: %s -- %s' % ('getSpecials1', self.getType()))
 		if self.getType() == 'dummy':
 			return SWITCH4FOUR_DU1
-		elif self.getType() == 'CUL_HM' and self.getModel() == 'HM-LC-SW4-BA-PCB':
-			return SWITCH4FOUR_HM1
+		elif self.getType() == 'CUL_HM' and self.getModel() in ['HM-LC-SW4-BA-PCB','HM-LC-SW2-FM']:
+			return self.getChannel1()
 		else:
-			return ['0']
+			return ['']
 	
 	def getSpecials2(self):
 		writeLog('FHEM-debug: %s -- %s' % ('getSpecials2', self.getType()))
 		if self.getType() == 'dummy':	
 			return SWITCH4FOUR_DU2
-		elif self.getType() == 'CUL_HM' and self.getModel() == 'HM-LC-SW4-BA-PCB':
-			return SWITCH4FOUR_HM2
+		elif self.getType() == 'CUL_HM' and self.getModel() in ['HM-LC-SW4-BA-PCB','HM-LC-SW2-FM']:
+			return self.getChannel2()
 		else:
-			return ['0']
+			return ['']
 			
 	def getSpecials3(self):
 		writeLog('FHEM-debug: %s -- %s' % ('getSpecials3', self.getType()))
 		if self.getType() == 'dummy':	
 			return SWITCH4FOUR_DU3
-		elif self.getType() == 'CUL_HM' and self.getModel() == 'HM-LC-SW4-BA-PCB':
-			return SWITCH4FOUR_HM3
+		elif self.getType() == 'CUL_HM' and self.getModel() in ['HM-LC-SW4-BA-PCB','HM-LC-SW2-FM']:
+			return self.getChannel3()
 		else:
-			return ['0']
+			return ['']
 			
 	def getSpecials4(self):
 		writeLog('FHEM-debug: %s -- %s' % ('getSpecials4', self.getType()))
 		if self.getType() == 'dummy':	
 			return SWITCH4FOUR_DU4
-		elif self.getType() == 'CUL_HM' and self.getModel() == 'HM-LC-SW4-BA-PCB':
-			return SWITCH4FOUR_HM4
+		elif self.getType() == 'CUL_HM' and self.getModel() in ['HM-LC-SW4-BA-PCB','HM-LC-SW2-FM']:
+			return self.getChannel4()
 		else:
-			return ['0']
+			return ['']
 	
 	def getType(self):
 		return str(self.Data['Internals']['TYPE'])
@@ -944,15 +940,39 @@ class FHEMElement(object):
 			return str(self.Data['Attributes']['room']).split(',')
 		except:
 			return ('')
-		
+	
+	def getInternals(self):
+		return self.Data['Internals']
+	
 	def getReadings(self):
 		return self.Data['Readings']
 		
 	def getAttributes(self):
 		return self.Data['Attributes']
 	
-	def getInternals(self):
-		return self.Data['Internals']
+	def getChannel1(self):
+		try:
+			return str(self.Data['Internals']['channel_01']+ ' on').split(':') + str(self.Data['Internals']['channel_01']+ ' off').split(':')
+		except:
+			return ('')
+			
+	def getChannel2(self):
+		try:
+			return str(self.Data['Internals']['channel_02']+ ' on').split(':') + str(self.Data['Internals']['channel_02']+ ' off').split(':')
+		except:
+			return ('')	
+			
+	def getChannel3(self):
+		try:
+			return str(self.Data['Internals']['channel_03']+ ' on').split(':') + str(self.Data['Internals']['channel_03']+ ' off').split(':')
+		except:
+			return ('')	
+			
+	def getChannel4(self):
+		try:
+			return str(self.Data['Internals']['channel_04']+ ' on').split(':') + str(self.Data['Internals']['channel_04']+ ' off').split(':')
+		except:
+			return ('')	
 	
 	def getWebcmd(self):
 		try:
@@ -1441,8 +1461,8 @@ class FHEMElement(object):
 		type = self.getType()
 		if type in ['FHT']:
 			return '/fhem?XHR=1&cmd=set %s %s ' % (self.Name,  self.getUpdateableProperty())
-		elif type == 'CUL_HM' and self.getModel() == 'HM-LC-SW4-BA-PCB':
-			return '/fhem?XHR=1&cmd=set %s' % (self.Name + self.getUpdateableProperty())
+		elif type == 'CUL_HM' and self.getModel() in ['HM-LC-SW4-BA-PCB','HM-LC-SW2-FM']:
+			return '/fhem?XHR=1&cmd=set %s' % (self.getUpdateableProperty())
 		elif type == 'CUL_HM' and self.getSubType() == 'switch':
 			return '/fhem?XHR=1&cmd=set %s %s ' % (self.Name, self.getUpdateableProperty())		
 		elif type == 'CUL_HM' and self.getModel() == 'HM-CC-RT-DN':
