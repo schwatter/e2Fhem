@@ -516,102 +516,106 @@ class MainScreen(Screen):
 	def key_1_Handler(self):
 		if self.selList == 1:
 			selectedElement = self['Menu2'].l.getCurrentSelection()[0]
-			specials = selectedElement.getSpecials1()
-			actvalue = self['set_Text'].getText()
-			if self.is_number(actvalue):
-				self['set_Text'].setText(specials[0])
-			else:
-				for idx, svalue in enumerate(specials):
-					if svalue == actvalue:
-						if idx < len(specials) - 1:
-							self['set_Text'].setText(specials[idx + 1])
+			if selectedElement.getType() in ['dummy','CUL_HM']:
+				specials = selectedElement.getSpecials1()
+				actvalue = self['set_Text'].getText()
+				if self.is_number(actvalue):
+					self['set_Text'].setText(specials[0])
+				else:
+					for idx, svalue in enumerate(specials):
+						if svalue == actvalue:
+							if idx < len(specials) - 1:
+								self['set_Text'].setText(specials[idx + 1])
+							
+							else:
+								self['set_Text'].setText(specials[0])
+								
+							return
+
+						elif not actvalue:
+							if idx < len(specials) - 1:
+								self['set_Text'].setText(specials[idx + 1])
 						
 						else:
 							self['set_Text'].setText(specials[0])
-							
-						return
-
-					elif not actvalue:
-						if idx < len(specials) - 1:
-							self['set_Text'].setText(specials[idx + 1])
-					
-					else:
-						self['set_Text'].setText(specials[0])
 						
 	def key_2_Handler(self):
 		if self.selList == 1:
 			selectedElement = self['Menu2'].l.getCurrentSelection()[0]
-			specials = selectedElement.getSpecials2()
-			actvalue = self['set_Text'].getText()
-			if self.is_number(actvalue):
-				self['set_Text'].setText(specials[0])
-			else:
-				for idx, svalue in enumerate(specials):
-					if svalue == actvalue:
-						if idx < len(specials) - 1:
-							self['set_Text'].setText(specials[idx + 1])
+			if selectedElement.getType() in ['dummy','CUL_HM']:
+				specials = selectedElement.getSpecials2()
+				actvalue = self['set_Text'].getText()
+				if self.is_number(actvalue):
+					self['set_Text'].setText(specials[0])
+				else:
+					for idx, svalue in enumerate(specials):
+						if svalue == actvalue:
+							if idx < len(specials) - 1:
+								self['set_Text'].setText(specials[idx + 1])
+							
+							else:
+								self['set_Text'].setText(specials[0])
+								
+							return
+
+						elif not actvalue:
+							if idx < len(specials) - 1:
+								self['set_Text'].setText(specials[idx + 1])
 						
 						else:
 							self['set_Text'].setText(specials[0])
-							
-						return
-
-					elif not actvalue:
-						if idx < len(specials) - 1:
-							self['set_Text'].setText(specials[idx + 1])
-					
-					else:
-						self['set_Text'].setText(specials[0])
 		
 	def key_3_Handler(self):
 		if self.selList == 1:
 			selectedElement = self['Menu2'].l.getCurrentSelection()[0]
-			specials = selectedElement.getSpecials3()
-			actvalue = self['set_Text'].getText()
-			if self.is_number(actvalue):
-				self['set_Text'].setText(specials[0])
-			else:
-				for idx, svalue in enumerate(specials):
-					if svalue == actvalue:
-						if idx < len(specials) - 1:
-							self['set_Text'].setText(specials[idx + 1])
+			if selectedElement.getType() in ['dummy','CUL_HM']:
+				specials = selectedElement.getSpecials3()
+				actvalue = self['set_Text'].getText()
+				if self.is_number(actvalue):
+					self['set_Text'].setText(specials[0])
+				else:
+					for idx, svalue in enumerate(specials):
+						if svalue == actvalue:
+							if idx < len(specials) - 1:
+								self['set_Text'].setText(specials[idx + 1])
+							
+							else:
+								self['set_Text'].setText(specials[0])
+								
+							return
+
+						elif not actvalue:
+							if idx < len(specials) - 1:
+								self['set_Text'].setText(specials[idx + 1])
 						
 						else:
 							self['set_Text'].setText(specials[0])
-							
-						return
-
-					elif not actvalue:
-						if idx < len(specials) - 1:
-							self['set_Text'].setText(specials[idx + 1])
-					
-					else:
-						self['set_Text'].setText(specials[0])
 						
 	def key_4_Handler(self):
 		if self.selList == 1:
 			selectedElement = self['Menu2'].l.getCurrentSelection()[0]
-			specials = selectedElement.getSpecials4()
-			actvalue = self['set_Text'].getText()
-			if self.is_number(actvalue):
-				self['set_Text'].setText(specials[0])
-			else:
-				for idx, svalue in enumerate(specials):
-					if svalue == actvalue:
-						if idx < len(specials) - 1:
-							self['set_Text'].setText(specials[idx + 1])
+			if selectedElement.getType() in ['dummy','CUL_HM']:
+				specials = selectedElement.getSpecials4()
+				actvalue = self['set_Text'].getText()
+				if self.is_number(actvalue):
+					self['set_Text'].setText(specials[0])
+				else:
+					for idx, svalue in enumerate(specials):
+						if svalue == actvalue:
+							if idx < len(specials) - 1:
+								self['set_Text'].setText(specials[idx + 1])
+							
+							else:
+								self['set_Text'].setText(specials[0])
+								
+							return
+
+						elif not actvalue:
+							if idx < len(specials) - 1:
+								self['set_Text'].setText(specials[idx + 1])
 						
 						else:
 							self['set_Text'].setText(specials[0])
-							
-						return
-
-					elif not actvalue:
-						if idx < len(specials) - 1:
-							self['set_Text'].setText(specials[idx + 1])
-					
-					else:
-						self['set_Text'].setText(specials[0])
 	
 	def key_num_left_Handler(self):
 		if self.selList == 1:
