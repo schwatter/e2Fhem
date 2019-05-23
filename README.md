@@ -27,8 +27,11 @@ Thx Waldmensch for initial setup
 - pilight_switch
 - pilight_temp
 
+
 ## Installation
 
+- created folder fhem : /usr/lib/enigma2/python/Plugins/Extensions/fhem/
+- push all files in
 - static csrfToken is ok. Dynamic not till yet.
 - Don't use unusual stateFormat's.
 - Sometimes at the first setup, there are problems with logindetails, so:
@@ -47,6 +50,7 @@ Thx Waldmensch for initial setup
 - Please set for best compatibility with HUEGroup the following in fhem for each group.
 > attr yourHUEGroup createActionReadings 1
 > attr yourHUEGroup createGroupReadings 1
+
 
 ## TODO
 
