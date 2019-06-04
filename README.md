@@ -55,8 +55,9 @@ Thx Waldmensch for initial setup
 ## TODO
 
 - <del>autoswitch- or manualswitch for http/https</del>
-- <del>add csrfToken</del>
-- find final solution for remove HTML-Tags when stateFormat is pimped for style
+- <del>add static csrfToken</del>
+- final solution to remove HTML-Tags when stateFormat is pimped for style
+- add dynamic csrfToken
 - full switch to jsonlist2+
 - add more devices
 - ...
