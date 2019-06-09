@@ -1703,7 +1703,7 @@ class WebWorker(object):
 		
 	def getJson(self, elements, listtype):
 		try:
-			jsonObj = json.loads(self.getHtml(elements, listtype).read())
+			jsonObj = json.loads(self.getHtml(elements, listtype).read().replace('\n', ''))
 			return jsonObj
 		except:
 			return None
