@@ -33,7 +33,7 @@ Thx Waldmensch for initial setup
 - create folder fhem : /usr/lib/enigma2/python/Plugins/Extensions/fhem/
 - push all files in
 - static csrfToken is ok. Dynamic not till yet.
-- Don't use unusual stateFormat's. HTML-Tags breaks json for matching device.
+- stateFormat : Doublequotes (") break matching device. Use singlequotes (').
 - Sometimes at the first setup, there are problems with logindetails, so:
 
 1. Telnet Vu+
@@ -56,7 +56,7 @@ Thx Waldmensch for initial setup
 
 - <del>autoswitch- or manualswitch for http/https</del>
 - <del>add static csrfToken</del>
-- final solution to remove HTML-Tags when stateFormat is pimped for style
+- <del>final solution to remove HTML-Tags when stateFormat is pimped for style</del>
 - add dynamic csrfToken
 - full switch to jsonlist2+
 - add more devices
