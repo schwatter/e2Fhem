@@ -33,7 +33,7 @@ Thx Waldmensch for initial setup
 - create folder fhem : /usr/lib/enigma2/python/Plugins/Extensions/fhem/
 - push all files in
 - static csrfToken is ok. Dynamic not till yet.
-- stateFormat : Doublequotes (") break matching device. Use singlequotes (').
+- stateFormat : Doublequotes (") inside HTML-Tags break matching device. Use singlequotes (')
 - Sometimes at the first setup, there are problems with logindetails, so:
 
 1. Telnet Vu+
