@@ -36,6 +36,7 @@ d2 = ['notify','AptToDate','GHoma','Hyperion','HUEDevice','dummy','ESPEasy','pil
 ELEMENTS = d1 + d2
 
 fhemlog = '/usr/lib/enigma2/python/Plugins/Extensions/fhem/fhem.log'
+jsonData = '/usr/lib/enigma2/python/Plugins/Extensions/fhem/deviceData.json'
 
 MAX_LIMITS 	 		= [5.0, 30.0]
 MAX_SPECIALS 		= ['eco','comfort','boost','auto','off','on']
@@ -66,6 +67,7 @@ config.fhem.csrfswitch 		= ConfigSelection(default='Off', choices = [('On', _('O
 config.fhem.csrftoken 		= ConfigText(default='yourToken')
 config.fhem.grouping 		= ConfigSelection(default='ROOM', choices = [('TYPE', _('Type')), ('ROOM', _('Room'))])
 config.fhem.logfileswitch 	= ConfigSelection(default='Off', choices = [('On', _('On')), ('Off', _('Off'))])
+config.fhem.jsondataswitch	= ConfigSelection(default='Off', choices = [('On', _('On')), ('Off', _('Off'))])
 
 def writeLog(svalue):
 	lswitch = str(config.fhem.logfileswitch.value)
@@ -78,7 +80,20 @@ def writeLog(svalue):
 			logF.close()
 	
 		except:
-			return None	
+			return None
+			
+def writeJson(jsonObj):
+	jswitch = str(config.fhem.jsondataswitch.value)
+	if jswitch == 'On':
+		try:
+			te = localtime()
+			logtime = '%02d:%02d:%02d' % (te.tm_hour, te.tm_min, te.tm_sec)
+			dataF = open(jsonData, 'a')
+			dataF.write(str(logtime) + ' - ' + jsonObj + '\n')
+			dataF.close()
+
+		except:
+			return None
 
 class MainScreen(Screen):
 	desktopSize = getDesktop(0).size()
@@ -1704,9 +1719,12 @@ class WebWorker(object):
 	def getJson(self, elements, listtype):
 		try:
 			jsonObj = json.loads(self.getHtml(elements, listtype).read().replace('\n', ''))
+			# write jsondata also to file in fhemfolder, when switch is on
+			writeJson('FHEM-jsonDebug: %s -- %s' % ('response', str(jsonObj)))
 			return jsonObj
-		except:
-			return None
+		except ValueError:
+			# print "error loading JSON"
+			writeLog("error loading JSON")
 		
 	def setPropertyValue(self, command, value):
 		if self.httpres == 'Http':
@@ -1821,6 +1839,7 @@ class FHEM_Setup(Screen, ConfigListScreen):
 		self.list.append(getConfigListEntry(_('CsrfToken'), config.fhem.csrftoken))
 		self.list.append(getConfigListEntry(_('Group Elements By'), config.fhem.grouping))
 		self.list.append(getConfigListEntry(_('logfile'), config.fhem.logfileswitch))
+		self.list.append(getConfigListEntry(_('jsondata to file/ for research'), config.fhem.jsondataswitch))
 		self['config'].list = self.list
 		self['config'].l.setList(self.list)
 
