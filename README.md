@@ -51,8 +51,10 @@ Thx Waldmensch for initial setup
   Group set to dialout and owner is Fhem.
 
 - Please set for best compatibility with HUEGroup the following in fhem for each group.
-> attr yourHUEGroup createActionReadings 1
-> attr yourHUEGroup createGroupReadings 1
+```
+attr yourHUEGroup createActionReadings 1
+attr yourHUEGroup createGroupReadings 1
+```
 
 
 ## How To
