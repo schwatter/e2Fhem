@@ -1,4 +1,7 @@
 ## fhemfrontend-enigma2
+
+![](images/guiShot.jpg)
+
 Thx Waldmensch for initial setup
 
 ## Supportet devices
