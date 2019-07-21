@@ -69,7 +69,7 @@ Unterschiedliche Geräte haben
 3. ChannelUp and ChannelDown for dimming and temperature.
 4. Num1 till Num4 for moreChannelSwitches.
 
-DOIF / cmdState
+DOIF / cmdState<br/>
 No spaces, fill the gap for example with "_".
 Or use compound words.
 ```
