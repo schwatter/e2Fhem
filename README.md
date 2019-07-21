@@ -30,9 +30,7 @@ Thx Waldmensch for initial setup
 - pilight_switch
 - pilight_temp
 
-Unterschiedliche Geräte haben
 
- verschiedene Funktionen
 ## Installation
 
 - create folder fhem : /usr/lib/enigma2/python/Plugins/Extensions/fhem/
@@ -55,6 +53,7 @@ Unterschiedliche Geräte haben
 - Please set for best compatibility with HUEGroup the following in fhem for each group.
 > attr yourHUEGroup createActionReadings 1
 > attr yourHUEGroup createGroupReadings 1
+
 
 ## How To
 
@@ -96,6 +95,7 @@ setstate iconDemo 2019-02-24 16:01:57 on3 on
 setstate iconDemo 2019-02-24 16:02:05 on4 off
 setstate iconDemo 2019-02-23 23:14:56 state on
 ```
+
 
 ## TODO
 
