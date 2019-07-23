@@ -6,29 +6,29 @@ Thx Waldmensch for initial setup
 
 ## Supportet devices
 
-- MAX
-- FHT
-- FS20
+- AptToDate
+- CUL
 - CUL_HM
-- IT
 - CUL_TX
 - CUL_WS
-- FBDECT
-- Weather
-- MQTT_DEVICE
-- MQTT2_DEVICE
 - DOIF
-- FRITZBOX
-- CUL
-- notify
-- AptToDate
-- GHoma
-- Hyperion
-- HUEDevice
 - dummy
 - ESPEasy
+- FBDECT
+- FHT
+- FRITZBOX
+- FS20
+- GHoma
+- HUEDevice
+- Hyperion
+- IT
+- MAX
+- MQTT_DEVICE
+- MQTT2_DEVICE
+- notify
 - pilight_switch
 - pilight_temp
+- Weather
 
 
 ## Installation
