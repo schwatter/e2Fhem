@@ -22,6 +22,7 @@ Thx Waldmensch for initial setup
 - HUEDevice
 - Hyperion
 - IT
+- LightScene
 - MAX
 - MQTT_DEVICE
 - MQTT2_DEVICE
