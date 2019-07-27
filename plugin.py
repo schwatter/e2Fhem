@@ -32,7 +32,7 @@ from Components.GUIComponent import GUIComponent
 from time import localtime
 
 d1 = ['MAX','FHT','FS20','CUL_HM','IT','CUL_TX','CUL_WS','FBDECT','Weather','MQTT_DEVICE','MQTT2_DEVICE','DOIF','FRITZBOX','CUL']  #actual supported types - leave as it is
-d2 = ['notify','AptToDate','GHoma','Hyperion','HUEDevice','dummy','ESPEasy','pilight_switch','pilight_temp','LightScene']
+d2 = ['notify','AptToDate','GHoma','Hyperion','HUEDevice','dummy','ESPEasy','pilight_switch','pilight_temp','LightScene','readingsProxy']
 ELEMENTS = d1 + d2
 
 fhemlog = '/usr/lib/enigma2/python/Plugins/Extensions/fhem/fhem.log'
@@ -399,7 +399,7 @@ class MainScreen(Screen):
 				self['set_Title'].setText('')
 				self['set_Text'].setText('')
 			
-			elif selectedElement.getType() in ['FS20','IT','DOIF','GHoma','Hyperion','dummy','pilight_switch','LightScene']:
+			elif selectedElement.getType() in ['FS20','IT','DOIF','GHoma','Hyperion','dummy','pilight_switch','LightScene','readingsProxy']:
 				self['titleDetails'].setText('Details für ' + selectedElement.getAlias())
 				
 				list = []
@@ -897,6 +897,8 @@ class FHEMElement(object):
 			return BASIC_SPECIALS
 		elif self.getType() == 'LightScene':
 			return self.getPossibleSets()
+		elif self.getType() == 'readingsProxy':
+			return self.getSetlist()
 		else:
 			return ['']
 			
@@ -1293,6 +1295,8 @@ class FHEMElement(object):
 				return str(self.Data['Readings']['state']['Value'])
 			elif type == 'LightScene':
 				return str(self.Data['Readings']['state']['Value'])
+			elif type == 'readingsProxy':
+				return str(self.Data['Readings']['state']['Value'])
 			else: 
 				return ''
 		except:
@@ -1471,6 +1475,8 @@ class FHEMElement(object):
 			return ''
 		elif type == 'LightScene':
 			return ''
+		elif type == 'readingsProxy':
+			return ''
 		
 	def getUpdateCommand(self):
 		type = self.getType()
@@ -1512,6 +1518,8 @@ class FHEMElement(object):
 			return '/fhem?XHR=1&cmd=set %s %s ' % (self.Name, self.getUpdateableProperty())
 		elif type == 'LightScene':
 			return '/fhem?XHR=1&cmd=set %s scene %s ' % (self.Name, self.getUpdateableProperty())
+		elif type == 'readingsProxy':
+			return '/fhem?XHR=1&cmd=set %s %s ' % (self.Name, self.getUpdateableProperty())
 			
 	def getHMChannels(self):
 		type = self.getType()
