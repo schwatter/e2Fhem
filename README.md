@@ -29,6 +29,7 @@ Thx Waldmensch for initial setup
 - notify
 - pilight_switch
 - pilight_temp
+- readingsProxy
 - Weather
 
 
