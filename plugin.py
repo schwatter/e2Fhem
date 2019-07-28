@@ -32,7 +32,7 @@ from Components.GUIComponent import GUIComponent
 from time import localtime
 
 d1 = ['MAX','FHT','FS20','CUL_HM','IT','CUL_TX','CUL_WS','FBDECT','Weather','MQTT_DEVICE','MQTT2_DEVICE','DOIF','FRITZBOX','CUL']  #actual supported types - leave as it is
-d2 = ['notify','AptToDate','GHoma','Hyperion','HUEDevice','dummy','ESPEasy','pilight_switch','pilight_temp','LightScene','readingsProxy']
+d2 = ['notify','AptToDate','GHoma','Hyperion','HUEDevice','dummy','ESPEasy','pilight_switch','pilight_temp','LightScene','readingsProxy','PRESENCE']
 ELEMENTS = d1 + d2
 
 fhemlog = '/usr/lib/enigma2/python/Plugins/Extensions/fhem/fhem.log'
@@ -462,7 +462,7 @@ class MainScreen(Screen):
 				self['set_Title'].setText('Neuer Schaltstatus')
 				self['set_Text'].setText(selectedElement.getReadingState())
 			
-			elif selectedElement.getType() in ['FRITZBOX', 'CUL', 'notify']:
+			elif selectedElement.getType() in ['FRITZBOX', 'CUL', 'notify', 'PRESENCE']:
 				self['titleDetails'].setText('Details für ' + selectedElement.getAlias())
 				
 				list = []
@@ -1296,6 +1296,8 @@ class FHEMElement(object):
 			elif type == 'LightScene':
 				return str(self.Data['Readings']['state']['Value'])
 			elif type == 'readingsProxy':
+				return str(self.Data['Readings']['state']['Value'])
+			elif type == 'PRESENCE':
 				return str(self.Data['Readings']['state']['Value'])
 			else: 
 				return ''
