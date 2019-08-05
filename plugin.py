@@ -1819,21 +1819,36 @@ class FHEM_Setup(Screen, ConfigListScreen):
 		self.onChangedEntry = [ ]
 		self.session = session
 
-		self['actions'] = ActionMap(['SetupActions'],
+		self['actions'] = ActionMap(['SetupActions','FHEM_Actions'],
 			{
 				'cancel': self.keyCancel,
 				'save': self.keySave,
 				'ok': self.keySave,
+				'key_yellow': self.getToken,
 			}, -2)
 
 		self['key_red'] = StaticText(_('Cancel'))
 		self['key_green'] = StaticText(_('OK'))
+		self['key_yellow'] = StaticText(_('getToken'))
 		self['label'] = StaticText('')
 
 		self.list = []
 		ConfigListScreen.__init__(self, self.list, session = self.session, on_change = self.changedEntry)
 		self.createSetup()
 		self.onLayoutFinish.append(self.layoutFinished)
+		self.httpres = str(config.fhem.httpresponse.value)
+		self.server = '%d.%d.%d.%d' % tuple(config.fhem.serverip.value)
+		self.port = int(config.fhem.port.value)
+		self.Address = self.server + ':' + str(self.port)
+		self.username = str(config.fhem.username.value)
+		self.password = str(config.fhem.password.value)
+		self.isAuth = len(self.username) + len(self.password)
+		
+		if self.isAuth != 0: 
+			self.credentialss = self.username + ':' + self.password
+			self.credentialsb = self.credentialss.encode('utf-8')
+			self.credentials64 = base64.b64encode(self.credentialsb).decode('ascii')
+			self.headers = { 'Authorization' : 'Basic %s' %  self.credentials64, 'Connection': 'close' }
 
 	def layoutFinished(self):
 		self.setTitle(self.setup_title)
@@ -1858,6 +1873,22 @@ class FHEM_Setup(Screen, ConfigListScreen):
 
 	def keyRight(self):
 		ConfigListScreen.keyRight(self)
+		
+	def getToken(self):
+		if self.isAuth != 0:
+			if self.httpres == 'Http':
+				r = requests.get('http://' + self.Address, headers = self.headers)
+				ct = r.headers['X-FHEM-csrfToken']
+				config.fhem.csrftoken.setValue(ct)
+				writeLog('FHEM-debug: %s -- %s' % ('Message CSRFTOKEN: ', ct))
+				self.session.open(MessageBox,_('X-FHEM-csrfToken: ') + ct,  type=MessageBox.TYPE_INFO)
+			
+			else:
+				r = requests.get('https://' + self.Address, headers = self.headers, verify=False)
+				ct = r.headers['X-FHEM-csrfToken']
+				config.fhem.csrftoken.setValue(ct)
+				writeLog('FHEM-debug: %s -- %s' % ('Message CSRFTOKEN: ', ct))
+				self.session.open(MessageBox,_('X-FHEM-csrfToken: ') + ct,  type=MessageBox.TYPE_INFO)
 
 	# for summary:
 	def changedEntry(self):
