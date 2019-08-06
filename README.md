@@ -38,7 +38,8 @@ Thx Waldmensch for initial setup
 
 - create folder fhem : /usr/lib/enigma2/python/Plugins/Extensions/fhem/
 - push all files in
-- static csrfToken is ok. Dynamic not till yet.
+- no, static and dynamic csrfToken are fine. 
+- But static and dynamic csrfToken is semi-automatic. Hit getToken in settings.
 - stateFormat : Doublequotes (") inside HTML-Tags break matching device. Use singlequotes (')
 - Sometimes at the first setup, there are problems with logindetails, so:
 
@@ -107,7 +108,7 @@ setstate iconDemo 2019-02-23 23:14:56 state on
 - <del>autoswitch- or manualswitch for http/https</del>
 - <del>add static csrfToken</del>
 - <del>final solution to remove HTML-Tags when stateFormat is pimped for style</del>
-- add dynamic csrfToken
+- <del>add dynamic csrfToken</del>
 - full switch to jsonlist2+
 - add more devices
 - ...
