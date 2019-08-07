@@ -1881,19 +1881,27 @@ class FHEM_Setup(Screen, ConfigListScreen):
 	def getToken(self):
 		if self.isAuth != 0:
 			if self.httpres == 'Http':
-				r = requests.get('http://' + self.Address, headers = self.headers)
-				ct = r.headers['X-FHEM-csrfToken']
-				config.fhem.csrftoken.setValue(ct)
-				writeLog('FHEM-debug: %s -- %s' % ('Message CSRFTOKEN: ', ct))
-				self.session.open(MessageBox,_('X-FHEM-csrfToken: ') + ct,  type=MessageBox.TYPE_INFO)
+				try:
+					r = requests.get('http://' + self.Address, headers = self.headers)
+					ct = r.headers['X-FHEM-csrfToken']
+					config.fhem.csrftoken.setValue(ct)
+					writeLog('FHEM-debug: %s -- %s' % ('Message CSRFTOKEN: ', ct))
+					self.session.open(MessageBox,_('X-FHEM-csrfToken: ') + ct,  type=MessageBox.TYPE_INFO)
+				except KeyError:
+					self.session.open(MessageBox,_('no X-FHEM-csrfToken present'),  type=MessageBox.TYPE_INFO)
 			
 			else:
-				r = requests.get('https://' + self.Address, headers = self.headers, verify=False)
-				ct = r.headers['X-FHEM-csrfToken']
-				config.fhem.csrftoken.setValue(ct)
-				writeLog('FHEM-debug: %s -- %s' % ('Message CSRFTOKEN: ', ct))
-				self.session.open(MessageBox,_('X-FHEM-csrfToken: ') + ct,  type=MessageBox.TYPE_INFO)
-
+				try:
+					r = requests.get('https://' + self.Address, headers = self.headers, verify=False)
+					ct = r.headers['X-FHEM-csrfToken']
+					config.fhem.csrftoken.setValue(ct)
+					writeLog('FHEM-debug: %s -- %s' % ('Message CSRFTOKEN: ', ct))
+					self.session.open(MessageBox,_('X-FHEM-csrfToken: ') + ct,  type=MessageBox.TYPE_INFO)
+				except KeyError:
+					self.session.open(MessageBox,_('no X-FHEM-csrfToken present'),  type=MessageBox.TYPE_INFO)
+		else:
+			self.session.open(MessageBox,_('no logindetails present'),  type=MessageBox.TYPE_INFO)
+		
 	# for summary:
 	def changedEntry(self):
 		for x in self.onChangedEntry:
