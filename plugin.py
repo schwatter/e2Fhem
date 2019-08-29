@@ -31,7 +31,7 @@ from enigma import getDesktop, eTimer, eListbox, eLabel, eListboxPythonMultiCont
 from Components.GUIComponent import GUIComponent
 from time import localtime
 
-d1 = ['MAX','FHT','FS20','CUL_HM','IT','CUL_TX','CUL_WS','FBDECT','Weather','MQTT_DEVICE','MQTT2_DEVICE','DOIF','FRITZBOX','CUL','WOL']  #actual supported types - leave as it is
+d1 = ['MAX','FHT','FS20','CUL_HM','IT','CUL_TX','CUL_WS','FBDECT','Weather','MQTT_DEVICE','MQTT2_DEVICE','DOIF','FRITZBOX','CUL','WOL','SYSMON']  #actual supported types - leave as it is
 d2 = ['notify','AptToDate','GHoma','Hyperion','HUEDevice','dummy','ESPEasy','pilight_switch','pilight_temp','LightScene','readingsProxy','PRESENCE']
 ELEMENTS = d1 + d2
 
@@ -483,6 +483,17 @@ class MainScreen(Screen):
 				
 				self['set_Title'].setText('AptToDate')
 				self['set_Text'].setText(selectedElement.getReadingState())
+				
+			elif selectedElement.getType() in ['SYSMON']:
+				self['titleDetails'].setText('Details für ' + selectedElement.getAlias())
+				
+				list = []
+				list.append((['cpu_freq:',selectedElement.getCPUfreq() + ' MHz'],))
+				list.append((['cpu_temp:',selectedElement.getCPUtemp() + ' °C'],))
+				self['details'].setList(list, 3)
+				
+				self['set_Title'].setText('SYSMON')
+				self['set_Text'].setText(selectedElement.getUptime())
 			
 			elif selectedElement.getSubType() == 'switch':
 				self['titleDetails'].setText('Details für ' + selectedElement.getAlias())
@@ -1302,7 +1313,9 @@ class FHEMElement(object):
 			elif type == 'PRESENCE':
 				return str(self.Data['Readings']['state']['Value'])
 			elif type == 'WOL':
-				return str(self.Data['Readings']['state']['Value'])	
+				return str(self.Data['Readings']['state']['Value'])
+			elif type == 'SYSMON':
+				return str(self.Data['Internals']['STATE'])
 			else: 
 				return ''
 		except:
@@ -1323,6 +1336,36 @@ class FHEMElement(object):
 		try:
 			if type == 'AptToDate':
 				return str(self.Data['Readings']['repoSync']['Value'])	
+			else: 
+				return ''
+		except:
+			return 'no prop'
+			
+	def getCPUfreq(self):
+		type = self.getType()
+		try:
+			if type == 'SYSMON':
+				return str(self.Data['Readings']['cpu_freq']['Value'])	
+			else: 
+				return ''
+		except:
+			return 'no prop'
+		
+	def getCPUtemp(self):
+		type = self.getType()
+		try:
+			if type == 'SYSMON':
+				return str(self.Data['Readings']['cpu_temp']['Value'])	
+			else: 
+				return ''
+		except:
+			return 'no prop'
+			
+	def getUptime(self):
+		type = self.getType()
+		try:
+			if type == 'SYSMON':
+				return str(self.Data['Readings']['fhemuptime_text']['Value'])	
 			else: 
 				return ''
 		except:
