@@ -1576,11 +1576,14 @@ class FHEMElementCollection(object):
 			self.loadElement(element.Name)
 		
 	def loadElement(self, name):
-		if self.Elements is not None:
-			for element in self.Elements:
-				if element.Name == name:
-					json = self.worker.getJson(name, 1)
-					element.Data = json['Results'][0] 
+		try:
+			if self.Elements is not None:
+				for element in self.Elements:
+					if element.Name == name:
+						json = self.worker.getJson(name, 1)
+						element.Data = json['Results'][0]
+		except:
+			writeLog('FHEM-debug: %s -- %s' % ('reload, error loading', element.Data))
 	
 	def getData(self):
 		return self.Data
