@@ -31,7 +31,9 @@ Thx Waldmensch for initial setup
 - pilight_temp
 - PRESENCE
 - readingsProxy
+- SYSMON
 - Weather
+- WOL
 
 
 ## Installation
