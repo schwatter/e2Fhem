@@ -31,7 +31,7 @@ from enigma import getDesktop, eTimer, eListbox, eLabel, eListboxPythonMultiCont
 from Components.GUIComponent import GUIComponent
 from time import localtime
 
-d1 = ['MAX','FHT','FS20','CUL_HM','IT','CUL_TX','CUL_WS','FBDECT','Weather','MQTT_DEVICE','MQTT2_DEVICE','DOIF','FRITZBOX','CUL']  #actual supported types - leave as it is
+d1 = ['MAX','FHT','FS20','CUL_HM','IT','CUL_TX','CUL_WS','FBDECT','Weather','MQTT_DEVICE','MQTT2_DEVICE','DOIF','FRITZBOX','CUL','WOL']  #actual supported types - leave as it is
 d2 = ['notify','AptToDate','GHoma','Hyperion','HUEDevice','dummy','ESPEasy','pilight_switch','pilight_temp','LightScene','readingsProxy','PRESENCE']
 ELEMENTS = d1 + d2
 
@@ -399,7 +399,7 @@ class MainScreen(Screen):
 				self['set_Title'].setText('')
 				self['set_Text'].setText('')
 			
-			elif selectedElement.getType() in ['FS20','IT','DOIF','GHoma','Hyperion','dummy','pilight_switch','LightScene','readingsProxy']:
+			elif selectedElement.getType() in ['FS20','IT','DOIF','GHoma','Hyperion','dummy','pilight_switch','LightScene','readingsProxy','WOL']:
 				self['titleDetails'].setText('Details für ' + selectedElement.getAlias())
 				
 				list = []
@@ -899,6 +899,8 @@ class FHEMElement(object):
 			return self.getPossibleSets()
 		elif self.getType() == 'readingsProxy':
 			return self.getSetlist()
+		elif self.getType() == 'WOL':
+			return BASIC_SPECIALS
 		else:
 			return ['']
 			
@@ -1299,6 +1301,8 @@ class FHEMElement(object):
 				return str(self.Data['Readings']['state']['Value'])
 			elif type == 'PRESENCE':
 				return str(self.Data['Readings']['state']['Value'])
+			elif type == 'WOL':
+				return str(self.Data['Readings']['state']['Value'])	
 			else: 
 				return ''
 		except:
@@ -1479,6 +1483,8 @@ class FHEMElement(object):
 			return ''
 		elif type == 'readingsProxy':
 			return ''
+		elif type == 'WOL':
+			return ''
 		
 	def getUpdateCommand(self):
 		type = self.getType()
@@ -1521,6 +1527,8 @@ class FHEMElement(object):
 		elif type == 'LightScene':
 			return '/fhem?XHR=1&cmd=set %s scene %s ' % (self.Name, self.getUpdateableProperty())
 		elif type == 'readingsProxy':
+			return '/fhem?XHR=1&cmd=set %s %s ' % (self.Name, self.getUpdateableProperty())
+		elif type == 'WOL':
 			return '/fhem?XHR=1&cmd=set %s %s ' % (self.Name, self.getUpdateableProperty())
 			
 	def getHMChannels(self):
