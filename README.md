@@ -38,11 +38,23 @@ Thx Waldmensch for initial setup
 
 ## Installation
 
-- create folder fhem : /usr/lib/enigma2/python/Plugins/Extensions/fhem/
-- push all files in
+Vu+
+- push all files to : /usr/lib/enigma2/python/Plugins/Extensions/fhem/
+
+Server
+- It is essential to have both, 98_JsonList.pm and 98_JsonList2.pm at server
+  in/opt/fhem/FHEM. Rights set to 0666.
+  Group set to dialout and owner is Fhem.
+
+
+## How To
+
+- First setup details in settings.
+- If connection is ok, supportet devices show up.
+- If not, go to settings and activate logfile. Check for http-statuscode.
 - no, static and dynamic csrfToken are fine. 
 - But static and dynamic csrfToken is semi-automatic. Hit getToken in settings.
-- stateFormat : Doublequotes (") inside HTML-Tags break matching device. Use singlequotes (')
+- Http and Https are supported. Https is slower (I have to investigate).
 - Sometimes at the first setup, there are problems with logindetails, so:
 
 1. Telnet Vu+
@@ -52,22 +64,6 @@ Thx Waldmensch for initial setup
 5. config.fhem.password=yourPassword
 6. init 3
 
-- It is essential to have both, 98_JsonList.pm and 98_JsonList2.pm at server
-  in/opt/fhem/FHEM. Rights set to 0666.
-  Group set to dialout and owner is Fhem.
-
-- Please set for best compatibility with HUEGroup the following in fhem for each group.
-```
-attr yourHUEGroup createActionReadings 1
-attr yourHUEGroup createGroupReadings 1
-```
-
-
-## How To
-
-- First setup details in settings.
-- If connection is ok, supportet devices show up.
-- If not, go to settings and activate logfile. Check for http-statuscode.
 - Different devices have different functions.
 - Some have full support and some have only readings. So the basics are:
 
@@ -75,6 +71,24 @@ attr yourHUEGroup createGroupReadings 1
 2. KeyOk for on,off and specials.
 3. ChannelUp and ChannelDown for dimming and temperature.
 4. Num1 till Num4 for moreChannelSwitches.
+
+stateFormat<br/>
+Doublequotes (") inside HTML-Tags break matching device. Use singlequotes (')
+```
+my $state = ReadingsVal($name, "state", "off");   
+  return "<img src='/fhem/images/fhemSVG/rc_GREEN.svg',img width='32' height='32'<div>".sprintf("&nbsp;&nbsp;Spannung: %.0f V &nbsp;&nbsp;Stromstärke: %.3f A &nbsp;&nbsp;Leistung: %.0f W &nbsp;&nbsp;Wifi_RSSI: %.0f %%", ReadingsVal($name,"ENERGY_Voltage",0), ReadingsVal($name,"ENERGY_Current",0), ReadingsVal($name,"ENERGY_Power",0), ReadingsVal($name,"Wifi_RSSI",0)).'</div>' if($state eq "on");   
+  return "<img src='/fhem/images/fhemSVG/rc_RED.svg',img width='32' height='32'<div>".sprintf("&nbsp;&nbsp;Spannung: %.0f V &nbsp;&nbsp;Stromstärke: %.3f A &nbsp;&nbsp;Leistung: %.0f W &nbsp;&nbsp;Wifi_RSSI: %.0f %%", ReadingsVal($name,"ENERGY_Voltage",0), ReadingsVal($name,"ENERGY_Current",0), ReadingsVal($name,"ENERGY_Power",0), ReadingsVal($name,"Wifi_RSSI",0)).'</div>' if($state eq "off");     
+  return "<img src='/fhem/images/fhemSVG/rc_YELLOW.svg',img width='32' height='32'<div>".sprintf("&nbsp;&nbsp;Spannung: %.0f V &nbsp;&nbsp;Stromstärke: %.3f A &nbsp;&nbsp;Leistung: %.0f W &nbsp;&nbsp;Wifi_RSSI: %.0f %%", ReadingsVal($name,"ENERGY_Voltage",0), ReadingsVal($name,"ENERGY_Current",0), ReadingsVal($name,"ENERGY_Power",0), ReadingsVal($name,"Wifi_RSSI",0)).'</div>' if($state eq "reboot"); 
+  return "<img src='/fhem/images/fhemSVG/rc_BLUE.svg',img width='32' height='32'<div>".sprintf("&nbsp;&nbsp;Spannung: %.0f V &nbsp;&nbsp;Stromstärke: %.3f A &nbsp;&nbsp;Leistung: %.0f W &nbsp;&nbsp;Wifi_RSSI: %.0f %%", ReadingsVal($name,"ENERGY_Voltage",0), ReadingsVal($name,"ENERGY_Current",0), ReadingsVal($name,"ENERGY_Power",0), ReadingsVal($name,"Wifi_RSSI",0)).'</div>' if($state eq "offline");   
+}
+```
+
+HUEGroup<br/>
+Please set for best compatibility with HUEGroup the following in fhem for each group.
+```
+attr yourHUEGroup createActionReadings 1
+attr yourHUEGroup createGroupReadings 1
+```
 
 DOIF / cmdState<br/>
 No spaces, fill the gap for example with "_".
