@@ -127,7 +127,7 @@ class MainScreen(Screen):
 				<convert type='ClockToText'>Format:%A,</convert>
 			</widget>
 			<widget backgroundColor='#808080' font='Regular; 23' position='1145,395' render='Label' size='180,25' source='global.CurrentTime' transparent='1' valign='bottom' halign='left' zPosition='3' foregroundColor='white'>
-				<convert type='ClockToText'>Format:%d. %B -</convert>
+				<convert type='ClockToText'>Format:%d. %B</convert>
 			</widget>
 			<widget source='global.CurrentTime' render='Label' position='1030,395' size='190,50' font='Regular; 27' halign='left' valign='top' foregroundColor='white' backgroundColor='#808080' transparent='1'>
 				<convert type='ClockToText'>WithSeconds</convert>
@@ -151,10 +151,10 @@ class MainScreen(Screen):
 			<widget name='set_Text' position='880,321' size='300,79' valign='center' halign='center' font='Regular;25' zPosition='1'/>
 			<widget name='set_ArrowRight' position='1160,321' size='100,79' valign='center' halign='center' font='Regular;25' zPosition='1'/>
 			<widget name='spinner' position='600,410' size='140,40' valign='center' halign='right' font='Regular;25' foregroundColor='white' zPosition='1'/>
-			<ePixmap position='10,410' size='140,40' pixmap='skin_default/buttons/red.png' transparent='1' alphatest='on' />
-			<ePixmap position='150,410' size='140,40' pixmap='skin_default/buttons/green.png' transparent='1' alphatest='on' />
-			<ePixmap position='290,410' size='140,40' pixmap='skin_default/buttons/yellow.png' transparent='1' alphatest='on' />
-			<ePixmap position='430,410' size='140,40' pixmap='skin_default/buttons/blue.png' transparent='1' alphatest='on' />
+			<ePixmap position='10,440' size='140,40' pixmap='skin_default/buttons/red.png' transparent='1' alphatest='on' />
+			<ePixmap position='150,440' size='140,40' pixmap='skin_default/buttons/green.png' transparent='1' alphatest='on' />
+			<ePixmap position='290,440' size='140,40' pixmap='skin_default/buttons/yellow.png' transparent='1' alphatest='on' />
+			<ePixmap position='430,440' size='140,40' pixmap='skin_default/buttons/blue.png' transparent='1' alphatest='on' />
 			<widget source='key_red' render='Label' position='10,410' zPosition='1' size='140,40' valign='center' halign='center' font='Regular;21' transparent='1' foregroundColor='white' shadowColor='black' shadowOffset='-1,-1' />
 			<widget source='key_green' render='Label' position='150,410' zPosition='1' size='140,40' valign='center' halign='center' font='Regular;21' transparent='1' foregroundColor='white' shadowColor='black' shadowOffset='-1,-1' />
 			<widget source='key_yellow' render='Label' position='290,410' zPosition='1' size='140,40' valign='center' halign='center' font='Regular;21' transparent='1' foregroundColor='white' shadowColor='black' shadowOffset='-1,-1' />
@@ -1845,27 +1845,31 @@ class FHEM_Setup(Screen, ConfigListScreen):
 	desktopSize = getDesktop(0).size()
 	if desktopSize.width() >= 1920:
 		skin = '''
-		<screen name='picshow' position='300,600' size='660,470' title='FHEM Settings' >
+		<screen position='300,600' size='660,470' title='FHEM Settings' >
 			<ePixmap pixmap='skin_default/buttons/red.png' position='0,460' size='140,40' alphatest='on' />
 			<ePixmap pixmap='skin_default/buttons/green.png' position='140,460' size='140,40' alphatest='on' />
 			<ePixmap pixmap='skin_default/buttons/yellow.png' position='280,460' size='140,40' alphatest='on' />
+			<ePixmap pixmap='skin_default/buttons/blue.png' position='420,460' size='140,40' alphatest='on' />
 			<widget source='key_red' render='Label' position='0,433' zPosition='1' size='140,40' font='Regular;21' halign='center' valign='center' backgroundColor='#9f1313' transparent='1' />
 			<widget source='key_green' render='Label' position='140,433' zPosition='1' size='140,40' font='Regular;21' halign='center' valign='center' backgroundColor='#1f771f' transparent='1' />
 			<widget source='key_yellow' render='Label' position='280,433' zPosition='1' size='140,40' font='Regular;21' halign='center' valign='center' backgroundColor='#1f771f' transparent='1' />
+			<widget source='key_blue' render='Label' position='420,433' zPosition='1' size='140,40' font='Regular;21' halign='center' valign='center' backgroundColor='#1f771f' transparent='1' />
 			<widget source='label' render='Label' position='10,10' size='640,40' font='Regular;24' backgroundColor='#25062748' transparent='1'  />
 			<widget name='config' position='10,35' zPosition='2' size='640,390' itemHeight='38' font='Regular;24' scrollbarMode='showOnDemand' scrollbarWidth='3' />
 		</screen>'''
 	else:
 		skin = '''
-		<screen name='picshow' position='5,265' size='660,320' title='FHEM Settings' >
-			<ePixmap pixmap='skin_default/buttons/red.png' position='0,270' size='140,40' alphatest='on' />
-			<ePixmap pixmap='skin_default/buttons/green.png' position='140,270' size='140,40' alphatest='on' />
-			<ePixmap pixmap='skin_default/buttons/yellow.png' position='280,270' size='140,40' alphatest='on' />
-			<widget source='key_red' render='Label' position='0,270' zPosition='1' size='140,40' font='Regular;21' halign='center' valign='center' backgroundColor='#9f1313' transparent='1' />
-			<widget source='key_green' render='Label' position='140,270' zPosition='1' size='140,40' font='Regular;21' halign='center' valign='center' backgroundColor='#1f771f' transparent='1' />
-			<widget source='key_yellow' render='Label' position='280,383' zPosition='1' size='140,40' font='Regular;21' halign='center' valign='center' backgroundColor='#1f771f' transparent='1' />
+		<screen position='5,265' size='660,320' title='FHEM Settings' >
+			<ePixmap pixmap='skin_default/buttons/red.png' position='0,312' size='140,40' alphatest='on' />
+			<ePixmap pixmap='skin_default/buttons/green.png' position='140,312' size='140,40' alphatest='on' />
+			<ePixmap pixmap='skin_default/buttons/yellow.png' position='280,312' size='140,40' alphatest='on' />
+			<ePixmap pixmap='skin_default/buttons/blue.png' position='420,312' size='140,40' alphatest='on' />
+			<widget source='key_red' render='Label' position='0,285' zPosition='1' size='140,40' font='Regular;21' halign='center' valign='center' backgroundColor='#9f1313' transparent='1' />
+			<widget source='key_green' render='Label' position='140,285' zPosition='1' size='140,40' font='Regular;21' halign='center' valign='center' backgroundColor='#1f771f' transparent='1' />
+			<widget source='key_yellow' render='Label' position='280,285' zPosition='1' size='140,40' font='Regular;21' halign='center' valign='center' backgroundColor='#1f771f' transparent='1' />
+			<widget source='key_blue' render='Label' position='420,285' zPosition='1' size='140,40' font='Regular;21' halign='center' valign='center' backgroundColor='#1f771f' transparent='1' />
 			<widget source='label' render='Label' position='10,10' size='640,40' font='Regular;24' backgroundColor='#25062748' transparent='1'  />
-			<widget name='config' position='10,50' zPosition='2' size='640,200' itemHeight='38' font='Regular;24' scrollbarMode='showOnDemand' scrollbarWidth='3' />
+			<widget name='config' position='10,50' zPosition='2' size='640,220' itemHeight='38' font='Regular;24' scrollbarMode='showOnDemand' scrollbarWidth='3' />
 		</screen>'''
 		
 		
@@ -1883,11 +1887,13 @@ class FHEM_Setup(Screen, ConfigListScreen):
 				'save': self.keySave,
 				'ok': self.keySave,
 				'key_yellow': self.getToken,
+				'key_blue': self.restartServer,
 			}, -2)
 
 		self['key_red'] = StaticText(_('Cancel'))
 		self['key_green'] = StaticText(_('OK'))
 		self['key_yellow'] = StaticText(_('getToken'))
+		self['key_blue'] = StaticText(_('restartServer'))
 		self['label'] = StaticText('')
 
 		self.list = []
@@ -1900,7 +1906,10 @@ class FHEM_Setup(Screen, ConfigListScreen):
 		self.Address = self.server + ':' + str(self.port)
 		self.username = str(config.fhem.username.value)
 		self.password = str(config.fhem.password.value)
+		self.csrfswitch = str(config.fhem.csrfswitch.value)
+		self.csrftoken = str(config.fhem.csrftoken.value)
 		self.isAuth = len(self.username) + len(self.password)
+		self.basicToken = '&fwcsrf=' + self.csrftoken
 		
 		if self.isAuth != 0: 
 			self.credentialss = self.username + ':' + self.password
@@ -1956,6 +1965,42 @@ class FHEM_Setup(Screen, ConfigListScreen):
 		else:
 			self.session.open(MessageBox,_('no logindetails present'),  type=MessageBox.TYPE_INFO)
 		
+	def restartServer(self):
+		if self.isAuth != 0:
+			if self.csrfswitch == 'static':
+				if self.httpres == 'Http':
+					try:
+						r = requests.post('http://' + self.Address + '/fhem?cmd=shutdown+restart' + self.basicToken, headers = self.headers)
+					except IOError as e:
+						self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
+				else:
+					try:
+						r = requests.post('https://' + self.Address + '/fhem?cmd=shutdown+restart' + self.basicToken, headers = self.headers, verify=False)
+					except IOError as e:
+						self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
+			else:
+				if self.httpres == 'Http':
+					try:
+						r = requests.post('http://' + self.Address + '/fhem?cmd=shutdown+restart', headers = self.headers)
+					except IOError as e:
+						self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
+				else:
+					try:
+						r = requests.post('https://' + self.Address + '/fhem?cmd=shutdown+restart', headers = self.headers, verify=False)
+					except IOError as e:
+						self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
+		else:
+			if self.httpres == 'Http':
+				try:
+					r = requests.post('http://' + self.Address + '/fhem?cmd=shutdown+restart')
+				except IOError as e:
+					self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
+			else:
+				try:
+					r = requests.post('https://' + self.Address + '/fhem?cmd=shutdown+restart', verify=False)
+				except IOError as e:
+					self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
+	
 	# for summary:
 	def changedEntry(self):
 		for x in self.onChangedEntry:
