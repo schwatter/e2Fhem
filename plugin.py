@@ -1971,34 +1971,34 @@ class FHEM_Setup(Screen, ConfigListScreen):
 				if self.httpres == 'Http':
 					try:
 						r = requests.post('http://' + self.Address + '/fhem?cmd=shutdown+restart' + self.basicToken, headers = self.headers)
-					except IOError as e:
+					except IOError:
 						self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
 				else:
 					try:
 						r = requests.post('https://' + self.Address + '/fhem?cmd=shutdown+restart' + self.basicToken, headers = self.headers, verify=False)
-					except IOError as e:
+					except IOError:
 						self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
 			else:
 				if self.httpres == 'Http':
 					try:
 						r = requests.post('http://' + self.Address + '/fhem?cmd=shutdown+restart', headers = self.headers)
-					except IOError as e:
+					except IOError:
 						self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
 				else:
 					try:
 						r = requests.post('https://' + self.Address + '/fhem?cmd=shutdown+restart', headers = self.headers, verify=False)
-					except IOError as e:
+					except IOError:
 						self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
 		else:
 			if self.httpres == 'Http':
 				try:
 					r = requests.post('http://' + self.Address + '/fhem?cmd=shutdown+restart')
-				except IOError as e:
+				except IOError:
 					self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
 			else:
 				try:
 					r = requests.post('https://' + self.Address + '/fhem?cmd=shutdown+restart', verify=False)
-				except IOError as e:
+				except IOError:
 					self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
 	
 	# for summary:
