@@ -19,6 +19,7 @@ Thx Waldmensch for initial setup
 - FRITZBOX
 - FS20
 - GHoma
+- HMCCUDEV
 - HUEDevice
 - Hyperion
 - IT
@@ -117,6 +118,10 @@ setstate iconDemo 2019-02-24 16:01:57 on3 on
 setstate iconDemo 2019-02-24 16:02:05 on4 off
 setstate iconDemo 2019-02-23 23:14:56 state on
 ```
+
+HMCCUDEV<br/>
+At the moment only HM-CC-RT-DN supported.
+Ch +/- for temp and Key_Ok for specials.
 
 
 ## TODO
