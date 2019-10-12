@@ -48,7 +48,7 @@ THERMO_LIMITS 		= [6.0, 30.0]
 
 APTTODATE_SPECIALS 	= ['repoSync']
 BASIC_SPECIALS 		= ['off','on']
-DIMMER_SPECIALS		= ['dim06%','dim12%','dim18%','dim25%','dim31%','dim37%','dim41%','dim43%','dim50%','dim56%','dim62%','dim68%','dim75%','dim81%','dim87%','dim93%','dim100%']
+DIMMER_SPECIALS		= ['dim0%','dim06%','dim12%','dim18%','dim25%','dim31%','dim37%','dim41%','dim43%','dim50%','dim56%','dim62%','dim68%','dim75%','dim81%','dim87%','dim93%','dim100%']
 HUEDevice_SPECIALS 	= ['off','on','rgb ff0000','rgb DEFF26','rgb 0000ff','ct 490','ct 380','ct 270','ct 160']
 Hyperion_SPECIALS 	= ['off','on','clearall','dim06%','dim25%','dim50%','dim75%','dim100%']
 FS20_SPECIALS		= ['off','on']
@@ -903,9 +903,9 @@ class FHEMElement(object):
 		elif self.getType() == 'FBDECT':
 			return BASIC_SPECIALS
 		elif self.getType() == 'MQTT_DEVICE':
-			return MQTT_SPECIALS
+			return BASIC_SPECIALS
 		elif self.getType() == 'MQTT2_DEVICE':
-			return MQTT2_SPECIALS
+			return BASIC_SPECIALS
 		elif self.getType() == 'DOIF' and self.getCmdState() == '':
 			return self.getPossibleSets()
 		elif self.getType() == 'DOIF':
