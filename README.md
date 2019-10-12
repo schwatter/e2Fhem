@@ -35,8 +35,8 @@ Thx Waldmensch for initial setup
 - SYSMON
 - Weather
 - WOL
-
-
+<br/>
+<br/>
 ## Installation
 
 Enigma2
@@ -46,8 +46,8 @@ Server
 - It is essential to have both, 98_JsonList.pm and 98_JsonList2.pm from folder Jsonlist at server in/opt/fhem/FHEM.
 - Rights set to 0666. 
 - Group set to dialout and owner is Fhem.
-
-
+<br/>
+<br/>
 ## How To
 
 - First setup details in settings.
@@ -72,8 +72,8 @@ Server
 2. KeyOk for on,off and specials.
 3. ChannelUp and ChannelDown for dimming and temperature.
 4. Num1 till Num4 for moreChannelSwitches.
-
-
+<br/>
+<br/>
 __stateFormat__<br/>
 Doublequotes (") inside HTML-Tags break matching device. Use singlequotes (')
 ```
@@ -84,16 +84,16 @@ my $state = ReadingsVal($name, "state", "off");
   return "<img src='/fhem/images/fhemSVG/rc_BLUE.svg',img width='32' height='32'<div>".sprintf("&nbsp;&nbsp;Spannung: %.0f V &nbsp;&nbsp;Stromstärke: %.3f A &nbsp;&nbsp;Leistung: %.0f W &nbsp;&nbsp;Wifi_RSSI: %.0f %%", ReadingsVal($name,"ENERGY_Voltage",0), ReadingsVal($name,"ENERGY_Current",0), ReadingsVal($name,"ENERGY_Power",0), ReadingsVal($name,"Wifi_RSSI",0)).'</div>' if($state eq "offline");   
 }
 ```
-
-
+<br/>
+<br/>
 __HUEGroup__<br/>
 Please set for best compatibility with HUEGroup the following in fhem for each group.
 ```
 attr yourHUEGroup createActionReadings 1
 attr yourHUEGroup createGroupReadings 1
 ```
-
-
+<br/>
+<br/>
 __DOIF / cmdState__<br/>
 No spaces, fill the gap for example with "_".
 Or use compound words.
@@ -103,8 +103,8 @@ Or use compound words.
 "Temp_unter_48°C|Temp_ok"
 "WarmWaterOk|WaterCold"
 ```
-
-
+<br/>
+<br/>
 __Dummy fourswitch example__
 ```
 defmod iconDemo dummy
@@ -122,8 +122,8 @@ setstate iconDemo 2019-02-24 16:01:57 on3 on
 setstate iconDemo 2019-02-24 16:02:05 on4 off
 setstate iconDemo 2019-02-23 23:14:56 state on
 ```
-
-
+<br/>
+<br/>
 __HMCCUDEV__<br/>
 At the moment only HM-CC-RT-DN supported.<br/>
 Ch +/- for temp and Key_Ok for specials.<br/>
@@ -132,8 +132,8 @@ In Fhem you have to add one attribut.<br/>
 ```
 attr yourThermostat subType thermostat
 ```
-
-
+<br/>
+<br/>
 ## TODO
 
 - <del>autoswitch- or manualswitch for http/https</del>
