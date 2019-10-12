@@ -126,7 +126,7 @@ setstate iconDemo 2019-02-23 23:14:56 state on
 
 __HMCCUDEV__<br/>
 At the moment only HM-CC-RT-DN supported.<br/>
-Ch +/- for temp and Key_Ok for specials.<br/>
+Ch +/- for temp.<br/>
 In Fhem you have to add one attribut.<br/>
 
 ```

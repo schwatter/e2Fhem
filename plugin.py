@@ -45,7 +45,6 @@ FS20_SPECIALS		= ['off','on']
 
 DUMMY_LIMITS  		= [0, 100]
 THERMO_LIMITS 		= [6.0, 30.0]
-THERMO_SPECIALS		= ['auto','manual','boost','day','night']
 
 APTTODATE_SPECIALS 	= ['repoSync']
 BASIC_SPECIALS 		= ['off','on']
@@ -899,8 +898,6 @@ class FHEMElement(object):
 			return MAX_SPECIALS
 		elif self.getType() == 'CUL_HM':
 			return BASIC_SPECIALS
-		elif self.getType() == 'HMCCUDEV' and self.getModel() == 'HM-CC-RT-DN':
-			return THERMO_SPECIALS
 		elif self.getType() == 'FS20':
 			return FS20_SPECIALS
 		elif self.getType() == 'FBDECT':
