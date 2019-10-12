@@ -122,6 +122,11 @@ setstate iconDemo 2019-02-23 23:14:56 state on
 HMCCUDEV<br/>
 At the moment only HM-CC-RT-DN supported.
 Ch +/- for temp and Key_Ok for specials.
+In Fhem you have to add one attribut.
+
+```
+attr yourThermostat subType thermostat
+```
 
 
 ## TODO
