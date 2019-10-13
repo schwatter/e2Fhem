@@ -16,6 +16,7 @@ import ssl
 import urlparse
 
 from Screens.Screen import Screen
+from Screens.MessageBox import MessageBox
 from Plugins.Plugin import PluginDescriptor
 from Components.Label import Label
 from Components.ActionMap import ActionMap
@@ -2012,7 +2013,7 @@ class FHEM_Setup(Screen, ConfigListScreen):
 		
 	def restartServer(self):
 		if self.isAuth != 0:
-			if self.csrfswitch == 'static':
+			if self.csrfswitch == 'On':
 				if self.httpres == 'Http':
 					try:
 						r = requests.post('http://' + self.Address + '/fhem?cmd=shutdown+restart' + self.basicToken, headers = self.headers)
