@@ -1040,6 +1040,12 @@ class FHEMElement(object):
 			return str(self.Data['Attributes']['webCmd'])
 		except:
 			return ('')
+			
+	def getSetlistslider(self):
+		try:
+			return str(self.Data['Attributes']['setList'])
+		except:
+			return ('')
 		
 	def getPossibleSets(self):
 		if self.getType() in ['dummy', 'DOIF']:
@@ -1491,6 +1497,7 @@ class FHEMElement(object):
 				subtype = str(self.Data['Attributes']['subType'])
 			except:
 				subtype = 'unknown'
+			return subtype
 		elif type == 'FHT':
 			return 'thermostat'
 		elif type == 'FS20':
