@@ -2028,33 +2028,39 @@ class FHEM_Setup(Screen, ConfigListScreen):
 				if self.httpres == 'Http':
 					try:
 						r = requests.post('http://' + self.Address + '/fhem?cmd=shutdown+restart' + self.basicToken, headers = self.headers)
+						self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
 					except IOError:
 						self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
 				else:
 					try:
 						r = requests.post('https://' + self.Address + '/fhem?cmd=shutdown+restart' + self.basicToken, headers = self.headers, verify=False)
+						self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
 					except IOError:
 						self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
 			else:
 				if self.httpres == 'Http':
 					try:
 						r = requests.post('http://' + self.Address + '/fhem?cmd=shutdown+restart', headers = self.headers)
+						self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
 					except IOError:
 						self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
 				else:
 					try:
 						r = requests.post('https://' + self.Address + '/fhem?cmd=shutdown+restart', headers = self.headers, verify=False)
+						self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
 					except IOError:
 						self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
 		else:
 			if self.httpres == 'Http':
 				try:
 					r = requests.post('http://' + self.Address + '/fhem?cmd=shutdown+restart')
+					self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
 				except IOError:
 					self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
 			else:
 				try:
 					r = requests.post('https://' + self.Address + '/fhem?cmd=shutdown+restart', verify=False)
+					self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
 				except IOError:
 					self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
 	
