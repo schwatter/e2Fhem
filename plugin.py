@@ -8,12 +8,8 @@ import base64
 import json
 import requests
 import threading
-import re
 import sys
-import urllib2
-import urllib
 import ssl
-import urlparse
 
 from Screens.Screen import Screen
 from Screens.MessageBox import MessageBox
@@ -32,8 +28,9 @@ from enigma import getDesktop, eTimer, eListbox, eLabel, eListboxPythonMultiCont
 from Components.GUIComponent import GUIComponent
 from time import localtime
 
-d1 = ['AptToDate','CUL','CUL_HM','CUL_TX','CUL_WS','DOIF','dummy','ESPEasy','FBDECT','FHEMWEB','FHT','FRITZBOX','FS20','GHoma', 'HMCCUDEV', 'HUEDevice', 'Hyperion']  #actual supported types - leave as it is
-d2 = ['IT','LightScene','MAX','MQTT_DEVICE','MQTT2_DEVICE','notify','pilight_switch','pilight_temp','PRESENCE','readingsProxy','SYSMON','Weather','WOL']
+#actual supported types - leave as it is
+d1 = ['TYPE=AptToDate','TYPE=CUL','TYPE=CUL_HM','TYPE=CUL_TX','TYPE=CUL_WS','TYPE=DOIF','TYPE=dummy','TYPE=ESPEasy','TYPE=FBDECT','TYPE=FHEMWEB','TYPE=FHT','TYPE=FRITZBOX','TYPE=FS20','TYPE=GHoma', 'TYPE=HMCCUDEV', 'TYPE=HUEDevice']
+d2 = ['TYPE=Hyperion','TYPE=IT','TYPE=LightScene','TYPE=MAX','TYPE=MQTT_DEVICE','TYPE=MQTT2_DEVICE','TYPE=notify','TYPE=pilight_switch','TYPE=pilight_temp','TYPE=PRESENCE','TYPE=readingsProxy','TYPE=SYSMON','TYPE=Weather','TYPE=WOL']
 ELEMENTS = d1 + d2
 
 fhemlog = '/usr/lib/enigma2/python/Plugins/Extensions/fhem/fhem.log'
@@ -1652,24 +1649,25 @@ class FHEMElementCollection(object):
 		
 	def reload(self):
 		self.data = self.worker.getJson(self.Type, 0)
+		writeJson('FHEM-debug: %s -- %s' % ('response', self.data))
 		if self.data is not None:
-			for element in self.data['Results']:
-				if str(element['state']) != '???':
-					eldata = self.worker.getJson(element['name'], 1)
-					if self.Type == 'CUL_HM':
+			for element in self.data['Results']:																
+				if str(element['Internals']['STATE']) != '???':
+					eldata = self.worker.getJson(element['Name'], 0)
+					if self.Type == 'TYPE=CUL_HM':
 						try:
-							el = FHEMElement(str(element['name']), eldata['Results'][0])
+							el = FHEMElement(str(element['Name']), eldata['Results'][0])
 							channels = el.getHMChannels()
 							if channels:
 								self.Elements.append(el)
 						except:
-							writeLog('FHEM-debug: %s -- %s' % ('reload, error loading', element['name']))
+							writeLog('FHEM-debug: %s -- %s' % ('reload, error loading', element['Name']))
 					else:
 						try:
-							el = FHEMElement(str(element['name']), eldata['Results'][0])
+							el = FHEMElement(str(element['Name']), eldata['Results'][0])
 							self.Elements.append(el)
 						except:
-							writeLog('FHEM-debug: %s -- %s' % ('reload, error loading', element['name']))
+							writeLog('FHEM-debug: %s -- %s' % ('reload, error loading', element['Name']))
 					
 	def refresh(self):
 		for element in self.Elements:
@@ -1680,7 +1678,7 @@ class FHEMElementCollection(object):
 			if self.Elements is not None:
 				for element in self.Elements:
 					if element.Name == name:
-						json = self.worker.getJson(name, 1)
+						json = self.worker.getJson(name, 0)
 						element.Data = json['Results'][0]
 		except:
 			writeLog('FHEM-debug: %s -- %s' % ('reload, error loading', element.Data))
@@ -1797,7 +1795,7 @@ class WebWorker(object):
 	def getHtml(self, elements, listtype):
 		if self.httpres == 'Http':
 			try:
-				conn = httplib.HTTPConnection(self.Address, timeout=10)
+				conn = httplib.HTTPConnection(self.Address)
 				if self.isAuth != 0:
 					if self.csrfswitch == 'On':
 						conn.request('GET', self.Prefix[listtype] + elements + self.basicToken, headers = self.headers)
@@ -1818,7 +1816,7 @@ class WebWorker(object):
 				
 		else:
 			try:
-				conn = httplib.HTTPSConnection(self.Address, timeout=10)
+				conn = httplib.HTTPSConnection(self.Address)
 				if self.isAuth != 0:
 					if self.csrfswitch == 'On':
 						conn.request('GET', self.Prefix[listtype] + elements + self.basicToken, headers = self.headers)
@@ -1840,8 +1838,6 @@ class WebWorker(object):
 	def getJson(self, elements, listtype):
 		try:
 			jsonObj = json.loads(self.getHtml(elements, listtype).read().replace('\n', ''))
-			# write jsondata also to file in fhemfolder, when switch is on
-			writeJson('FHEM-jsonDebug: %s -- %s' % ('response', str(jsonObj)))
 			return jsonObj
 		except ValueError:
 			# print "error loading JSON"

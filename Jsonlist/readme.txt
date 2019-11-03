@@ -1,1 +1,0 @@
-It is essential to have both, 98_JsonList.pm and 98_JsonList2.pm at server in/opt/fhem/FHEM. Rights set to 0666. Group set to dialout and owner is Fhem
