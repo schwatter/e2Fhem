@@ -43,9 +43,8 @@ Enigma2
 - push all files except folder Jsonlist to : /usr/lib/enigma2/python/Plugins/Extensions/fhem/
 
 Server
-- It is essential to have both, 98_JsonList.pm and 98_JsonList2.pm from folder Jsonlist at server in/opt/fhem/FHEM.
-- Rights set to 0666. 
-- Group set to dialout and owner is Fhem.
+- JsonList2 only is now working.
+- copy 98_JsonList.pm to server is no longer necessary.
 
 
 ## How To
@@ -140,6 +139,6 @@ attr yourThermostat subType thermostat
 - <del>add static csrfToken</del>
 - <del>final solution to remove HTML-Tags when stateFormat is pimped for style</del>
 - <del>add dynamic csrfToken</del>
-- full switch to jsonlist2+
+- <del>full switch to jsonlist2+</del>
 - add more devices
 - ...

@@ -1725,7 +1725,7 @@ class FHEMContainer(object):
 		list = []
 		for fhemelementcollection in self.List:
 			if fhemelementcollection.Type not in list and fhemelementcollection.getElementsCount() > 0:
-					list.append(fhemelementcollection.Type)
+					list.append(fhemelementcollection.Type.replace('TYPE=', ''))
 		return list
 	
 	def getRooms(self):
