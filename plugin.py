@@ -1782,7 +1782,7 @@ class WebWorker(object):
 		self.csrftoken = str(config.fhem.csrftoken.value)
 		
 		self.Address = self.server + ':' + str(self.port)
-		self.Prefix = ['/fhem?XHR=1&cmd=jsonlist+','/fhem?XHR=1&cmd=jsonlist2+']
+		self.Prefix = ['/fhem?XHR=1&cmd=jsonlist2+']
 		self.isAuth = len(self.username) + len(self.password)
 		self.basicToken = '&fwcsrf=' + self.csrftoken
 		
