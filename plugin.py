@@ -1,4 +1,3 @@
-
 #  -*- coding: utf-8 -*-
 # FHEM Plugin
 
@@ -1649,7 +1648,6 @@ class FHEMElementCollection(object):
 		
 	def reload(self):
 		self.data = self.worker.getJson(self.Type, 0)
-		writeJson('FHEM-debug: %s -- %s' % ('response', self.data))
 		if self.data is not None:
 			for element in self.data['Results']:																
 				if str(element['Internals']['STATE']) != '???':
@@ -1837,11 +1835,12 @@ class WebWorker(object):
 		
 	def getJson(self, elements, listtype):
 		try:
-			jsonObj = json.loads(self.getHtml(elements, listtype).read(), strict=False)
+			data = self.getHtml(elements, listtype).read()
+			writeJson('FHEM-debug: %s \n%s' % ('response', data))
+			jsonObj = json.loads(data, strict=False)
 			return jsonObj
-		except ValueError:
-			# print "error loading JSON"
-			writeLog("error loading JSON")
+		except ValueError as e:
+			writeLog('FHEM-debug: %s -- %s' % ('error loading JSON', e))
 		
 	def setPropertyValue(self, command, value):
 		if self.httpres == 'Http':
