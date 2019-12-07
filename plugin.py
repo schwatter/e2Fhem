@@ -2,10 +2,10 @@
 # FHEM Plugin
 
 ###########################################################################
+import urllib3
 import httplib
 import base64
 import json
-import requests
 import threading
 import sys
 import ssl
@@ -1788,54 +1788,53 @@ class WebWorker(object):
 			self.credentialss = self.username + ':' + self.password
 			self.credentialsb = self.credentialss.encode('utf-8')
 			self.credentials64 = base64.b64encode(self.credentialsb).decode('ascii')
-			self.headers = { 'Authorization' : 'Basic %s' %  self.credentials64 }
+			self.headers = { 'Authorization' : 'Basic ' + self.credentials64, 'Accept-Encoding': 'gzip'}
 		
 	def getHtml(self, elements, listtype):
 		if self.httpres == 'Http':
 			try:
-				conn = httplib.HTTPConnection(self.Address)
+				http = urllib3.PoolManager(num_pools=1)
 				if self.isAuth != 0:
 					if self.csrfswitch == 'On':
-						conn.request('GET', self.Prefix[listtype] + elements + self.basicToken, headers = self.headers)
+						r = http.request('GET', 'http://' + self.Address + self.Prefix[listtype] + elements + self.basicToken, headers = self.headers)
 					elif self.csrfswitch == 'Off':
-						conn.request('GET', self.Prefix[listtype] + elements, headers = self.headers)
+						r = http.request('GET', 'http://' + self.Address + self.Prefix[listtype] + elements, headers = self.headers)
 				else:
-					conn.request('GET', self.Prefix[listtype] + elements)
+					r = http.request('GET', 'http://' + self.Address + self.Prefix[listtype] + elements)
 			
-				response = conn.getresponse()
-				if response.status != 200:
-					writeLog('FHEM-debug: %s -- %s' % ('response', str(response.status) + ' --- reason: ' + response.reason))
-				
+				if r.status != 200:
+					writeLog('FHEM-debug: %s -- %s' % ('response', str(r.status)))
+					
 				self.hasError = False
-				return response
+				return r.data
 			except:
 				self.hasError = True
 				return None
 				
 		else:
 			try:
-				conn = httplib.HTTPSConnection(self.Address)
+				urllib3.disable_warnings()
+				http = urllib3.PoolManager(num_pools=1, cert_reqs='CERT_NONE')
 				if self.isAuth != 0:
 					if self.csrfswitch == 'On':
-						conn.request('GET', self.Prefix[listtype] + elements + self.basicToken, headers = self.headers)
+						r = http.request('GET', 'https://' + self.Address + self.Prefix[listtype] + elements + self.basicToken, headers = self.headers)
 					elif self.csrfswitch == 'Off':
-						conn.request('GET', self.Prefix[listtype] + elements, headers = self.headers)
+						r = http.request('GET', 'https://' + self.Address + self.Prefix[listtype] + elements, headers = self.headers)
 				else:
-					conn.request('GET', self.Prefix[listtype] + elements)
+					r = http.request('GET', 'https://' + self.Address + self.Prefix[listtype] + elements)
 			
-				response = conn.getresponse()
-				if response.status != 200:
-					writeLog('FHEM-debug: %s -- %s' % ('response', str(response.status) + ' --- reason: ' + response.reason))
-				
+				if r.status != 200:
+					writeLog('FHEM-debug: %s -- %s' % ('response', str(r.status)))
+					
 				self.hasError = False
-				return response
+				return r.data
 			except:
 				self.hasError = True
 				return None
 		
 	def getJson(self, elements, listtype):
 		try:
-			data = self.getHtml(elements, listtype).read()
+			data = self.getHtml(elements, listtype)
 			writeJson('FHEM-debug: %s \n%s' % ('response', data))
 			jsonObj = json.loads(data, strict=False)
 			return jsonObj
@@ -1995,9 +1994,11 @@ class FHEM_Setup(Screen, ConfigListScreen):
 		
 	def getToken(self):
 		if self.isAuth != 0:
+			urllib3.disable_warnings()
+			http = urllib3.PoolManager(cert_reqs='CERT_NONE')
 			if self.httpres == 'Http':
 				try:
-					r = requests.get('http://' + self.Address, headers = self.headers)
+					r = http.request('GET', 'http://' + self.Address, headers = self.headers)
 					ct = r.headers['X-FHEM-csrfToken']
 					config.fhem.csrftoken.setValue(ct)
 					writeLog('FHEM-debug: %s -- %s' % ('Message CSRFTOKEN: ', ct))
@@ -2007,7 +2008,7 @@ class FHEM_Setup(Screen, ConfigListScreen):
 			
 			else:
 				try:
-					r = requests.get('https://' + self.Address, headers = self.headers, verify=False)
+					r = http.request('GET', 'https://' + self.Address, headers = self.headers)
 					ct = r.headers['X-FHEM-csrfToken']
 					config.fhem.csrftoken.setValue(ct)
 					writeLog('FHEM-debug: %s -- %s' % ('Message CSRFTOKEN: ', ct))
@@ -2018,47 +2019,49 @@ class FHEM_Setup(Screen, ConfigListScreen):
 			self.session.open(MessageBox,_('no logindetails present'),  type=MessageBox.TYPE_INFO)
 		
 	def restartServer(self):
+		urllib3.disable_warnings()
+		http = urllib3.PoolManager(cert_reqs='CERT_NONE')
 		if self.isAuth != 0:
 			if self.csrfswitch == 'On':
 				if self.httpres == 'Http':
 					try:
-						r = requests.post('http://' + self.Address + '/fhem?cmd=shutdown+restart' + self.basicToken, headers = self.headers)
+						r = http.request('POST', 'http://' + self.Address + '/fhem?cmd=shutdown+restart' + self.basicToken, headers = self.headers)
 						self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
 					except IOError:
 						self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
 				else:
 					try:
-						r = requests.post('https://' + self.Address + '/fhem?cmd=shutdown+restart' + self.basicToken, headers = self.headers, verify=False)
+						r = http.request('POST', 'https://' + self.Address + '/fhem?cmd=shutdown+restart' + self.basicToken, headers = self.headers)
 						self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
 					except IOError:
 						self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
 			else:
 				if self.httpres == 'Http':
 					try:
-						r = requests.post('http://' + self.Address + '/fhem?cmd=shutdown+restart', headers = self.headers)
+						r = http.request('POST', 'http://' + self.Address + '/fhem?cmd=shutdown+restart', headers = self.headers)
 						self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
 					except IOError:
 						self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
 				else:
 					try:
-						r = requests.post('https://' + self.Address + '/fhem?cmd=shutdown+restart', headers = self.headers, verify=False)
+						r = http.request('POST', 'https://' + self.Address + '/fhem?cmd=shutdown+restart', headers = self.headers)
 						self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
 					except IOError:
 						self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
 		else:
 			if self.httpres == 'Http':
 				try:
-					r = requests.post('http://' + self.Address + '/fhem?cmd=shutdown+restart')
+					r = http.request('POST', 'http://' + self.Address + '/fhem?cmd=shutdown+restart')
 					self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
 				except IOError:
 					self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
 			else:
 				try:
-					r = requests.post('https://' + self.Address + '/fhem?cmd=shutdown+restart', verify=False)
+					r = http.request('POST', 'https://' + self.Address + '/fhem?cmd=shutdown+restart')
 					self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
 				except IOError:
 					self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
-	
+					
 	# for summary:
 	def changedEntry(self):
 		for x in self.onChangedEntry:
