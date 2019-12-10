@@ -35,16 +35,16 @@ ELEMENTS = d1 + d2
 fhemlog = '/usr/lib/enigma2/python/Plugins/Extensions/fhem/fhem.log'
 jsonData = '/usr/lib/enigma2/python/Plugins/Extensions/fhem/deviceData.json'
 
+
+
 MAX_LIMITS 	 		= [5.0, 30.0]
 MAX_SPECIALS 		= ['eco','comfort','boost','auto','off','on']
-
-FS20_SPECIALS		= ['off','on']
-
-DUMMY_LIMITS  		= [0, 100]
+FBDECT_LIMITS		= [7.5, 28.5]
 THERMO_LIMITS 		= [6.0, 30.0]
 
 APTTODATE_SPECIALS 	= ['repoSync']
 BASIC_SPECIALS 		= ['off','on']
+DUMMY_LIMITS  		= [0, 100]
 DIMMER_SPECIALS		= ['dim0%','dim06%','dim12%','dim18%','dim25%','dim31%','dim37%','dim41%','dim43%','dim50%','dim56%','dim62%','dim68%','dim75%','dim81%','dim87%','dim93%','dim100%']
 HUEDevice_SPECIALS 	= ['off','on','rgb ff0000','rgb DEFF26','rgb 0000ff','ct 490','ct 380','ct 270','ct 160']
 Hyperion_SPECIALS 	= ['off','on','clearall','dim06%','dim25%','dim50%','dim75%','dim100%']
@@ -465,19 +465,36 @@ class MainScreen(Screen):
 					self['set_Text'].setText(selectedElement.getReadingState())
 			
 			elif selectedElement.getType() in ['FBDECT']:
-				self['titleDetails'].setText('Details für ' + selectedElement.getAlias())
-				
-				list = []
-				list.append((['Einschaltstatus:',selectedElement.getReadingState()],))
-				list.append((['Mode:',selectedElement.getControlmode()],))
-				list.append((['Leistung:',selectedElement.getENERGYPower()],))
-				list.append((['Energie insgesamt:',selectedElement.getENERGYTotal()],))
-				list.append((['Temperatur:',selectedElement.getMeasuredTemp() + ' °C'],))
-				list.append((['Present:',selectedElement.getPresent()],))
-				self['details'].setList(list, 3)
-				
-				self['set_Title'].setText('Neuer Schaltstatus')
-				self['set_Text'].setText(selectedElement.getReadingState())
+				if selectedElement.getSubType() == 'thermostat':
+					self['titleDetails'].setText('Details für ' + selectedElement.getAlias())
+					
+					list = []
+					list.append((['Solltemperatur:',selectedElement.getDesiredTemp() + ' °C'],))
+					list.append((['Isttemperatur:',selectedElement.getMeasuredTemp() + ' °C'],))
+					list.append((['Timestamp:',selectedElement.getLastrcv()],))
+					list.append((['Batterie:',selectedElement.getBattery()],))
+					list.append((['Present:',selectedElement.getPresent()],))
+					self['details'].setList(list, 3)
+					
+					self['set_Text'].setText(selectedElement.getDesiredTemp() + ' °C')
+					self['set_Title'].setText('Neue Solltemperatur')
+					
+					self['titleDetails'].setText('Details für ' + selectedElement.getAlias())
+					
+				if selectedElement.getSubType() != 'thermostat':
+					self['titleDetails'].setText('Details für ' + selectedElement.getAlias())
+					
+					list = []
+					list.append((['Einschaltstatus:',selectedElement.getReadingState()],))
+					list.append((['Mode:',selectedElement.getControlmode()],))
+					list.append((['Leistung:',selectedElement.getENERGYPower()],))
+					list.append((['Energie insgesamt:',selectedElement.getENERGYTotal()],))
+					list.append((['Temperatur:',selectedElement.getMeasuredTemp() + ' °C'],))
+					list.append((['Present:',selectedElement.getPresent()],))
+					self['details'].setList(list, 3)
+					
+					self['set_Title'].setText('Neuer Schaltstatus')
+					self['set_Text'].setText(selectedElement.getReadingState())
 			
 			elif selectedElement.getType() in ['FRITZBOX', 'CUL', 'notify', 'PRESENCE']:
 				self['titleDetails'].setText('Details für ' + selectedElement.getAlias())
@@ -874,7 +891,9 @@ class FHEMElement(object):
 
 	def getLimits(self):
 		writeLog('FHEM-debug: %s -- %s' % ('getLimits', self.getType()))
-		if self.getType() == 'FHT':
+		if self.getType() == 'FBDECT':
+			return FBDECT_LIMITS
+		elif self.getType() == 'FHT':
 			return THERMO_LIMITS
 		elif self.getType() == 'MAX':
 			return MAX_LIMITS
@@ -1085,6 +1104,8 @@ class FHEMElement(object):
 		try:
 			if type in ['FHT','CUL_HM']:
 				return str(self.Data['Readings']['desired-temp']['Value'])
+			elif type in ['FBDECT']:
+				return str(self.Data['Readings']['desired-temp']['Value']).replace('C','')
 			elif type in ['HMCCUDEV']:
 				return str(self.Data['Readings']['4.SET_TEMPERATURE']['Value'])
 			elif type == 'MAX':
@@ -1253,7 +1274,7 @@ class FHEMElement(object):
 	def getBattery(self):
 		type = self.getType()
 		try:
-			if type in ['FHT','CUL_HM','MAX']:
+			if type in ['FHT','CUL_HM','MAX','FBDECT']:
 				return str(self.Data['Readings']['battery']['Value'])
 			elif type in ['HMCCUDEV']:
 				return str(self.Data['Readings']['4.BATTERY_STATE']['Value'])
@@ -1267,6 +1288,8 @@ class FHEMElement(object):
 		try:
 			if type in ['FHT','CUL_HM','MAX']:
 				return str(self.Data['Readings']['measured-temp']['Time'])
+			elif type in ['FBDECT']:
+				return str(self.Data['Readings']['temperature']['Time'])
 			elif type in ['HMCCUDEV']:
 				return str(self.Data['Readings']['state']['Time'])
 			else: 
@@ -1492,6 +1515,12 @@ class FHEMElement(object):
 			except:
 				subtype = 'unknown'
 			return subtype
+		elif type == 'FBDECT':
+			try:
+				subtype = str(self.Data['Attributes']['subType'])
+			except:
+				subtype = 'unknown'
+			return subtype
 		elif type == 'HMCCUDEV':
 			try:
 				subtype = str(self.Data['Attributes']['subType'])
@@ -1551,6 +1580,8 @@ class FHEMElement(object):
 			return 'desiredTemperature'
 		elif type == 'FS20':
 			return ''
+		elif type == 'FBDECT' and self.getSubType() == 'thermostat':
+			return 'desired-temp'
 		elif type == 'FBDECT':
 			return ''
 		elif type == 'IT':
@@ -1598,6 +1629,8 @@ class FHEMElement(object):
 			return '/fhem?XHR=1&cmd=set %s %s ' % (self.Name, self.getUpdateableProperty())
 		elif type == 'FS20':
 			return '/fhem?XHR=1&cmd=set %s %s ' % (self.Name, self.getUpdateableProperty())
+		elif type == 'FBDECT' and self.getSubType() == 'thermostat':
+			return '/fhem?XHR=1&cmd=set %s desired-temp %s ' % (self.Name, self.getUpdateableProperty())
 		elif type == 'FBDECT':
 			return '/fhem?XHR=1&cmd=set %s %s ' % (self.Name, self.getUpdateableProperty())
 		elif type == 'IT':
