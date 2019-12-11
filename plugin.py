@@ -1824,9 +1824,10 @@ class WebWorker(object):
 			self.headers = { 'Authorization' : 'Basic ' + self.credentials64, 'Accept-Encoding': 'gzip'}
 		
 	def getHtml(self, elements, listtype):
+		urllib3.disable_warnings()
+		http = urllib3.PoolManager(num_pools=1, cert_reqs='CERT_NONE')
 		if self.httpres == 'Http':
 			try:
-				http = urllib3.PoolManager(num_pools=1)
 				if self.isAuth != 0:
 					if self.csrfswitch == 'On':
 						r = http.request('GET', 'http://' + self.Address + self.Prefix[listtype] + elements + self.basicToken, headers = self.headers)
@@ -1842,12 +1843,9 @@ class WebWorker(object):
 				return r.data
 			except:
 				self.hasError = True
-				return None
-				
+				return None		
 		else:
 			try:
-				urllib3.disable_warnings()
-				http = urllib3.PoolManager(num_pools=1, cert_reqs='CERT_NONE')
 				if self.isAuth != 0:
 					if self.csrfswitch == 'On':
 						r = http.request('GET', 'https://' + self.Address + self.Prefix[listtype] + elements + self.basicToken, headers = self.headers)
@@ -1864,7 +1862,7 @@ class WebWorker(object):
 			except:
 				self.hasError = True
 				return None
-		
+				
 	def getJson(self, elements, listtype):
 		try:
 			data = self.getHtml(elements, listtype)
@@ -1873,15 +1871,13 @@ class WebWorker(object):
 			return jsonObj
 		except ValueError as e:
 			writeLog('FHEM-debug: %s -- %s' % ('error loading JSON', e))
-		
+			
 	def setPropertyValue(self, command, value):
 		if self.httpres == 'Http':
 			conn = httplib.HTTPConnection(self.Address)
 			message = command + value
 			writeLog('FHEM-debug: %s -- %s' % ('Message to send:', message))
 			message = message.replace(' ','%20')
-
-		
 
 			if self.isAuth != 0:
 				if self.csrfswitch == 'On':
@@ -1897,15 +1893,12 @@ class WebWorker(object):
 				self.hasError = True
 		
 			writeLog('FHEM-debug: %s -- %s' % ('Message sent', 'Result: ' + str(response.status) + ' Reason: ' + response.reason))			
-			self.hasError = False
-		
+			self.hasError = False	
 		else:
 			conn = httplib.HTTPSConnection(self.Address)
 			message = command + value
 			writeLog('FHEM-debug: %s -- %s' % ('Message to send:', message))
 			message = message.replace(' ','%20')
-
-		
 
 			if self.isAuth != 0:
 				if self.csrfswitch == 'On':
