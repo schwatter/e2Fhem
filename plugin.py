@@ -1822,7 +1822,6 @@ class WebWorker(object):
 			self.headers = { 'Authorization' : 'Basic ' + self.credentials64, 'Accept-Encoding': 'gzip'}
 		
 	def getHtml(self, elements, listtype):
-		urllib3.disable_warnings()
 		http = urllib3.PoolManager(num_pools=1, cert_reqs='CERT_NONE')
 		if self.httpres == 'Http':
 			try:
@@ -2018,7 +2017,6 @@ class FHEM_Setup(Screen, ConfigListScreen):
 		
 	def getToken(self):
 		if self.isAuth != 0:
-			urllib3.disable_warnings()
 			http = urllib3.PoolManager(cert_reqs='CERT_NONE')
 			if self.httpres == 'Http':
 				try:
@@ -2043,7 +2041,6 @@ class FHEM_Setup(Screen, ConfigListScreen):
 			self.session.open(MessageBox,_('no logindetails present'),  type=MessageBox.TYPE_INFO)
 		
 	def restartServer(self):
-		urllib3.disable_warnings()
 		http = urllib3.PoolManager(cert_reqs='CERT_NONE')
 		if self.isAuth != 0:
 			if self.csrfswitch == 'On':
