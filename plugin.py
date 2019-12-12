@@ -1629,8 +1629,6 @@ class FHEMElement(object):
 			return '/fhem?XHR=1&cmd=set %s %s ' % (self.Name, self.getUpdateableProperty())
 		elif type == 'FS20':
 			return '/fhem?XHR=1&cmd=set %s %s ' % (self.Name, self.getUpdateableProperty())
-		elif type == 'FBDECT' and self.getSubType() == 'thermostat':
-			return '/fhem?XHR=1&cmd=set %s desired-temp %s ' % (self.Name, self.getUpdateableProperty())
 		elif type == 'FBDECT':
 			return '/fhem?XHR=1&cmd=set %s %s ' % (self.Name, self.getUpdateableProperty())
 		elif type == 'IT':
