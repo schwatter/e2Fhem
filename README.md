@@ -60,9 +60,17 @@ Server
 1. Telnet Vu+
 2. init 4
 3. edit /etc/enigma2/settings and add 
-4. config.fhem.username=yourUsername
-5. config.fhem.password=yourPassword
-6. init 3
+```
+config.fhem.username=yourName
+config.fhem.password=yourPassword
+config.fhem.serverip=yourIP
+config.fhem.csrfswitch=static
+config.fhem.csrftoken=yourToken
+config.fhem.httpresponse=Http
+config.fhem.port=8083
+config.fhem.grouping=ROOM
+```
+4. init 3
 
 - Different devices have different functions.
 - Some have full support and some have only readings. So the basics are:
