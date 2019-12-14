@@ -1536,9 +1536,7 @@ class FHEMElement(object):
 		elif type == 'CUL_TX':	
 			return 'THSensor'	
 		elif type == 'CUL_WS':	
-			return 'THSensor'
-		elif type == 'FBDECT':	
-			return str(self.Data['Internals']['props'])	
+			return 'THSensor'	
 		else:
 			return 'unknown'
 	
