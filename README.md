@@ -63,7 +63,7 @@ Server
 ```
 config.fhem.username=yourName
 config.fhem.password=yourPassword
-config.fhem.serverip=yourIP
+config.fhem.serverip=0.0.0.0
 config.fhem.csrfswitch=static
 config.fhem.csrftoken=yourToken
 config.fhem.httpresponse=Http
