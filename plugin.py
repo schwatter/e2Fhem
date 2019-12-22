@@ -57,7 +57,7 @@ SWITCH4FOUR_DU4 	= ['on4 off','on4 on']
 config.fhem 				= ConfigSubsection()
 config.fhem.httpresponse 	= ConfigSelection(default='Http', choices = [('Http', _('Http')), ('Https', _('Https'))])
 config.fhem.serverip 		= ConfigIP(default = [0,0,0,0])
-config.fhem.port 			= ConfigInteger(default=8083, limits=(8000, 9000))
+config.fhem.port 			= ConfigInteger(default=8000, limits=(8000, 9000))
 config.fhem.username 		= ConfigText(default='')
 config.fhem.password 		= ConfigText(default='')
 config.fhem.csrfswitch 		= ConfigSelection(default='Off', choices = [('On', _('On')), ('Off', _('Off'))])
@@ -2058,7 +2058,8 @@ class FHEM_Setup(Screen, ConfigListScreen):
 					self.session.open(MessageBox,_('X-FHEM-csrfToken: ') + ct,  type=MessageBox.TYPE_INFO)
 				except KeyError:
 					self.session.open(MessageBox,_('no X-FHEM-csrfToken present'),  type=MessageBox.TYPE_INFO)
-			
+				except urllib3.exceptions.ProtocolError:
+					self.session.open(MessageBox,_('no X-FHEM-csrfToken present'),  type=MessageBox.TYPE_INFO)	
 			else:
 				try:
 					r = http.request('GET', 'https://' + self.Address, headers = self.headers)
@@ -2067,6 +2068,8 @@ class FHEM_Setup(Screen, ConfigListScreen):
 					writeLog('FHEM-debug: %s -- %s' % ('Message CSRFTOKEN: ', ct))
 					self.session.open(MessageBox,_('X-FHEM-csrfToken: ') + ct,  type=MessageBox.TYPE_INFO)
 				except KeyError:
+					self.session.open(MessageBox,_('no X-FHEM-csrfToken present'),  type=MessageBox.TYPE_INFO)
+				except urllib3.exceptions.ProtocolError:
 					self.session.open(MessageBox,_('no X-FHEM-csrfToken present'),  type=MessageBox.TYPE_INFO)
 		else:
 			timeout = urllib3.Timeout(connect=0.5, read=1.0)
@@ -2080,6 +2083,8 @@ class FHEM_Setup(Screen, ConfigListScreen):
 					self.session.open(MessageBox,_('X-FHEM-csrfToken: ') + ct,  type=MessageBox.TYPE_INFO)
 				except KeyError:
 					self.session.open(MessageBox,_('no X-FHEM-csrfToken present'),  type=MessageBox.TYPE_INFO)
+				except urllib3.exceptions.ProtocolError:
+					self.session.open(MessageBox,_('no X-FHEM-csrfToken present'),  type=MessageBox.TYPE_INFO)
 			else:
 				try:
 					r = http.request('GET', 'https://' + self.Address)
@@ -2088,6 +2093,8 @@ class FHEM_Setup(Screen, ConfigListScreen):
 					writeLog('FHEM-debug: %s -- %s' % ('Message CSRFTOKEN: ', ct))
 					self.session.open(MessageBox,_('X-FHEM-csrfToken: ') + ct,  type=MessageBox.TYPE_INFO)
 				except KeyError:
+					self.session.open(MessageBox,_('no X-FHEM-csrfToken present'),  type=MessageBox.TYPE_INFO)
+				except urllib3.exceptions.ProtocolError:
 					self.session.open(MessageBox,_('no X-FHEM-csrfToken present'),  type=MessageBox.TYPE_INFO)	
 		
 	def restartServer(self):
