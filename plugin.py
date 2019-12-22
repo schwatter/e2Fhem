@@ -2143,7 +2143,7 @@ class FHEM_Setup(Screen, ConfigListScreen):
 				except IOError:
 					self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
 				except urllib3.exceptions.ReadTimeoutError:
-						self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
+					self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
 			else:
 				try:
 					r = http.request('POST', 'https://' + self.Address + '/fhem?cmd=shutdown+restart')
@@ -2151,7 +2151,7 @@ class FHEM_Setup(Screen, ConfigListScreen):
 				except IOError:
 					self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
 				except urllib3.exceptions.ReadTimeoutError:
-						self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
+					self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
 					
 	# for summary:
 	def changedEntry(self):
