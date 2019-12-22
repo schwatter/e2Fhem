@@ -2108,11 +2108,15 @@ class FHEM_Setup(Screen, ConfigListScreen):
 						self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
 					except IOError:
 						self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
+					except urllib3.exceptions.ReadTimeoutError:
+						self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
 				else:
 					try:
 						r = http.request('POST', 'https://' + self.Address + '/fhem?cmd=shutdown+restart' + self.basicToken, headers = self.headers)
 						self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
 					except IOError:
+						self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
+					except urllib3.exceptions.ReadTimeoutError:
 						self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
 			else:
 				if self.httpres == 'Http':
@@ -2121,11 +2125,15 @@ class FHEM_Setup(Screen, ConfigListScreen):
 						self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
 					except IOError:
 						self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
+					except urllib3.exceptions.ReadTimeoutError:
+						self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
 				else:
 					try:
 						r = http.request('POST', 'https://' + self.Address + '/fhem?cmd=shutdown+restart', headers = self.headers)
 						self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
 					except IOError:
+						self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
+					except urllib3.exceptions.ReadTimeoutError:
 						self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
 		else:
 			if self.httpres == 'Http':
@@ -2134,12 +2142,16 @@ class FHEM_Setup(Screen, ConfigListScreen):
 					self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
 				except IOError:
 					self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
+				except urllib3.exceptions.ReadTimeoutError:
+						self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
 			else:
 				try:
 					r = http.request('POST', 'https://' + self.Address + '/fhem?cmd=shutdown+restart')
 					self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
 				except IOError:
 					self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
+				except urllib3.exceptions.ReadTimeoutError:
+						self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
 					
 	# for summary:
 	def changedEntry(self):
