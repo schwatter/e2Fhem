@@ -17,8 +17,8 @@ from Components.Label import Label
 from Components.ActionMap import ActionMap
 from Components.MenuList import MenuList
 from Components.Sources.StaticText import StaticText
-from Components.ConfigList import ConfigListScreen
 # Configuration
+from Components.ConfigList import ConfigListScreen
 from Components.config import getConfigListEntry, ConfigEnableDisable, \
 	ConfigYesNo, ConfigText, ConfigClock, ConfigNumber, ConfigSelection, \
 	ConfigDateTime, config, NoSave, ConfigSubsection, ConfigInteger, ConfigIP, configfile
@@ -58,10 +58,10 @@ config.fhem 				= ConfigSubsection()
 config.fhem.httpresponse 	= ConfigSelection(default='Http', choices = [('Http', _('Http')), ('Https', _('Https'))])
 config.fhem.serverip 		= ConfigIP(default = [0,0,0,0])
 config.fhem.port 			= ConfigInteger(default=8083, limits=(8000, 9000))
-config.fhem.username 		= ConfigText(default='yourName')
-config.fhem.password 		= ConfigText(default='yourPass')
+config.fhem.username 		= ConfigText(default='')
+config.fhem.password 		= ConfigText(default='')
 config.fhem.csrfswitch 		= ConfigSelection(default='Off', choices = [('On', _('On')), ('Off', _('Off'))])
-config.fhem.csrftoken 		= ConfigText(default='yourToken')
+config.fhem.csrftoken 		= ConfigText(default='')
 config.fhem.grouping 		= ConfigSelection(default='ROOM', choices = [('TYPE', _('Type')), ('ROOM', _('Room'))])
 config.fhem.logfileswitch 	= ConfigSelection(default='Off', choices = [('On', _('On')), ('Off', _('Off'))])
 config.fhem.jsondataswitch	= ConfigSelection(default='Off', choices = [('On', _('On')), ('Off', _('Off'))])
@@ -170,9 +170,18 @@ class MainScreen(Screen):
 
 	def __init__(self, session, args = None):
 		self.session = session
+		self.skin = MainScreen.skin
 		Screen.__init__(self, session)
-				
-		self.onLayoutFinish.append(self.startRun)
+		
+		if config.fhem.serverip.value == [0,0,0,0]:
+			self.runSetup = True
+			self.onShow.append(self.runSetupHandler)
+		elif config.fhem.port.value == 8000:
+			self.runSetup = True
+			self.onShow.append(self.runSetupHandler)
+		else:
+			self.runSetup = False
+			self.onLayoutFinish.append(self.startRun)
 		self.grouping = str(config.fhem.grouping.value)
 		
 		self['set_Title'] = Label('Neue Solltemperatur')
@@ -236,7 +245,12 @@ class MainScreen(Screen):
 				'key_up': self.key_Up_Handler,
 				'key_down': self.key_Down_Handler
 		}, -1)
-		
+	
+	def runSetupHandler(self):
+		if self.runSetup:
+			self.key_menu_Handler()
+			self.runSetup = False
+	
 	def closeme(self):
 		self.isRunning = 0
 		self.close
@@ -1676,26 +1690,29 @@ class FHEMElementCollection(object):
 		self.reload()
 		
 	def reload(self):
-		self.data = self.worker.getJson(self.Type, 0)
-		if self.data is not None:
-			for element in self.data['Results']:																
-				if str(element['Internals']['STATE']) != '???':
-					eldata = self.worker.getJson(element['Name'], 0)
-					if self.Type == 'TYPE=CUL_HM':
-						try:
-							el = FHEMElement(str(element['Name']), eldata['Results'][0])
-							channels = el.getHMChannels()
-							if channels:
+		try:
+			self.data = self.worker.getJson(self.Type, 0)
+			if self.data is not None:
+				for element in self.data['Results']:																
+					if str(element['Internals']['STATE']) != '???':
+						eldata = self.worker.getJson(element['Name'], 0)
+						if self.Type == 'TYPE=CUL_HM':
+							try:
+								el = FHEMElement(str(element['Name']), eldata['Results'][0])
+								channels = el.getHMChannels()
+								if channels:
+									self.Elements.append(el)
+							except:
+								writeLog('FHEM-debug: %s -- %s' % ('reload, error loading', element['Name']))
+						else:
+							try:
+								el = FHEMElement(str(element['Name']), eldata['Results'][0])
 								self.Elements.append(el)
-						except:
-							writeLog('FHEM-debug: %s -- %s' % ('reload, error loading', element['Name']))
-					else:
-						try:
-							el = FHEMElement(str(element['Name']), eldata['Results'][0])
-							self.Elements.append(el)
-						except:
-							writeLog('FHEM-debug: %s -- %s' % ('reload, error loading', element['Name']))
-					
+							except:
+								writeLog('FHEM-debug: %s -- %s' % ('reload, error loading', element['Name']))
+		except:
+			writeLog('FHEM-debug: error loading in reload')
+			
 	def refresh(self):
 		for element in self.Elements:
 			self.loadElement(element.Name)
@@ -1820,7 +1837,8 @@ class WebWorker(object):
 			self.headers = { 'Authorization' : 'Basic ' + self.credentials64, 'Accept-Encoding': 'gzip'}
 		
 	def getHtml(self, elements, listtype):
-		http = urllib3.PoolManager(num_pools=1, cert_reqs='CERT_NONE')
+		timeout = urllib3.Timeout(connect=0.5, read=1.0)
+		http = urllib3.PoolManager(num_pools=1, cert_reqs='CERT_NONE',timeout=timeout,retries=False)
 		if self.httpres == 'Http':
 			try:
 				if self.isAuth != 0:
@@ -1829,10 +1847,14 @@ class WebWorker(object):
 					elif self.csrfswitch == 'Off':
 						r = http.request('GET', 'http://' + self.Address + self.Prefix[listtype] + elements, headers = self.headers)
 				else:
-					r = http.request('GET', 'http://' + self.Address + self.Prefix[listtype] + elements)
+					if self.csrfswitch == 'On':
+						r = http.request('GET', 'http://' + self.Address + self.Prefix[listtype] + elements + self.basicToken)
+					elif self.csrfswitch == 'Off':
+						r = http.request('GET', 'http://' + self.Address + self.Prefix[listtype] + elements)
 			
 				if r.status != 200:
 					writeLog('FHEM-debug: %s -- %s' % ('response', str(r.status)))
+					self.hasError = True
 					
 				self.hasError = False
 				return r.data
@@ -1847,10 +1869,14 @@ class WebWorker(object):
 					elif self.csrfswitch == 'Off':
 						r = http.request('GET', 'https://' + self.Address + self.Prefix[listtype] + elements, headers = self.headers)
 				else:
-					r = http.request('GET', 'https://' + self.Address + self.Prefix[listtype] + elements)
+					if self.csrfswitch == 'On':
+						r = http.request('GET', 'http://' + self.Address + self.Prefix[listtype] + elements + self.basicToken)
+					elif self.csrfswitch == 'Off':
+						r = http.request('GET', 'http://' + self.Address + self.Prefix[listtype] + elements)
 			
 				if r.status != 200:
 					writeLog('FHEM-debug: %s -- %s' % ('response', str(r.status)))
+					self.hasError = True
 					
 				self.hasError = False
 				return r.data
@@ -1880,8 +1906,11 @@ class WebWorker(object):
 				elif self.csrfswitch == 'Off':
 					conn.request('GET', message, headers = self.headers)	
 			else:
-				conn.request('GET', message)
-
+				if self.csrfswitch == 'On':
+					conn.request('GET', message + self.basicToken)
+				elif self.csrfswitch == 'Off':
+					conn.request('GET', message)
+					
 			response = conn.getresponse()
 			if response.status != 200:
 				writeLog('FHEM-debug: %s -- %s' % ('response', str(response.status) + ' --- reason: ' + response.reason))
@@ -1901,8 +1930,11 @@ class WebWorker(object):
 				elif self.csrfswitch == 'Off':
 					conn.request('GET', message, headers = self.headers)	
 			else:
-				conn.request('GET', message)
-
+				if self.csrfswitch == 'On':
+					conn.request('GET', message + self.basicToken)
+				elif self.csrfswitch == 'Off':
+					conn.request('GET', message)
+					
 			response = conn.getresponse()
 			if response.status != 200:
 				writeLog('FHEM-debug: %s -- %s' % ('response', str(response.status) + ' --- reason: ' + response.reason))
@@ -2015,7 +2047,8 @@ class FHEM_Setup(Screen, ConfigListScreen):
 		
 	def getToken(self):
 		if self.isAuth != 0:
-			http = urllib3.PoolManager(cert_reqs='CERT_NONE')
+			timeout = urllib3.Timeout(connect=0.5, read=1.0)
+			http = urllib3.PoolManager(num_pools=1, cert_reqs='CERT_NONE',timeout=timeout,retries=False)
 			if self.httpres == 'Http':
 				try:
 					r = http.request('GET', 'http://' + self.Address, headers = self.headers)
@@ -2036,10 +2069,30 @@ class FHEM_Setup(Screen, ConfigListScreen):
 				except KeyError:
 					self.session.open(MessageBox,_('no X-FHEM-csrfToken present'),  type=MessageBox.TYPE_INFO)
 		else:
-			self.session.open(MessageBox,_('no logindetails present'),  type=MessageBox.TYPE_INFO)
+			timeout = urllib3.Timeout(connect=0.5, read=1.0)
+			http = urllib3.PoolManager(num_pools=1, cert_reqs='CERT_NONE',timeout=timeout,retries=False)
+			if self.httpres == 'Http':
+				try:
+					r = http.request('GET', 'http://' + self.Address)
+					ct = r.headers['X-FHEM-csrfToken']
+					config.fhem.csrftoken.setValue(ct)
+					writeLog('FHEM-debug: %s -- %s' % ('Message CSRFTOKEN: ', ct))
+					self.session.open(MessageBox,_('X-FHEM-csrfToken: ') + ct,  type=MessageBox.TYPE_INFO)
+				except KeyError:
+					self.session.open(MessageBox,_('no X-FHEM-csrfToken present'),  type=MessageBox.TYPE_INFO)
+			else:
+				try:
+					r = http.request('GET', 'https://' + self.Address)
+					ct = r.headers['X-FHEM-csrfToken']
+					config.fhem.csrftoken.setValue(ct)
+					writeLog('FHEM-debug: %s -- %s' % ('Message CSRFTOKEN: ', ct))
+					self.session.open(MessageBox,_('X-FHEM-csrfToken: ') + ct,  type=MessageBox.TYPE_INFO)
+				except KeyError:
+					self.session.open(MessageBox,_('no X-FHEM-csrfToken present'),  type=MessageBox.TYPE_INFO)	
 		
 	def restartServer(self):
-		http = urllib3.PoolManager(cert_reqs='CERT_NONE')
+		timeout = urllib3.Timeout(connect=0.5, read=1.0)
+		http = urllib3.PoolManager(num_pools=1, cert_reqs='CERT_NONE',timeout=timeout,retries=False)
 		if self.isAuth != 0:
 			if self.csrfswitch == 'On':
 				if self.httpres == 'Http':
