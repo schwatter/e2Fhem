@@ -40,11 +40,11 @@ Thx Waldmensch for initial setup
 ## Installation
 
 Enigma2
-- push all files except folder Jsonlist to : /usr/lib/enigma2/python/Plugins/Extensions/fhem/
+- push all files to : /usr/lib/enigma2/python/Plugins/Extensions/fhem/
 
 Server
 - JsonList2 only is now working.
-- copy 98_JsonList.pm to server is no longer necessary.
+- See section --> "Device Specific Info"
 
 
 ## How To
@@ -52,26 +52,9 @@ Server
 - First setup details in settings.
 - If connection is ok, supportet devices show up.
 - If not, go to settings and activate logfile. Check for http-statuscode.
-- no, static and dynamic csrfToken are fine. 
+- No, static and dynamic csrfToken are fine. 
 - But static and dynamic csrfToken is semi-automatic. Hit getToken in settings.
 - Http and Https are supported. Https is slower (I have to investigate).
-- Sometimes at the first setup, there are problems with logindetails, so:
-
-1. Telnet Vu+
-2. init 4
-3. edit /etc/enigma2/settings and add 
-```
-config.fhem.username=yourName
-config.fhem.password=yourPassword
-config.fhem.serverip=0.0.0.0
-config.fhem.csrfswitch=static
-config.fhem.csrftoken=yourToken
-config.fhem.httpresponse=Http
-config.fhem.port=8083
-config.fhem.grouping=ROOM
-```
-4. init 3
-
 - Different devices have different functions.
 - Some have full support and some have only readings. So the basics are:
 
@@ -81,25 +64,7 @@ config.fhem.grouping=ROOM
 4. Num1 till Num4 for moreChannelSwitches.
 
 
-__stateFormat__<br/>
-Doublequotes (") inside HTML-Tags break matching device. Use singlequotes (')
-```
-my $state = ReadingsVal($name, "state", "off");   
-  return "<img src='/fhem/images/fhemSVG/rc_GREEN.svg',img width='32' height='32'<div>".sprintf("&nbsp;&nbsp;Spannung: %.0f V &nbsp;&nbsp;Stromstärke: %.3f A &nbsp;&nbsp;Leistung: %.0f W &nbsp;&nbsp;Wifi_RSSI: %.0f %%", ReadingsVal($name,"ENERGY_Voltage",0), ReadingsVal($name,"ENERGY_Current",0), ReadingsVal($name,"ENERGY_Power",0), ReadingsVal($name,"Wifi_RSSI",0)).'</div>' if($state eq "on");   
-  return "<img src='/fhem/images/fhemSVG/rc_RED.svg',img width='32' height='32'<div>".sprintf("&nbsp;&nbsp;Spannung: %.0f V &nbsp;&nbsp;Stromstärke: %.3f A &nbsp;&nbsp;Leistung: %.0f W &nbsp;&nbsp;Wifi_RSSI: %.0f %%", ReadingsVal($name,"ENERGY_Voltage",0), ReadingsVal($name,"ENERGY_Current",0), ReadingsVal($name,"ENERGY_Power",0), ReadingsVal($name,"Wifi_RSSI",0)).'</div>' if($state eq "off");     
-  return "<img src='/fhem/images/fhemSVG/rc_YELLOW.svg',img width='32' height='32'<div>".sprintf("&nbsp;&nbsp;Spannung: %.0f V &nbsp;&nbsp;Stromstärke: %.3f A &nbsp;&nbsp;Leistung: %.0f W &nbsp;&nbsp;Wifi_RSSI: %.0f %%", ReadingsVal($name,"ENERGY_Voltage",0), ReadingsVal($name,"ENERGY_Current",0), ReadingsVal($name,"ENERGY_Power",0), ReadingsVal($name,"Wifi_RSSI",0)).'</div>' if($state eq "reboot"); 
-  return "<img src='/fhem/images/fhemSVG/rc_BLUE.svg',img width='32' height='32'<div>".sprintf("&nbsp;&nbsp;Spannung: %.0f V &nbsp;&nbsp;Stromstärke: %.3f A &nbsp;&nbsp;Leistung: %.0f W &nbsp;&nbsp;Wifi_RSSI: %.0f %%", ReadingsVal($name,"ENERGY_Voltage",0), ReadingsVal($name,"ENERGY_Current",0), ReadingsVal($name,"ENERGY_Power",0), ReadingsVal($name,"Wifi_RSSI",0)).'</div>' if($state eq "offline");   
-}
-```
-
-
-__HUEGroup__<br/>
-Please set for best compatibility with HUEGroup the following in fhem for each group.
-```
-attr yourHUEGroup createActionReadings 1
-attr yourHUEGroup createGroupReadings 1
-```
-
+## Device Specific Info
 
 __DOIF / cmdState__<br/>
 No spaces, fill the gap for example with "_".
@@ -110,7 +75,6 @@ Or use compound words.
 "Temp_unter_48°C|Temp_ok"
 "WarmWaterOk|WaterCold"
 ```
-
 
 __Dummy fourswitch example__
 ```
@@ -130,6 +94,11 @@ setstate iconDemo 2019-02-24 16:02:05 on4 off
 setstate iconDemo 2019-02-23 23:14:56 state on
 ```
 
+__FBDECT__<br/>
+To set the temperature for thermostat, please set subType in Fhem.
+```
+attr yourThermostat subType thermostat
+```
 
 __HMCCUDEV__<br/>
 At the moment only HM-CC-RT-DN supported.<br/>
@@ -140,6 +109,24 @@ In Fhem you have to add one attribut.<br/>
 attr yourThermostat subType thermostat
 ```
 
+__HUEGroup__<br/>
+Please set for best compatibility with HUEGroup the following in fhem for each group.
+```
+attr yourHUEGroup createActionReadings 1
+attr yourHUEGroup createGroupReadings 1
+```
+
+__stateFormat__<br/>
+In the past doublequotes (") inside HTML-Tags break matching device. But normally it is not nessesary anymore.<br/>
+If you notice, something is wrong, use singlequotes (').
+```
+my $state = ReadingsVal($name, "state", "off");   
+  return "<img src='/fhem/images/fhemSVG/rc_GREEN.svg',img width='32' height='32'<div>".sprintf("&nbsp;&nbsp;Spannung: %.0f V &nbsp;&nbsp;Stromstärke: %.3f A &nbsp;&nbsp;Leistung: %.0f W &nbsp;&nbsp;Wifi_RSSI: %.0f %%", ReadingsVal($name,"ENERGY_Voltage",0), ReadingsVal($name,"ENERGY_Current",0), ReadingsVal($name,"ENERGY_Power",0), ReadingsVal($name,"Wifi_RSSI",0)).'</div>' if($state eq "on");   
+  return "<img src='/fhem/images/fhemSVG/rc_RED.svg',img width='32' height='32'<div>".sprintf("&nbsp;&nbsp;Spannung: %.0f V &nbsp;&nbsp;Stromstärke: %.3f A &nbsp;&nbsp;Leistung: %.0f W &nbsp;&nbsp;Wifi_RSSI: %.0f %%", ReadingsVal($name,"ENERGY_Voltage",0), ReadingsVal($name,"ENERGY_Current",0), ReadingsVal($name,"ENERGY_Power",0), ReadingsVal($name,"Wifi_RSSI",0)).'</div>' if($state eq "off");     
+  return "<img src='/fhem/images/fhemSVG/rc_YELLOW.svg',img width='32' height='32'<div>".sprintf("&nbsp;&nbsp;Spannung: %.0f V &nbsp;&nbsp;Stromstärke: %.3f A &nbsp;&nbsp;Leistung: %.0f W &nbsp;&nbsp;Wifi_RSSI: %.0f %%", ReadingsVal($name,"ENERGY_Voltage",0), ReadingsVal($name,"ENERGY_Current",0), ReadingsVal($name,"ENERGY_Power",0), ReadingsVal($name,"Wifi_RSSI",0)).'</div>' if($state eq "reboot"); 
+  return "<img src='/fhem/images/fhemSVG/rc_BLUE.svg',img width='32' height='32'<div>".sprintf("&nbsp;&nbsp;Spannung: %.0f V &nbsp;&nbsp;Stromstärke: %.3f A &nbsp;&nbsp;Leistung: %.0f W &nbsp;&nbsp;Wifi_RSSI: %.0f %%", ReadingsVal($name,"ENERGY_Voltage",0), ReadingsVal($name,"ENERGY_Current",0), ReadingsVal($name,"ENERGY_Power",0), ReadingsVal($name,"Wifi_RSSI",0)).'</div>' if($state eq "offline");   
+}
+```
 
 ## TODO
 

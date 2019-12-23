@@ -54,20 +54,20 @@ SWITCH4FOUR_DU2 	= ['on2 off','on2 on']
 SWITCH4FOUR_DU3 	= ['on3 off','on3 on']
 SWITCH4FOUR_DU4 	= ['on4 off','on4 on']
 
-config.fhem 				= ConfigSubsection()
-config.fhem.httpresponse 	= ConfigSelection(default='Http', choices = [('Http', _('Http')), ('Https', _('Https'))])
-config.fhem.serverip 		= ConfigIP(default = [0,0,0,0])
-config.fhem.port 			= ConfigInteger(default=8000, limits=(8000, 9000))
-config.fhem.username 		= ConfigText(default='')
-config.fhem.password 		= ConfigText(default='')
-config.fhem.csrfswitch 		= ConfigSelection(default='Off', choices = [('On', _('On')), ('Off', _('Off'))])
-config.fhem.csrftoken 		= ConfigText(default='')
-config.fhem.grouping 		= ConfigSelection(default='ROOM', choices = [('TYPE', _('Type')), ('ROOM', _('Room'))])
-config.fhem.logfileswitch 	= ConfigSelection(default='Off', choices = [('On', _('On')), ('Off', _('Off'))])
-config.fhem.jsondataswitch	= ConfigSelection(default='Off', choices = [('On', _('On')), ('Off', _('Off'))])
+config.plugins.fhem 				= ConfigSubsection()
+config.plugins.fhem.httpresponse 	= ConfigSelection(default='Http', choices = [('Http', _('Http')), ('Https', _('Https'))])
+config.plugins.fhem.serverip 		= ConfigIP(default = [0,0,0,0])
+config.plugins.fhem.port 			= ConfigInteger(default=8000, limits=(8000, 9000))
+config.plugins.fhem.username 		= ConfigText(default='')
+config.plugins.fhem.password 		= ConfigText(default='')
+config.plugins.fhem.csrfswitch 		= ConfigSelection(default='Off', choices = [('On', _('On')), ('Off', _('Off'))])
+config.plugins.fhem.csrftoken 		= ConfigText(default='')
+config.plugins.fhem.grouping 		= ConfigSelection(default='ROOM', choices = [('TYPE', _('Type')), ('ROOM', _('Room'))])
+config.plugins.fhem.logfileswitch 	= ConfigSelection(default='Off', choices = [('On', _('On')), ('Off', _('Off'))])
+config.plugins.fhem.jsondataswitch	= ConfigSelection(default='Off', choices = [('On', _('On')), ('Off', _('Off'))])
 
 def writeLog(svalue):
-	lswitch = str(config.fhem.logfileswitch.value)
+	lswitch = str(config.plugins.fhem.logfileswitch.value)
 	if lswitch == 'On':
 		try:
 			te = localtime()
@@ -80,7 +80,7 @@ def writeLog(svalue):
 			return None
 			
 def writeJson(jsonObj):
-	jswitch = str(config.fhem.jsondataswitch.value)
+	jswitch = str(config.plugins.fhem.jsondataswitch.value)
 	if jswitch == 'On':
 		try:
 			te = localtime()
@@ -173,16 +173,16 @@ class MainScreen(Screen):
 		self.skin = MainScreen.skin
 		Screen.__init__(self, session)
 		
-		if config.fhem.serverip.value == [0,0,0,0]:
+		if config.plugins.fhem.serverip.value == [0,0,0,0]:
 			self.runSetup = True
 			self.onShow.append(self.runSetupHandler)
-		elif config.fhem.port.value == 8000:
+		elif config.plugins.fhem.port.value == 8000:
 			self.runSetup = True
 			self.onShow.append(self.runSetupHandler)
 		else:
 			self.runSetup = False
 			self.onLayoutFinish.append(self.startRun)
-		self.grouping = str(config.fhem.grouping.value)
+		self.grouping = str(config.plugins.fhem.grouping.value)
 		
 		self['set_Title'] = Label('Neue Solltemperatur')
 		self['set_ArrowLeft'] = Label('<')
@@ -256,12 +256,12 @@ class MainScreen(Screen):
 		self.close
 	
 	def saveconfig(self):
-		config.fhem.serverip.save()
-		config.fhem.port.save()
-		config.fhem.username.save()
-		config.fhem.password.save()
-		config.fhem.csrftoken.save()
-		config.fhem.grouping.save() 
+		config.plugins.fhem.serverip.save()
+		config.plugins.fhem.port.save()
+		config.plugins.fhem.username.save()
+		config.plugins.fhem.password.save()
+		config.plugins.fhem.csrftoken.save()
+		config.plugins.fhem.grouping.save() 
  		configfile.save()
 
 		
@@ -270,7 +270,7 @@ class MainScreen(Screen):
 		
 	def setConf(self):
 		self.saveconfig()
-		self.grouping = str(config.fhem.grouping.value)
+		self.grouping = str(config.plugins.fhem.grouping.value)
 		self.startRun()
 		
 	def key_Up_Handler(self):
@@ -299,7 +299,7 @@ class MainScreen(Screen):
 
 		
 	def startRun(self):
-		server = '%d.%d.%d.%d' % tuple(config.fhem.serverip.value)
+		server = '%d.%d.%d.%d' % tuple(config.plugins.fhem.serverip.value)
 		if server == '0.0.0.0':
 			return
 		self.isRunning = 1
@@ -1817,13 +1817,13 @@ class WebWorker(object):
 	
 		self.hasError = False
 	
-		self.httpres = str(config.fhem.httpresponse.value)
-		self.server = '%d.%d.%d.%d' % tuple(config.fhem.serverip.value)
-		self.port = int(config.fhem.port.value)
-		self.username = str(config.fhem.username.value)
-		self.password = str(config.fhem.password.value)
-		self.csrfswitch = str(config.fhem.csrfswitch.value)
-		self.csrftoken = str(config.fhem.csrftoken.value)
+		self.httpres = str(config.plugins.fhem.httpresponse.value)
+		self.server = '%d.%d.%d.%d' % tuple(config.plugins.fhem.serverip.value)
+		self.port = int(config.plugins.fhem.port.value)
+		self.username = str(config.plugins.fhem.username.value)
+		self.password = str(config.plugins.fhem.password.value)
+		self.csrfswitch = str(config.plugins.fhem.csrfswitch.value)
+		self.csrftoken = str(config.plugins.fhem.csrftoken.value)
 		
 		self.Address = self.server + ':' + str(self.port)
 		self.Prefix = ['/fhem?XHR=1&cmd=jsonlist2+']
@@ -2004,14 +2004,14 @@ class FHEM_Setup(Screen, ConfigListScreen):
 		ConfigListScreen.__init__(self, self.list, session = self.session, on_change = self.changedEntry)
 		self.createSetup()
 		self.onLayoutFinish.append(self.layoutFinished)
-		self.httpres = str(config.fhem.httpresponse.value)
-		self.server = '%d.%d.%d.%d' % tuple(config.fhem.serverip.value)
-		self.port = int(config.fhem.port.value)
+		self.httpres = str(config.plugins.fhem.httpresponse.value)
+		self.server = '%d.%d.%d.%d' % tuple(config.plugins.fhem.serverip.value)
+		self.port = int(config.plugins.fhem.port.value)
 		self.Address = self.server + ':' + str(self.port)
-		self.username = str(config.fhem.username.value)
-		self.password = str(config.fhem.password.value)
-		self.csrfswitch = str(config.fhem.csrfswitch.value)
-		self.csrftoken = str(config.fhem.csrftoken.value)
+		self.username = str(config.plugins.fhem.username.value)
+		self.password = str(config.plugins.fhem.password.value)
+		self.csrfswitch = str(config.plugins.fhem.csrfswitch.value)
+		self.csrftoken = str(config.plugins.fhem.csrftoken.value)
 		self.isAuth = len(self.username) + len(self.password)
 		self.basicToken = '&fwcsrf=' + self.csrftoken
 		
@@ -2026,16 +2026,16 @@ class FHEM_Setup(Screen, ConfigListScreen):
 
 	def createSetup(self):
 		self.list = []
-		self.list.append(getConfigListEntry(_('Http/Https'), config.fhem.httpresponse))
-		self.list.append(getConfigListEntry(_('Server IP'), config.fhem.serverip))
-		self.list.append(getConfigListEntry(_('Port'), config.fhem.port))
-		self.list.append(getConfigListEntry(_('Username'), config.fhem.username))
-		self.list.append(getConfigListEntry(_('Password'), config.fhem.password))
-		self.list.append(getConfigListEntry(_('CsrfStatus'), config.fhem.csrfswitch))
-		self.list.append(getConfigListEntry(_('CsrfToken'), config.fhem.csrftoken))
-		self.list.append(getConfigListEntry(_('Group Elements By'), config.fhem.grouping))
-		self.list.append(getConfigListEntry(_('logfile'), config.fhem.logfileswitch))
-		self.list.append(getConfigListEntry(_('jsondata to file/ for research'), config.fhem.jsondataswitch))
+		self.list.append(getConfigListEntry(_('Http/Https'), config.plugins.fhem.httpresponse))
+		self.list.append(getConfigListEntry(_('Server IP'), config.plugins.fhem.serverip))
+		self.list.append(getConfigListEntry(_('Port'), config.plugins.fhem.port))
+		self.list.append(getConfigListEntry(_('Username'), config.plugins.fhem.username))
+		self.list.append(getConfigListEntry(_('Password'), config.plugins.fhem.password))
+		self.list.append(getConfigListEntry(_('CsrfStatus'), config.plugins.fhem.csrfswitch))
+		self.list.append(getConfigListEntry(_('CsrfToken'), config.plugins.fhem.csrftoken))
+		self.list.append(getConfigListEntry(_('Group Elements By'), config.plugins.fhem.grouping))
+		self.list.append(getConfigListEntry(_('logfile'), config.plugins.fhem.logfileswitch))
+		self.list.append(getConfigListEntry(_('jsondata to file/ for research'), config.plugins.fhem.jsondataswitch))
 		self['config'].list = self.list
 		self['config'].l.setList(self.list)
 
@@ -2053,7 +2053,7 @@ class FHEM_Setup(Screen, ConfigListScreen):
 				try:
 					r = http.request('GET', 'http://' + self.Address, headers = self.headers)
 					ct = r.headers['X-FHEM-csrfToken']
-					config.fhem.csrftoken.setValue(ct)
+					config.plugins.fhem.csrftoken.setValue(ct)
 					writeLog('FHEM-debug: %s -- %s' % ('Message CSRFTOKEN: ', ct))
 					self.session.open(MessageBox,_('X-FHEM-csrfToken: ') + ct,  type=MessageBox.TYPE_INFO)
 				except KeyError:
@@ -2064,7 +2064,7 @@ class FHEM_Setup(Screen, ConfigListScreen):
 				try:
 					r = http.request('GET', 'https://' + self.Address, headers = self.headers)
 					ct = r.headers['X-FHEM-csrfToken']
-					config.fhem.csrftoken.setValue(ct)
+					config.plugins.fhem.csrftoken.setValue(ct)
 					writeLog('FHEM-debug: %s -- %s' % ('Message CSRFTOKEN: ', ct))
 					self.session.open(MessageBox,_('X-FHEM-csrfToken: ') + ct,  type=MessageBox.TYPE_INFO)
 				except KeyError:
@@ -2078,7 +2078,7 @@ class FHEM_Setup(Screen, ConfigListScreen):
 				try:
 					r = http.request('GET', 'http://' + self.Address)
 					ct = r.headers['X-FHEM-csrfToken']
-					config.fhem.csrftoken.setValue(ct)
+					config.plugins.fhem.csrftoken.setValue(ct)
 					writeLog('FHEM-debug: %s -- %s' % ('Message CSRFTOKEN: ', ct))
 					self.session.open(MessageBox,_('X-FHEM-csrfToken: ') + ct,  type=MessageBox.TYPE_INFO)
 				except KeyError:
@@ -2089,7 +2089,7 @@ class FHEM_Setup(Screen, ConfigListScreen):
 				try:
 					r = http.request('GET', 'https://' + self.Address)
 					ct = r.headers['X-FHEM-csrfToken']
-					config.fhem.csrftoken.setValue(ct)
+					config.plugins.fhem.csrftoken.setValue(ct)
 					writeLog('FHEM-debug: %s -- %s' % ('Message CSRFTOKEN: ', ct))
 					self.session.open(MessageBox,_('X-FHEM-csrfToken: ') + ct,  type=MessageBox.TYPE_INFO)
 				except KeyError:
