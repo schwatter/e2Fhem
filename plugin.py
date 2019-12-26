@@ -1897,22 +1897,19 @@ class WebWorker(object):
 		http = urllib3.PoolManager(num_pools=1, cert_reqs='CERT_NONE',timeout=timeout,retries=False)
 		if self.httpres == 'Http':
 			message = command + value
+			writeLog('FHEM-debug: %s -- %s' % ('Message to send:', message.replace(' ','%20')))
 			message = message.replace(' ','%20')
 
 			if self.isAuth != 0:
 				if self.csrfswitch == 'On':
 					r = http.request('GET', 'http://' + self.Address + message + self.basicToken, headers = self.headers)
-					writeLog('FHEM-debug: %s -- %s' % ('Message to send:', message + self.basicToken))
 				elif self.csrfswitch == 'Off':
 					r = http.request('GET', 'http://' + self.Address + message, headers = self.headers)
-					writeLog('FHEM-debug: %s -- %s' % ('Message to send:', message))
 			else:
 				if self.csrfswitch == 'On':
 					r = http.request('GET', 'http://' + self.Address + message + self.basicToken)
-					writeLog('FHEM-debug: %s -- %s' % ('Message to send:', message + self.basicToken))
 				elif self.csrfswitch == 'Off':
 					r = http.request('GET', 'http://' + self.Address + message)
-					writeLog('FHEM-debug: %s -- %s' % ('Message to send:', message))
 					
 			if r.status != 200:
 				writeLog('FHEM-debug: %s -- %s' % ('response', str(r.status)))
@@ -1921,22 +1918,19 @@ class WebWorker(object):
 			self.hasError = False	
 		else:
 			message = command + value
+			writeLog('FHEM-debug: %s -- %s' % ('Message to send:', message.replace(' ','%20')))
 			message = message.replace(' ','%20')
 
 			if self.isAuth != 0:
 				if self.csrfswitch == 'On':
 					r = http.request('GET', 'https://' + self.Address + message + self.basicToken, headers = self.headers)
-					writeLog('FHEM-debug: %s -- %s' % ('Message to send:', message + self.basicToken))
 				elif self.csrfswitch == 'Off':
 					r = http.request('GET', 'https://' + self.Address + message, headers = self.headers)
-					writeLog('FHEM-debug: %s -- %s' % ('Message to send:', message))
 			else:
 				if self.csrfswitch == 'On':
 					r = http.request('GET', 'https://' + self.Address + message + self.basicToken)
-					writeLog('FHEM-debug: %s -- %s' % ('Message to send:', message + self.basicToken))
 				elif self.csrfswitch == 'Off':
 					r = http.request('GET', 'https://' + self.Address + message)
-					writeLog('FHEM-debug: %s -- %s' % ('Message to send:', message))
 					
 			if r.status != 200:
 				writeLog('FHEM-debug: %s -- %s' % ('response', str(r.status)))
