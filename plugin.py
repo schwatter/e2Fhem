@@ -1897,8 +1897,8 @@ class WebWorker(object):
 		http = urllib3.PoolManager(num_pools=1, cert_reqs='CERT_NONE',timeout=timeout,retries=False)
 		if self.httpres == 'Http':
 			message = command + value
+			writeLog('FHEM-debug: %s -- %s' % ('Message to send:', message.replace(' ','%20')))
 			message = message.replace(' ','%20')
-			writeLog('FHEM-debug: %s -- %s' % ('Message to send:', message))
 
 			if self.isAuth != 0:
 				if self.csrfswitch == 'On':
@@ -1918,8 +1918,8 @@ class WebWorker(object):
 			self.hasError = False	
 		else:
 			message = command + value
+			writeLog('FHEM-debug: %s -- %s' % ('Message to send:', message.replace(' ','%20')))
 			message = message.replace(' ','%20')
-			writeLog('FHEM-debug: %s -- %s' % ('Message to send:', message))
 
 			if self.isAuth != 0:
 				if self.csrfswitch == 'On':
