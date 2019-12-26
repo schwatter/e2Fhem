@@ -3,7 +3,6 @@
 
 ###########################################################################
 import urllib3
-import httplib
 import base64
 import json
 import threading
@@ -1626,49 +1625,49 @@ class FHEMElement(object):
 	def getUpdateCommand(self):
 		type = self.getType()
 		if type in ['FHT']:
-			return '/fhem?XHR=1&cmd=set %s %s ' % (self.Name,  self.getUpdateableProperty())
+			return '/fhem?XHR=1&cmd=set %s%s ' % (self.Name,  self.getUpdateableProperty())
 		elif type == 'CUL_HM' and self.getModel() in ['HM-LC-SW4-BA-PCB','HM-LC-Sw4-DR','HM-LC-Sw4-SM','HM-LC-SW2-FM','HM-LC-Sw2PB-FM']:
 			return '/fhem?XHR=1&cmd=set %s' % (self.getUpdateableProperty())
 		elif type == 'CUL_HM' and self.getSubType() == 'switch':
-			return '/fhem?XHR=1&cmd=set %s %s ' % (self.Name, self.getUpdateableProperty())		
+			return '/fhem?XHR=1&cmd=set %s%s ' % (self.Name, self.getUpdateableProperty())		
 		elif type == 'CUL_HM' and self.getModel() == 'HM-CC-RT-DN':
-			return '/fhem?XHR=1&cmd=set %s %s ' % (self.Name + '_Clima', self.getUpdateableProperty())
+			return '/fhem?XHR=1&cmd=set %s%s ' % (self.Name + '_Clima', self.getUpdateableProperty())
 		elif type == 'CUL_HM' and self.getModel() == 'HM-TC-IT-WM-W-EU':
-			return '/fhem?XHR=1&cmd=set %s %s ' % (self.Name + '_Climate', self.getUpdateableProperty())
+			return '/fhem?XHR=1&cmd=set %s%s ' % (self.Name + '_Climate', self.getUpdateableProperty())
 		elif type == 'HMCCUDEV' and self.getSubType() == 'thermostat':
-			return '/fhem?XHR=1&cmd=set %s %s ' % (self.Name, self.getUpdateableProperty())
+			return '/fhem?XHR=1&cmd=set %s%s ' % (self.Name, self.getUpdateableProperty())
 		elif type == 'MAX':
-			return '/fhem?XHR=1&cmd=set %s %s ' % (self.Name, self.getUpdateableProperty())
+			return '/fhem?XHR=1&cmd=set %s%s ' % (self.Name, self.getUpdateableProperty())
 		elif type == 'FS20':
-			return '/fhem?XHR=1&cmd=set %s %s ' % (self.Name, self.getUpdateableProperty())
+			return '/fhem?XHR=1&cmd=set %s%s ' % (self.Name, self.getUpdateableProperty())
 		elif type == 'FBDECT':
-			return '/fhem?XHR=1&cmd=set %s %s ' % (self.Name, self.getUpdateableProperty())
+			return '/fhem?XHR=1&cmd=set %s%s ' % (self.Name, self.getUpdateableProperty())
 		elif type == 'IT':
-			return '/fhem?XHR=1&cmd=set %s %s ' % (self.Name, self.getUpdateableProperty())
+			return '/fhem?XHR=1&cmd=set %s%s ' % (self.Name, self.getUpdateableProperty())
 		elif type == 'MQTT_DEVICE':
-			return '/fhem?XHR=1&cmd=set %s %s ' % (self.Name, self.getUpdateableProperty())
+			return '/fhem?XHR=1&cmd=set %s%s ' % (self.Name, self.getUpdateableProperty())
 		elif type == 'MQTT2_DEVICE':
-			return '/fhem?XHR=1&cmd=set %s %s ' % (self.Name, self.getUpdateableProperty())
+			return '/fhem?XHR=1&cmd=set %s%s ' % (self.Name, self.getUpdateableProperty())
 		elif type == 'DOIF':
-			return '/fhem?XHR=1&cmd=set %s %s ' % (self.Name, self.getUpdateableProperty())
+			return '/fhem?XHR=1&cmd=set %s%s ' % (self.Name, self.getUpdateableProperty())
 		elif type == 'AptToDate':
-			return '/fhem?XHR=1&cmd=set %s %s ' % (self.Name, self.getUpdateableProperty())
+			return '/fhem?XHR=1&cmd=set %s%s ' % (self.Name, self.getUpdateableProperty())
 		elif type == 'GHoma':
-			return '/fhem?XHR=1&cmd=set %s %s ' % (self.Name, self.getUpdateableProperty())
+			return '/fhem?XHR=1&cmd=set %s%s ' % (self.Name, self.getUpdateableProperty())
 		elif type == 'Hyperion':
-			return '/fhem?XHR=1&cmd=set %s %s ' % (self.Name, self.getUpdateableProperty())
+			return '/fhem?XHR=1&cmd=set %s%s ' % (self.Name, self.getUpdateableProperty())
 		elif type == 'HUEDevice':
-			return '/fhem?XHR=1&cmd=set %s %s ' % (self.Name, self.getUpdateableProperty())
+			return '/fhem?XHR=1&cmd=set %s%s ' % (self.Name, self.getUpdateableProperty())
 		elif type == 'dummy':
-			return '/fhem?XHR=1&cmd=set %s %s ' % (self.Name, self.getUpdateableProperty())
+			return '/fhem?XHR=1&cmd=set %s%s ' % (self.Name, self.getUpdateableProperty())
 		elif type == 'pilight_switch':
-			return '/fhem?XHR=1&cmd=set %s %s ' % (self.Name, self.getUpdateableProperty())
+			return '/fhem?XHR=1&cmd=set %s%s ' % (self.Name, self.getUpdateableProperty())
 		elif type == 'LightScene':
-			return '/fhem?XHR=1&cmd=set %s scene %s ' % (self.Name, self.getUpdateableProperty())
+			return '/fhem?XHR=1&cmd=set %s scene%s ' % (self.Name, self.getUpdateableProperty())
 		elif type == 'readingsProxy':
-			return '/fhem?XHR=1&cmd=set %s %s ' % (self.Name, self.getUpdateableProperty())
+			return '/fhem?XHR=1&cmd=set %s%s ' % (self.Name, self.getUpdateableProperty())
 		elif type == 'WOL':
-			return '/fhem?XHR=1&cmd=set %s %s ' % (self.Name, self.getUpdateableProperty())
+			return '/fhem?XHR=1&cmd=set %s%s ' % (self.Name, self.getUpdateableProperty())
 			
 	def getHMChannels(self):
 		type = self.getType()
@@ -1894,53 +1893,49 @@ class WebWorker(object):
 			writeLog('FHEM-debug: %s -- %s' % ('error loading JSON', e))
 			
 	def setPropertyValue(self, command, value):
+		timeout = urllib3.Timeout(connect=0.5, read=1.0)
+		http = urllib3.PoolManager(num_pools=1, cert_reqs='CERT_NONE',timeout=timeout,retries=False)
 		if self.httpres == 'Http':
-			conn = httplib.HTTPConnection(self.Address)
 			message = command + value
-			writeLog('FHEM-debug: %s -- %s' % ('Message to send:', message))
 			message = message.replace(' ','%20')
+			writeLog('FHEM-debug: %s -- %s' % ('Message to send:', message))
 
 			if self.isAuth != 0:
 				if self.csrfswitch == 'On':
-					conn.request('GET', message + self.basicToken, headers = self.headers)
+					r = http.request('GET', 'http://' + self.Address + message + self.basicToken, headers = self.headers)
 				elif self.csrfswitch == 'Off':
-					conn.request('GET', message, headers = self.headers)	
+					r = http.request('GET', 'http://' + self.Address + message, headers = self.headers)
 			else:
 				if self.csrfswitch == 'On':
-					conn.request('GET', message + self.basicToken)
+					r = http.request('GET', 'http://' + self.Address + message + self.basicToken)
 				elif self.csrfswitch == 'Off':
-					conn.request('GET', message)
+					r = http.request('GET', 'http://' + self.Address + message)
 					
-			response = conn.getresponse()
-			if response.status != 200:
-				writeLog('FHEM-debug: %s -- %s' % ('response', str(response.status) + ' --- reason: ' + response.reason))
+			f r.status != 200:
+				writeLog('FHEM-debug: %s -- %s' % ('response', str(r.status)))
 				self.hasError = True
-		
-			writeLog('FHEM-debug: %s -- %s' % ('Message sent', 'Result: ' + str(response.status) + ' Reason: ' + response.reason))			
+				
 			self.hasError = False	
 		else:
-			conn = httplib.HTTPSConnection(self.Address)
 			message = command + value
-			writeLog('FHEM-debug: %s -- %s' % ('Message to send:', message))
 			message = message.replace(' ','%20')
+			writeLog('FHEM-debug: %s -- %s' % ('Message to send:', message))
 
 			if self.isAuth != 0:
 				if self.csrfswitch == 'On':
-					conn.request('GET', message + self.basicToken, headers = self.headers)
+					r = http.request('GET', 'https://' + self.Address + message + self.basicToken, headers = self.headers)
 				elif self.csrfswitch == 'Off':
-					conn.request('GET', message, headers = self.headers)	
+					r = http.request('GET', 'https://' + self.Address + message, headers = self.headers)
 			else:
 				if self.csrfswitch == 'On':
-					conn.request('GET', message + self.basicToken)
+					r = http.request('GET', 'https://' + self.Address + message + self.basicToken)
 				elif self.csrfswitch == 'Off':
-					conn.request('GET', message)
+					r = http.request('GET', 'https://' + self.Address + message)
 					
-			response = conn.getresponse()
-			if response.status != 200:
-				writeLog('FHEM-debug: %s -- %s' % ('response', str(response.status) + ' --- reason: ' + response.reason))
+			if r.status != 200:
+				writeLog('FHEM-debug: %s -- %s' % ('response', str(r.status)))
 				self.hasError = True
-		
-			writeLog('FHEM-debug: %s -- %s' % ('Message sent', 'Result: ' + str(response.status) + ' Reason: ' + response.reason))	
+				
 			self.hasError = False
 
 ############################################     Config    #################################
