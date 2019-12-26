@@ -1911,7 +1911,7 @@ class WebWorker(object):
 				elif self.csrfswitch == 'Off':
 					r = http.request('GET', 'http://' + self.Address + message)
 					
-			f r.status != 200:
+			if r.status != 200:
 				writeLog('FHEM-debug: %s -- %s' % ('response', str(r.status)))
 				self.hasError = True
 				
