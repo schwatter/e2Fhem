@@ -1625,49 +1625,49 @@ class FHEMElement(object):
 	def getUpdateCommand(self):
 		type = self.getType()
 		if type in ['FHT']:
-			return '/fhem?XHR=1&cmd=set %s%s ' % (self.Name,  self.getUpdateableProperty())
+			return '/fhem?XHR=1&cmd=set %s %s ' % (self.Name,  self.getUpdateableProperty())
 		elif type == 'CUL_HM' and self.getModel() in ['HM-LC-SW4-BA-PCB','HM-LC-Sw4-DR','HM-LC-Sw4-SM','HM-LC-SW2-FM','HM-LC-Sw2PB-FM']:
 			return '/fhem?XHR=1&cmd=set %s' % (self.getUpdateableProperty())
 		elif type == 'CUL_HM' and self.getSubType() == 'switch':
-			return '/fhem?XHR=1&cmd=set %s%s ' % (self.Name, self.getUpdateableProperty())		
+			return '/fhem?XHR=1&cmd=set %s %s ' % (self.Name, self.getUpdateableProperty())		
 		elif type == 'CUL_HM' and self.getModel() == 'HM-CC-RT-DN':
-			return '/fhem?XHR=1&cmd=set %s%s ' % (self.Name + '_Clima', self.getUpdateableProperty())
+			return '/fhem?XHR=1&cmd=set %s %s ' % (self.Name + '_Clima', self.getUpdateableProperty())
 		elif type == 'CUL_HM' and self.getModel() == 'HM-TC-IT-WM-W-EU':
-			return '/fhem?XHR=1&cmd=set %s%s ' % (self.Name + '_Climate', self.getUpdateableProperty())
+			return '/fhem?XHR=1&cmd=set %s %s ' % (self.Name + '_Climate', self.getUpdateableProperty())
 		elif type == 'HMCCUDEV' and self.getSubType() == 'thermostat':
-			return '/fhem?XHR=1&cmd=set %s%s ' % (self.Name, self.getUpdateableProperty())
+			return '/fhem?XHR=1&cmd=set %s %s ' % (self.Name, self.getUpdateableProperty())
 		elif type == 'MAX':
-			return '/fhem?XHR=1&cmd=set %s%s ' % (self.Name, self.getUpdateableProperty())
+			return '/fhem?XHR=1&cmd=set %s %s ' % (self.Name, self.getUpdateableProperty())
 		elif type == 'FS20':
-			return '/fhem?XHR=1&cmd=set %s%s ' % (self.Name, self.getUpdateableProperty())
+			return '/fhem?XHR=1&cmd=set %s %s ' % (self.Name, self.getUpdateableProperty())
 		elif type == 'FBDECT':
-			return '/fhem?XHR=1&cmd=set %s%s ' % (self.Name, self.getUpdateableProperty())
+			return '/fhem?XHR=1&cmd=set %s %s ' % (self.Name, self.getUpdateableProperty())
 		elif type == 'IT':
-			return '/fhem?XHR=1&cmd=set %s%s ' % (self.Name, self.getUpdateableProperty())
+			return '/fhem?XHR=1&cmd=set %s %s ' % (self.Name, self.getUpdateableProperty())
 		elif type == 'MQTT_DEVICE':
-			return '/fhem?XHR=1&cmd=set %s%s ' % (self.Name, self.getUpdateableProperty())
+			return '/fhem?XHR=1&cmd=set %s %s ' % (self.Name, self.getUpdateableProperty())
 		elif type == 'MQTT2_DEVICE':
-			return '/fhem?XHR=1&cmd=set %s%s ' % (self.Name, self.getUpdateableProperty())
+			return '/fhem?XHR=1&cmd=set %s %s ' % (self.Name, self.getUpdateableProperty())
 		elif type == 'DOIF':
-			return '/fhem?XHR=1&cmd=set %s%s ' % (self.Name, self.getUpdateableProperty())
+			return '/fhem?XHR=1&cmd=set %s %s ' % (self.Name, self.getUpdateableProperty())
 		elif type == 'AptToDate':
-			return '/fhem?XHR=1&cmd=set %s%s ' % (self.Name, self.getUpdateableProperty())
+			return '/fhem?XHR=1&cmd=set %s %s ' % (self.Name, self.getUpdateableProperty())
 		elif type == 'GHoma':
-			return '/fhem?XHR=1&cmd=set %s%s ' % (self.Name, self.getUpdateableProperty())
+			return '/fhem?XHR=1&cmd=set %s %s ' % (self.Name, self.getUpdateableProperty())
 		elif type == 'Hyperion':
-			return '/fhem?XHR=1&cmd=set %s%s ' % (self.Name, self.getUpdateableProperty())
+			return '/fhem?XHR=1&cmd=set %s %s ' % (self.Name, self.getUpdateableProperty())
 		elif type == 'HUEDevice':
-			return '/fhem?XHR=1&cmd=set %s%s ' % (self.Name, self.getUpdateableProperty())
+			return '/fhem?XHR=1&cmd=set %s %s ' % (self.Name, self.getUpdateableProperty())
 		elif type == 'dummy':
-			return '/fhem?XHR=1&cmd=set %s%s ' % (self.Name, self.getUpdateableProperty())
+			return '/fhem?XHR=1&cmd=set %s %s ' % (self.Name, self.getUpdateableProperty())
 		elif type == 'pilight_switch':
-			return '/fhem?XHR=1&cmd=set %s%s ' % (self.Name, self.getUpdateableProperty())
+			return '/fhem?XHR=1&cmd=set %s %s ' % (self.Name, self.getUpdateableProperty())
 		elif type == 'LightScene':
 			return '/fhem?XHR=1&cmd=set %s scene%s ' % (self.Name, self.getUpdateableProperty())
 		elif type == 'readingsProxy':
-			return '/fhem?XHR=1&cmd=set %s%s ' % (self.Name, self.getUpdateableProperty())
+			return '/fhem?XHR=1&cmd=set %s %s ' % (self.Name, self.getUpdateableProperty())
 		elif type == 'WOL':
-			return '/fhem?XHR=1&cmd=set %s%s ' % (self.Name, self.getUpdateableProperty())
+			return '/fhem?XHR=1&cmd=set %s %s ' % (self.Name, self.getUpdateableProperty())
 			
 	def getHMChannels(self):
 		type = self.getType()
