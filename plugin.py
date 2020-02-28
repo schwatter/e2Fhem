@@ -2054,7 +2054,9 @@ class FHEM_Setup(Screen, ConfigListScreen):
 				except KeyError:
 					self.session.open(MessageBox,_('no X-FHEM-csrfToken present'),  type=MessageBox.TYPE_INFO)
 				except urllib3.exceptions.ProtocolError:
-					self.session.open(MessageBox,_('no X-FHEM-csrfToken present'),  type=MessageBox.TYPE_INFO)	
+					self.session.open(MessageBox,_('no X-FHEM-csrfToken present'),  type=MessageBox.TYPE_INFO)
+				except urllib3.exceptions.ConnectTimeoutError:
+					self.session.open(MessageBox,_('fhem cannot be reached! Check login details or server.'),  type=MessageBox.TYPE_INFO)
 			else:
 				try:
 					r = http.request('GET', 'https://' + self.Address, headers = self.headers)
@@ -2066,6 +2068,8 @@ class FHEM_Setup(Screen, ConfigListScreen):
 					self.session.open(MessageBox,_('no X-FHEM-csrfToken present'),  type=MessageBox.TYPE_INFO)
 				except urllib3.exceptions.ProtocolError:
 					self.session.open(MessageBox,_('no X-FHEM-csrfToken present'),  type=MessageBox.TYPE_INFO)
+				except urllib3.exceptions.ConnectTimeoutError:
+					self.session.open(MessageBox,_('fhem cannot be reached! Check login details or server.'),  type=MessageBox.TYPE_INFO)
 		else:
 			timeout = urllib3.Timeout(connect=0.5, read=1.0)
 			http = urllib3.PoolManager(num_pools=1, cert_reqs='CERT_NONE',timeout=timeout,retries=False)
@@ -2080,6 +2084,8 @@ class FHEM_Setup(Screen, ConfigListScreen):
 					self.session.open(MessageBox,_('no X-FHEM-csrfToken present'),  type=MessageBox.TYPE_INFO)
 				except urllib3.exceptions.ProtocolError:
 					self.session.open(MessageBox,_('no X-FHEM-csrfToken present'),  type=MessageBox.TYPE_INFO)
+				except urllib3.exceptions.ConnectTimeoutError:
+					self.session.open(MessageBox,_('fhem cannot be reached! Check login details or server.'),  type=MessageBox.TYPE_INFO)
 			else:
 				try:
 					r = http.request('GET', 'https://' + self.Address)
@@ -2090,7 +2096,9 @@ class FHEM_Setup(Screen, ConfigListScreen):
 				except KeyError:
 					self.session.open(MessageBox,_('no X-FHEM-csrfToken present'),  type=MessageBox.TYPE_INFO)
 				except urllib3.exceptions.ProtocolError:
-					self.session.open(MessageBox,_('no X-FHEM-csrfToken present'),  type=MessageBox.TYPE_INFO)	
+					self.session.open(MessageBox,_('no X-FHEM-csrfToken present'),  type=MessageBox.TYPE_INFO)
+				except urllib3.exceptions.ConnectTimeoutError:
+					self.session.open(MessageBox,_('fhem cannot be reached! Check login details or server.'),  type=MessageBox.TYPE_INFO)
 		
 	def restartServer(self):
 		timeout = urllib3.Timeout(connect=0.5, read=1.0)
@@ -2105,6 +2113,8 @@ class FHEM_Setup(Screen, ConfigListScreen):
 						self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
 					except urllib3.exceptions.ReadTimeoutError:
 						self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
+					except urllib3.exceptions.ConnectTimeoutError:
+						self.session.open(MessageBox,_('fhem cannot be reached! Check login details or server.'),  type=MessageBox.TYPE_INFO)
 				else:
 					try:
 						r = http.request('POST', 'https://' + self.Address + '/fhem?cmd=shutdown+restart' + self.basicToken, headers = self.headers)
@@ -2113,6 +2123,8 @@ class FHEM_Setup(Screen, ConfigListScreen):
 						self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
 					except urllib3.exceptions.ReadTimeoutError:
 						self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
+					except urllib3.exceptions.ConnectTimeoutError:
+						self.session.open(MessageBox,_('fhem cannot be reached! Check login details or server.'),  type=MessageBox.TYPE_INFO)
 			else:
 				if self.httpres == 'Http':
 					try:
@@ -2122,6 +2134,8 @@ class FHEM_Setup(Screen, ConfigListScreen):
 						self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
 					except urllib3.exceptions.ReadTimeoutError:
 						self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
+					except urllib3.exceptions.ConnectTimeoutError:
+						self.session.open(MessageBox,_('fhem cannot be reached! Check login details or server.'),  type=MessageBox.TYPE_INFO)
 				else:
 					try:
 						r = http.request('POST', 'https://' + self.Address + '/fhem?cmd=shutdown+restart', headers = self.headers)
@@ -2130,6 +2144,8 @@ class FHEM_Setup(Screen, ConfigListScreen):
 						self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
 					except urllib3.exceptions.ReadTimeoutError:
 						self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
+					except urllib3.exceptions.ConnectTimeoutError:
+						self.session.open(MessageBox,_('fhem cannot be reached! Check login details or server.'),  type=MessageBox.TYPE_INFO)
 		else:
 			if self.httpres == 'Http':
 				try:
@@ -2139,6 +2155,8 @@ class FHEM_Setup(Screen, ConfigListScreen):
 					self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
 				except urllib3.exceptions.ReadTimeoutError:
 					self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
+				except urllib3.exceptions.ConnectTimeoutError:
+					self.session.open(MessageBox,_('fhem cannot be reached! Check login details or server.'),  type=MessageBox.TYPE_INFO)
 			else:
 				try:
 					r = http.request('POST', 'https://' + self.Address + '/fhem?cmd=shutdown+restart')
@@ -2147,6 +2165,8 @@ class FHEM_Setup(Screen, ConfigListScreen):
 					self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
 				except urllib3.exceptions.ReadTimeoutError:
 					self.session.open(MessageBox,_('restart server'),  type=MessageBox.TYPE_INFO,timeout = 20)
+				except urllib3.exceptions.ConnectTimeoutError:
+					self.session.open(MessageBox,_('fhem cannot be reached! Check login details or server.'),  type=MessageBox.TYPE_INFO)
 					
 	# for summary:
 	def changedEntry(self):
