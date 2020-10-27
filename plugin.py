@@ -45,6 +45,7 @@ APTTODATE_SPECIALS 	= ['repoSync']
 BASIC_SPECIALS 		= ['off','on']
 DUMMY_LIMITS  		= [0, 100]
 DIMMER_SPECIALS		= ['dim0%','dim06%','dim12%','dim18%','dim25%','dim31%','dim37%','dim41%','dim43%','dim50%','dim56%','dim62%','dim68%','dim75%','dim81%','dim87%','dim93%','dim100%']
+DIMMER2_SPECIALS	= ['pct 0','pct 6','pct 12','pct 18','pct 25','pct 31','pct 37','pct 41','pct 43','pct 50','pct 56','pct 62','pct 68','pct 75','pct 81','pct 87','pct 93','pct 100']
 HUEDevice_SPECIALS 	= ['off','on','rgb ff0000','rgb DEFF26','rgb 0000ff','ct 490','ct 380','ct 270','ct 160']
 Hyperion_SPECIALS 	= ['off','on','clearall','dim06%','dim25%','dim50%','dim75%','dim100%']
 FS20_SPECIALS		= ['off','on']
@@ -451,26 +452,38 @@ class MainScreen(Screen):
 				self['set_Text'].setText(selectedElement.getReadingState())
 			
 			elif selectedElement.getType() in ['MQTT_DEVICE', 'MQTT2_DEVICE']:
-				if selectedElement.getENERGYTotal() == 'no prop':
+				if selectedElement.getPCT() != 'no prop':
 					self['titleDetails'].setText('Details für ' + selectedElement.getAlias())
 					
 					list = []
 					list.append((['Einschaltstatus:',selectedElement.getReadingState()],))
-					list.append((['Present:',selectedElement.getPresent()],))
+					list.append((['Pctstatus:',selectedElement.getPCT()],))
+					list.append((['Internaltemp:',selectedElement.getMeasuredTemp() + ' °C'],))
+					list.append((['Present:',selectedElement.getPresent1()],))
 					self['details'].setList(list, 3)
 					
 					self['set_Title'].setText('Neuer Schaltstatus')
 					self['set_Text'].setText(selectedElement.getReadingState())
 					
-				elif selectedElement.getENERGYCurrent() != 'no prop':
+				elif selectedElement.getRelay_0_Energy_Total() != 'no prop':
 					self['titleDetails'].setText('Details für ' + selectedElement.getAlias())
 					
 					list = []
 					list.append((['Einschaltstatus:',selectedElement.getReadingState()],))
-					list.append((['Strom:',selectedElement.getENERGYCurrent() + ' A'],))
-					list.append((['Leistung:',selectedElement.getENERGYPower() + ' W'],))
-					list.append((['Energie heute:',selectedElement.getENERGYToday() + ' kWh'],))
-					list.append((['Energie insgesamt:',selectedElement.getENERGYTotal() + ' kWh'],))
+					list.append((['Strom:',selectedElement.getENERGYCurrent1() + ' W'],))
+					list.append((['Energie insgesamt:',selectedElement.getRelay_0_Energy_Total() + ' kWh'],))
+					list.append((['Internaltemp:',selectedElement.getMeasuredTemp() + ' °C'],))
+					list.append((['Present:',selectedElement.getPresent1()],))
+					self['details'].setList(list, 3)
+					
+					self['set_Title'].setText('Neuer Schaltstatus')
+					self['set_Text'].setText(selectedElement.getReadingState())
+					
+				elif selectedElement.getENERGYTotal() == 'no prop':
+					self['titleDetails'].setText('Details für ' + selectedElement.getAlias())
+					
+					list = []
+					list.append((['Einschaltstatus:',selectedElement.getReadingState()],))
 					list.append((['Present:',selectedElement.getPresent()],))
 					self['details'].setList(list, 3)
 					
@@ -708,7 +721,7 @@ class MainScreen(Screen):
 						except ValueError:
 							pass
 		
-			elif selectedElement.getType() in ['FS20','HUEDevice','Hyperion']:
+			elif selectedElement.getType() in ['FS20','HUEDevice','Hyperion','MQTT_DEVICE','MQTT2_DEVICE']:
 				specials = selectedElement.getSpecials0()
 				actvalue = self['set_Text'].getText()
 				if self.is_number(actvalue):
@@ -753,7 +766,7 @@ class MainScreen(Screen):
 						except ValueError:
 							pass
 							
-			elif selectedElement.getType() in ['FS20','HUEDevice','Hyperion']:
+			elif selectedElement.getType() in ['FS20','HUEDevice','Hyperion','MQTT_DEVICE','MQTT2_DEVICE']:
 				specials = selectedElement.getSpecials0()
 				actvalue = self['set_Text'].getText()
 				if self.is_number(actvalue):
@@ -974,6 +987,10 @@ class FHEMElement(object):
 			return DIMMER_SPECIALS
 		elif self.getType() == 'Hyperion':
 			return DIMMER_SPECIALS
+		elif self.getType() == 'MQTT_DEVICE':
+			return DIMMER2_SPECIALS
+		elif self.getType() == 'MQTT2_DEVICE':
+			return DIMMER2_SPECIALS
 		else:
 			return ['']
 			
@@ -1090,6 +1107,11 @@ class FHEMElement(object):
 				return str(self.Data['PossibleSets']).split('scene',1)[1].replace(':',' ').replace(',',' ').split('all')[0].split()
 			except:
 				return ('')
+		elif self.getType() in ['MQTT_DEVICE', 'MQTT2_DEVICE']:
+			try:
+				return str(self.Data['PossibleSets']).replace(':noArg',' ').replace(':textField',' ').replace(':',' ').replace(',',' ').split()
+			except:
+				return ('')
 				
 	def getCmdState(self):
 		try:
@@ -1184,6 +1206,8 @@ class FHEMElement(object):
 				retval = str(self.Data['Readings']['temperature']['Value'])	
 			elif type in ['CUL_WS'] and self.getSubType() == 'THSensor':
 				retval = str(self.Data['Readings']['temperature']['Value'])
+			elif type in ['MQTT_DEVICE','MQTT2_DEVICE']:
+				retval = str(self.Data['Readings']['temperature']['Value'])
 			elif type in ['Weather']:
 				retval = str(self.Data['Readings']['temperature']['Value'])	
 			elif type in ['MAX']:
@@ -1244,12 +1268,26 @@ class FHEMElement(object):
 		type = self.getType()
 		try:
 			retval = ''
-			if type in ['MQTT2_DEVICE']:
+			if type in ['MQTT_DEVICE','MQTT2_DEVICE']:
 				retval = str(self.Data['Readings']['LWT']['Value'])
 			elif type in ['FBDECT']:
 				return str(self.Data['Readings']['present']['Value'])
 			else: 
 				retval = '0.0'
+				
+			return retval
+			
+		except:
+			return 'no prop'
+			
+	def getPresent1(self):
+		type = self.getType()
+		try:
+			retval = ''
+			if type in ['MQTT_DEVICE','MQTT2_DEVICE']:
+				retval = str(self.Data['Readings']['online']['Value'])
+			else: 
+				retval = ''
 				
 			return retval
 			
@@ -1457,6 +1495,18 @@ class FHEMElement(object):
 				return ''
 		except:
 			return 'no prop'
+			
+	def getENERGYCurrent1(self):
+		type = self.getType()
+		try:
+			if type == 'MQTT2_DEVICE':
+				return str(self.Data['Readings']['relay_0_power']['Value'])
+			elif type == 'MQTT_DEVICE':
+				return str(self.Data['Readings']['relay_0_power']['Value'])	
+			else: 
+				return ''
+		except:
+			return 'no prop'
 	
 	def getENERGYPower(self):
 		type = self.getType()
@@ -1493,6 +1543,18 @@ class FHEMElement(object):
 				return str(self.Data['Readings']['ENERGY_Total']['Value'])
 			elif type == 'FBDECT':
 				return str(self.Data['Readings']['energy']['Value'])
+			else: 
+				return ''
+		except:
+			return 'no prop'
+			
+	def getRelay_0_Energy_Total(self):
+		type = self.getType()
+		try:
+			if type == 'MQTT2_DEVICE':
+				return str(self.Data['Readings']['relay_0_kWh']['Value'])
+			if type == 'MQTT_DEVICE':
+				return str(self.Data['Readings']['relay_0_kWh']['Value'])
 			else: 
 				return ''
 		except:
@@ -1540,6 +1602,18 @@ class FHEMElement(object):
 			except:
 				subtype = 'unknown'
 			return subtype
+		elif type == 'MQTT2_DEVICE':
+			try:
+				subtype = str(self.Data['Attributes']['subType'])
+			except:
+				subtype = 'unknown'
+			return subtype
+		elif type == 'MQTT_DEVICE':
+			try:
+				subtype = str(self.Data['Attributes']['subType'])
+			except:
+				subtype = 'unknown'
+			return subtype
 		elif type == 'FHT':
 			return 'thermostat'
 		elif type == 'FS20':
@@ -1576,6 +1650,18 @@ class FHEMElement(object):
 			return subtype
 		else:
 			return 'unknown'
+	
+	def getPCT(self):
+		type = self.getType()
+		try:
+			if type == 'MQTT2_DEVICE':
+				return str(self.Data['Readings']['pct']['Value'])
+			elif type == 'MQTT_DEVICE':
+				return str(self.Data['Readings']['pct']['Value'])
+			else: 
+				return ''
+		except:
+			return 'no prop'
 	
 	def getUpdateableProperty(self):
 		type = self.getType()
