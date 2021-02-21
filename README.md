@@ -1,4 +1,5 @@
-## fhemfrontend-enigma2
+## e2Fhem
+small enigma2 fhemfrontend
 
 ![](images/guiShot.jpg)
 
