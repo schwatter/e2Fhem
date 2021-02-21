@@ -31,8 +31,8 @@ d1 = ['TYPE=AptToDate','TYPE=CUL','TYPE=CUL_HM','TYPE=CUL_TX','TYPE=CUL_WS','TYP
 d2 = ['TYPE=Hyperion','TYPE=IT','TYPE=LightScene','TYPE=MAX','TYPE=MQTT_DEVICE','TYPE=MQTT2_DEVICE','TYPE=notify','TYPE=pilight_switch','TYPE=pilight_temp','TYPE=PRESENCE','TYPE=readingsProxy','TYPE=SYSMON','TYPE=Weather','TYPE=WOL']
 ELEMENTS = d1 + d2
 
-fhemlog = '/usr/lib/enigma2/python/Plugins/Extensions/fhem/fhem.log'
-jsonData = '/usr/lib/enigma2/python/Plugins/Extensions/fhem/deviceData.json'
+fhemlog = '/usr/lib/enigma2/python/Plugins/Extensions/e2Fhem/fhem.log'
+jsonData = '/usr/lib/enigma2/python/Plugins/Extensions/e2Fhem/deviceData.json'
 
 
 
@@ -96,7 +96,7 @@ class MainScreen(Screen):
 	desktopSize = getDesktop(0).size()
 	if desktopSize.width() >= 1920:
 		skin = '''
-		<screen position='300,645' size='1390,430' name='fhem' title='FHEM Haussteuerung' >
+		<screen position='300,645' size='1390,430' name='fhem' title='e2Fhem Haussteuerung' >
 			<widget name='titleMenu1' position='10,20' size='150,30' valign='center' halign='left' font='Regular;30'/>
 			<eLabel name='bgMenu1' position='9,49' size='252,334' backgroundColor='#808080' zPosition='0'/>
 			<widget name='Menu1' position='10,50' size='250,332' scrollbarMode='showOnDemand' zPosition='1' scrollbarWidth='3'/>
@@ -112,10 +112,10 @@ class MainScreen(Screen):
 			<widget name='set_Text' position='900,301' size='380,79' valign='center' halign='center' font='Regular;30' zPosition='1'/>
 			<widget name='set_ArrowRight' position='1280,301' size='100,79' valign='center' halign='center' font='Regular;30' zPosition='1'/>
 			<widget name='spinner' position='600,390' size='140,40' valign='center' halign='right' font='Regular;25' foregroundColor='white' zPosition='1'/>
-			<ePixmap position='10,420' size='140,40' pixmap='/usr/lib/enigma2/python/Plugins/Extensions/fhem/buttons/red.png' transparent='1' alphatest='on' />
-			<ePixmap position='150,420' size='140,40' pixmap='/usr/lib/enigma2/python/Plugins/Extensions/fhem/buttons/green.png' transparent='1' alphatest='on' />
-			<ePixmap position='290,420' size='140,40' pixmap='/usr/lib/enigma2/python/Plugins/Extensions/fhem/buttons/yellow.png' transparent='1' alphatest='on' />
-			<ePixmap position='430,420' size='140,40' pixmap='/usr/lib/enigma2/python/Plugins/Extensions/fhem/buttons/blue.png' transparent='1' alphatest='on' />
+			<ePixmap position='10,420' size='140,40' pixmap='/usr/lib/enigma2/python/Plugins/Extensions/e2Fhem/buttons/red.png' transparent='1' alphatest='on' />
+			<ePixmap position='150,420' size='140,40' pixmap='/usr/lib/enigma2/python/Plugins/Extensions/e2Fhem/buttons/green.png' transparent='1' alphatest='on' />
+			<ePixmap position='290,420' size='140,40' pixmap='/usr/lib/enigma2/python/Plugins/Extensions/e2Fhem/buttons/yellow.png' transparent='1' alphatest='on' />
+			<ePixmap position='430,420' size='140,40' pixmap='/usr/lib/enigma2/python/Plugins/Extensions/e2Fhem/buttons/blue.png' transparent='1' alphatest='on' />
 			<widget source='key_red' render='Label' position='10,390' zPosition='1' size='140,40' valign='center' halign='center' font='Regular;21' transparent='1' foregroundColor='white' shadowColor='black' shadowOffset='-1,-1' />
 			<widget source='key_green' render='Label' position='150,390' zPosition='1' size='140,40' valign='center' halign='center' font='Regular;21' transparent='1' foregroundColor='white' shadowColor='black' shadowOffset='-1,-1' />
 			<widget source='key_yellow' render='Label' position='290,390' zPosition='1' size='140,40' valign='center' halign='center' font='Regular;21' transparent='1' foregroundColor='white' shadowColor='black' shadowOffset='-1,-1' />
@@ -132,7 +132,7 @@ class MainScreen(Screen):
 		</screen>'''
 	else:
 		skin = '''
-		<screen position='5,265' size='1270,450' name='fhem' title='FHEM Haussteuerung' >
+		<screen position='5,265' size='1270,450' name='fhem' title='e2Fhem Haussteuerung' >
 			<widget name='titleMenu1' position='10,20' size='150,25' valign='center' halign='left' font='Regular;25'/>
 			<eLabel name='bgMenu1' position='9,49' size='252,337' backgroundColor='#808080' zPosition='0'/>
 			<widget name='Menu1' position='10,50' size='250,335' scrollbarMode='showOnDemand' zPosition='1' scrollbarWidth='3'/>
@@ -148,10 +148,10 @@ class MainScreen(Screen):
 			<widget name='set_Text' position='880,321' size='300,79' valign='center' halign='center' font='Regular;25' zPosition='1'/>
 			<widget name='set_ArrowRight' position='1160,321' size='100,79' valign='center' halign='center' font='Regular;25' zPosition='1'/>
 			<widget name='spinner' position='600,410' size='140,40' valign='center' halign='right' font='Regular;25' foregroundColor='white' zPosition='1'/>
-			<ePixmap position='10,440' size='140,40' pixmap='/usr/lib/enigma2/python/Plugins/Extensions/fhem/buttons/red.png' transparent='1' alphatest='on' />
-			<ePixmap position='150,440' size='140,40' pixmap='/usr/lib/enigma2/python/Plugins/Extensions/fhem/buttons/green.png' transparent='1' alphatest='on' />
-			<ePixmap position='290,440' size='140,40' pixmap='/usr/lib/enigma2/python/Plugins/Extensions/fhem/buttons/yellow.png' transparent='1' alphatest='on' />
-			<ePixmap position='430,440' size='140,40' pixmap='/usr/lib/enigma2/python/Plugins/Extensions/fhem/buttons/blue.png' transparent='1' alphatest='on' />
+			<ePixmap position='10,440' size='140,40' pixmap='/usr/lib/enigma2/python/Plugins/Extensions/e2Fhem/buttons/red.png' transparent='1' alphatest='on' />
+			<ePixmap position='150,440' size='140,40' pixmap='/usr/lib/enigma2/python/Plugins/Extensions/e2Fhem/buttons/green.png' transparent='1' alphatest='on' />
+			<ePixmap position='290,440' size='140,40' pixmap='/usr/lib/enigma2/python/Plugins/Extensions/e2Fhem/buttons/yellow.png' transparent='1' alphatest='on' />
+			<ePixmap position='430,440' size='140,40' pixmap='/usr/lib/enigma2/python/Plugins/Extensions/e2Fhem/buttons/blue.png' transparent='1' alphatest='on' />
 			<widget source='key_red' render='Label' position='10,410' zPosition='1' size='140,40' valign='center' halign='center' font='Regular;21' transparent='1' foregroundColor='white' shadowColor='black' shadowOffset='-1,-1' />
 			<widget source='key_green' render='Label' position='150,410' zPosition='1' size='140,40' valign='center' halign='center' font='Regular;21' transparent='1' foregroundColor='white' shadowColor='black' shadowOffset='-1,-1' />
 			<widget source='key_yellow' render='Label' position='290,410' zPosition='1' size='140,40' valign='center' halign='center' font='Regular;21' transparent='1' foregroundColor='white' shadowColor='black' shadowOffset='-1,-1' />
@@ -907,7 +907,7 @@ def main(session, **kwargs):
 
 def Plugins(**kwargs):
 	return PluginDescriptor(
-			name='FHEM Haussteuerung',
+			name='e2Fhem Haussteuerung',
 			description='Plugin zur Steuerung von FHEM',
 			where = PluginDescriptor.WHERE_PLUGINMENU,
 			icon='fhem.png',
@@ -2046,10 +2046,10 @@ class FHEM_Setup(Screen, ConfigListScreen):
 	if desktopSize.width() >= 1920:
 		skin = '''
 		<screen position='300,600' size='660,470' title='FHEM Settings' >
-			<ePixmap pixmap='/usr/lib/enigma2/python/Plugins/Extensions/fhem/buttons/red.png' position='0,460' size='140,40' alphatest='on' />
-			<ePixmap pixmap='/usr/lib/enigma2/python/Plugins/Extensions/fhem/buttons/green.png' position='140,460' size='140,40' alphatest='on' />
-			<ePixmap pixmap='/usr/lib/enigma2/python/Plugins/Extensions/fhem/buttons/yellow.png' position='280,460' size='140,40' alphatest='on' />
-			<ePixmap pixmap='/usr/lib/enigma2/python/Plugins/Extensions/fhem/buttons/blue.png' position='420,460' size='140,40' alphatest='on' />
+			<ePixmap pixmap='/usr/lib/enigma2/python/Plugins/Extensions/e2Fhem/buttons/red.png' position='0,460' size='140,40' alphatest='on' />
+			<ePixmap pixmap='/usr/lib/enigma2/python/Plugins/Extensions/e2Fhem/buttons/green.png' position='140,460' size='140,40' alphatest='on' />
+			<ePixmap pixmap='/usr/lib/enigma2/python/Plugins/Extensions/e2Fhem/buttons/yellow.png' position='280,460' size='140,40' alphatest='on' />
+			<ePixmap pixmap='/usr/lib/enigma2/python/Plugins/Extensions/e2Fhem/buttons/blue.png' position='420,460' size='140,40' alphatest='on' />
 			<widget source='key_red' render='Label' position='0,433' zPosition='1' size='140,40' font='Regular;21' halign='center' valign='center' backgroundColor='#9f1313' transparent='1' />
 			<widget source='key_green' render='Label' position='140,433' zPosition='1' size='140,40' font='Regular;21' halign='center' valign='center' backgroundColor='#1f771f' transparent='1' />
 			<widget source='key_yellow' render='Label' position='280,433' zPosition='1' size='140,40' font='Regular;21' halign='center' valign='center' backgroundColor='#1f771f' transparent='1' />
@@ -2060,10 +2060,10 @@ class FHEM_Setup(Screen, ConfigListScreen):
 	else:
 		skin = '''
 		<screen position='5,265' size='660,320' title='FHEM Settings' >
-			<ePixmap pixmap='/usr/lib/enigma2/python/Plugins/Extensions/fhem/buttons/red.png' position='0,312' size='140,40' alphatest='on' />
-			<ePixmap pixmap='/usr/lib/enigma2/python/Plugins/Extensions/fhem/buttons/green.png' position='140,312' size='140,40' alphatest='on' />
-			<ePixmap pixmap='/usr/lib/enigma2/python/Plugins/Extensions/fhem/buttons/yellow.png' position='280,312' size='140,40' alphatest='on' />
-			<ePixmap pixmap='/usr/lib/enigma2/python/Plugins/Extensions/fhem/buttons/blue.png' position='420,312' size='140,40' alphatest='on' />
+			<ePixmap pixmap='/usr/lib/enigma2/python/Plugins/Extensions/e2Fhem/buttons/red.png' position='0,312' size='140,40' alphatest='on' />
+			<ePixmap pixmap='/usr/lib/enigma2/python/Plugins/Extensions/e2Fhem/buttons/green.png' position='140,312' size='140,40' alphatest='on' />
+			<ePixmap pixmap='/usr/lib/enigma2/python/Plugins/Extensions/e2Fhem/buttons/yellow.png' position='280,312' size='140,40' alphatest='on' />
+			<ePixmap pixmap='/usr/lib/enigma2/python/Plugins/Extensions/e2Fhem/buttons/blue.png' position='420,312' size='140,40' alphatest='on' />
 			<widget source='key_red' render='Label' position='0,285' zPosition='1' size='140,40' font='Regular;21' halign='center' valign='center' backgroundColor='#9f1313' transparent='1' />
 			<widget source='key_green' render='Label' position='140,285' zPosition='1' size='140,40' font='Regular;21' halign='center' valign='center' backgroundColor='#1f771f' transparent='1' />
 			<widget source='key_yellow' render='Label' position='280,285' zPosition='1' size='140,40' font='Regular;21' halign='center' valign='center' backgroundColor='#1f771f' transparent='1' />

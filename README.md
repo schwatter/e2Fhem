@@ -41,7 +41,7 @@ Thx Waldmensch for initial setup
 ## Installation
 
 Enigma2
-- push all files to : /usr/lib/enigma2/python/Plugins/Extensions/fhem/
+- push all files to : /usr/lib/enigma2/python/Plugins/Extensions/e2Fhem/
 
 Server
 - JsonList2 only is now working.
